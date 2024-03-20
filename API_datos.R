@@ -48,11 +48,21 @@ library(ggplot2)
 dataed <- rbind(data2023ed, data2024ed)
 dataed<-dataed %>%  
     #If impacto_presupuestario_fecha is 2023-03-30 or 2023-03-31, then the value of impacto_presupuestario_mes should change to 4
-    mutate(impacto_presupuestario_mes = ifelse(impacto_presupuestario_fecha >= as.Date("2023-03-30") & impacto_presupuestario_fecha <=as.Date("2023-03-31"), 4, impacto_presupuestario_mes)) %>%
+    mutate(impacto_presupuestario_mes = ifelse(actividad_id==14 & impacto_presupuestario_fecha >= as.Date("2023-03-30") & impacto_presupuestario_fecha <=as.Date("2023-03-31"), 4, impacto_presupuestario_mes)) %>%
     mutate(impacto_presupuestario_mes = ifelse(impacto_presupuestario_fecha >= as.Date("2023-07-30") & impacto_presupuestario_fecha <=as.Date("2023-07-31"), 8, impacto_presupuestario_mes)) %>%
     mutate(impacto_presupuestario_mes = ifelse(impacto_presupuestario_fecha >= as.Date("2024-03-01") & impacto_presupuestario_fecha <=as.Date("2024-03-06"), 2, impacto_presupuestario_mes)) 
 #create new date column using impacto_presupuestario_mes and impacto_presupuestario_anio
 dataed$fecha <- as.Date(paste(dataed$impacto_presupuestario_anio, dataed$impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")
+
+#Do not plot, for dataed dataframe, group_by actividad_id and substract the sum of credito_devengado for 2023-06-01 from the sum of credito_devengado for 2023-05-01, create a table
+View(dataed %>% 
+  filter(subparcial_desc=="Universidad Nacional de Córdoba") %>%
+  ungroup() %>%
+  group_by(actividad_id,fecha) %>%
+  summarise(credito_devengado = sum(credito_devengado)) %>%
+  mutate(credito_devengado_lag = credito_devengado - lag(credito_devengado, n = 1, default = NA)) %>%
+  filter(fecha %in% c(as.Date("2023-06-01"),as.Date("2023-05-01"))))
+
 
 data2024ed %>% filter(actividad_id %in% c(14,15,16)) %>% group_by(impacto_presupuestario_mes) %>% summarise(credito_devengado = sum(credito_devengado))
 dataed %>% 
@@ -259,7 +269,7 @@ unc14_70p<-combined_data %>%
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1))
 # Save the plot
 ggsave("plot_unc_14_70p.png",plot=unc14_70p, width = 10, height = 6, dpi = 300)
-unc14_70p_prom <- unc14_70p + geom_hline(yintercept = prom_2023_cred_real, color = "red", linetype = "dashed") +     geom_text(aes(x = as.Date("2023-10-15"), y = prom_2023_cred_real, label = paste("Promedio 2023:\n",round(prom_2023_cred_real, 0))), vjust = -0.5,color="red")
+unc14_70p_prom <- unc14_70p + geom_hline(yintercept = prom_2023_cred_real, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2023-10-15"), y = prom_2023_cred_real, label = paste("Promedio 2023:\n",round(prom_2023_cred_real, 0))), vjust = -0.5,color="darkgreen")
 ggsave("plot_unc_14_70p_prom.png",plot=unc14_70p_prom, width = 10, height = 6, dpi = 300)
 
 
@@ -296,6 +306,8 @@ unc_ipc_all<-dataed %>%
     left_join(ipc, by = "fecha") %>%
   mutate(credito_devengado_real = credito_devengado/cumulative)
 
+prom_2023_all_cred_real<-mean(unc_ipc_all %>% filter(fecha <= as.Date("2023-12-31")) %>% pull(credito_devengado_real))
+
 unc_ipc_all %>% filter(fecha<as.Date("2024-03-01")) %>%
   ggplot(aes(x = fecha, y = credito_devengado_real)) +
   geom_bar(stat = "identity", fill = "blue", width = 20) +  # set width to 1 to fill the entire day
@@ -331,7 +343,7 @@ mutate(type = "original") %>%
       mutate(credito_devengado_real = aum70_mar24/cumulative, type = "increased")
   )
 
-combined_data_all %>% filter(fecha<=as.Date("2024-03-01")) %>%
+comb_plot<-combined_data_all %>% filter(fecha<=as.Date("2024-03-01")) %>%
   group_by(fecha) %>% 
   mutate(cumulative_credito = cumsum(credito_devengado_real),
          vjust = if_else(type == "original" & fecha==as.Date("2024-03-01"), 1.5, -0.5),
@@ -346,11 +358,11 @@ combined_data_all %>% filter(fecha<=as.Date("2024-03-01")) %>%
   theme_light(base_size = 14) +
   labs(x = "Mes", y = "Devengado en $ (millones)", title = "Crédito mensual devengado a la UNC 2023-2024 ajustado por inflación\n($ de febrero de 2024). Aumento del 70% propuesto por el gobierno en rojo") +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1))
-
 # Save the plot
-ggsave("plot_unc_all_70p.png", width = 10, height = 6, dpi = 300)
-
-
+comb_plot
+ggsave("plot_unc_all_70p.png",plot=comb_plot, width = 10, height = 6, dpi = 300)
+comb_prom_plot<-comb_plot+geom_hline(yintercept = prom_2023_all_cred_real, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = prom_2023_all_cred_real, label = paste("Promedio 2023:\n",round(prom_2023_all_cred_real, 0))), vjust = -0.5,color="darkgreen")
+ggsave("plot_unc_all_70p_prom.png",plot=comb_prom_plot, width = 10, height = 6, dpi = 300)
 
 #TOTAL NO SALARIAL
 unc_ipc_all<-dataed %>% 
