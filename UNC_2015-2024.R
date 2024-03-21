@@ -53,7 +53,8 @@ data<-data %>%
     ungroup() %>%
     group_by(fecha) %>%
   left_join(ipc, by = "fecha") %>%
-  mutate(credito_devengado_real = credito_devengado/cumulative)
+  mutate(credito_devengado_real = credito_devengado/cumulative) %>%
+  filter(subparcial_desc=="Universidad Nacional de Córdoba")
 
 
 #Chequear que todo esté bien
@@ -124,16 +125,16 @@ data_anual <- data_anual %>%
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
 ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(impacto_presupuestario_anio))) +
   geom_bar(stat="identity") +
-  labs(title = "Crédito devengado por año ajustado por inflación\n(pesos de febrero de 2024), suponiendo que\nen 2024 el presupuesto se ajustará por inflación desde marzo",
+  labs(title = "Crédito anual devengado UNC ajustado por inflación\n(pesos de febrero de 2024), suponiendo que\nen 2024 el presupuesto se ajustará por inflación desde marzo",
        x = "Año",
        y = "Credito anual devengado (millones de $ de 02/2024)") +
   scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#ff28ed")) +
   theme_light(base_size=16) +
-  geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5,size=5) +
+    geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5,size=6) +
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual$credito_devengado_real) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5))
-ggsave("presupuesto_anual_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
+ggsave("UNC_presupuesto_anual_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
 
 
@@ -141,49 +142,52 @@ ggsave("presupuesto_anual_2017-2024.png",width = 10, height = 6, units = "in",dp
 
 #Ahora sólo gastos de funcionamiento
 #Calcular data mensual
-data_mensual <- data %>% 
-  group_by(fecha,impacto_presupuestario_anio) %>%
-  filter(fecha<=as.Date("2024-02-01"),actividad_id==14) %>%
+data_mensual14 <- data %>% 
+  ungroup() %>%
+  mutate(impacto_presupuestario_mes=ifelse(impacto_presupuestario_anio==2024 & fecha>=as.Date("2024-03-01"),2,impacto_presupuestario_mes)) %>%
+  mutate(fecha=as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>%
+  filter(fecha<as.Date("2024-03-01"),actividad_id==14) %>%
+    group_by(fecha,impacto_presupuestario_anio) %>%
   summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0))
 
 #Calcular data anual
-data_anual <- data_mensual %>% 
+data_anual14 <- data_mensual14 %>% 
   group_by(impacto_presupuestario_anio) %>%
   summarise(credito_devengado = sum(credito_devengado), credito_devengado_real = sum(credito_devengado_real))
 
 #Para 2024, calcular el credito_devengado anual, divido por 2 y multiplico por 13
-data_anual <- data_anual %>%
-    mutate(credito_devengado = ifelse(impacto_presupuestario_anio == 2024, credito_devengado/2*13, credito_devengado),credito_devengado_real = ifelse(impacto_presupuestario_anio == 2024, credito_devengado_real/2*13, credito_devengado_real))
+data_anual14 <- data_anual14 %>%
+    mutate(credito_devengado = ifelse(impacto_presupuestario_anio == 2024, credito_devengado/2*12, credito_devengado),credito_devengado_real = ifelse(impacto_presupuestario_anio == 2024, credito_devengado_real/2*13, credito_devengado_real))
 
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
-ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(impacto_presupuestario_anio))) +
+ggplot(data_anual14, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(impacto_presupuestario_anio))) +
   geom_bar(stat="identity") +
-  labs(title = "Crédito devengado para FUNCIONAMIENTO por año ajustado por inflación\n(pesos de febrero de 2024), suponiendo que\nen 2024 el presupuesto se ajustará por inflación desde marzo",
+  labs(title = "Crédito devengado UNC (FUNCIONAMIENTO) ajustado por inflación\n(pesos de febrero de 2024), suponiendo que\nen 2024 el presupuesto se ajustará por inflación desde marzo",
        x = "Año",
        y = "Credito anual devengado\n(millones de $ de 02/2024)") +
   scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#ff28ed")) +
   theme_light(base_size=16) +
   geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5,size=6) +
   #scale y axis to show values in millions
-  scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual$credito_devengado_real) * 1.1)) +
+  scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual14$credito_devengado_real) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5))
-ggsave("presupuesto_anual_func_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
+ggsave("UNC_presupuesto_anual_func_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
 #Gráfico con el aumento del 70% del valor para 2024
 
-data_anual_aumento70 <- data_anual %>% 
-      mutate(credito_devengado_real = ifelse(impacto_presupuestario_anio == 2024,credito_devengado_real*1.7,credito_devengado_real))
+data_anual_aumento70 <- data_anual14 %>% 
+      mutate(credito_devengado_real = ifelse(impacto_presupuestario_anio == 2024,credito_devengado_real+1.7,credito_devengado_real))
   
 
 ggplot(data_anual_aumento70, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(impacto_presupuestario_anio))) +
   geom_bar(stat="identity") +
-  labs(title = "Crédito anual devengado (FUNCIONAMIENTO) ajustado\npor inflación (pesos de febrero de 2024), suponiendo que\nen 2024 el presupuesto aumenta 70% desde marzo\ny se ajustará por inflación desde abril",
+  labs(title = "Crédito anual devengado UNC (FUNCIONAMIENTO) ajustado\npor inflación (pesos de febrero de 2024), suponiendo que\nen 2024 el presupuesto aumenta 70% desde marzo\ny se ajustará por inflación desde abril",
        x = "Año",
        y = "Credito anual devengado\n(millones de $ de 02/2024)") +
   scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#ff28ed")) +
   theme_light(base_size=16) +
   geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5,size=6) +
   #scale y axis to show values in millions
-  scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual$credito_devengado_real) * 1.1)) +
+  scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual14$credito_devengado_real) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5))
-ggsave("presupuesto_anual_func_aumento70p_2017-2024.png",width = 10, height = 6, units = "in",dpi=300) 
+ggsave("UNC_presupuesto_anual_func_aumento70p_2017-2024.png",width = 10, height = 6, units = "in",dpi=300) 
