@@ -113,14 +113,16 @@ p <- ggplot(data_mensual3, aes(x=fecha)) +
 ggplotly(p)
   
 
+
+marzo<-tail(data_mensual,1) %>% mutate(fecha=as.Date("2024-03-1"),credito_devengado=credito_devengado*1.1,credito_devengado_real=(credito_devengado_real+.7*384)*1.1/1.12)
+#Create a data frame with fecha 2024-04-01 to 2024-12-01, with credito_devengado = 0 and credito_devengado_real equal to marzo$credito_devengado_real
+resto<-data.frame(fecha=seq(as.Date("2024-04-01"), as.Date("2024-12-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(marzo$credito_devengado_real,9))
+#join data_mensual with marzo and resto
+data_mensual2 <- rbind(data_mensual, marzo, resto)
 #Calcular data anual
-data_anual <- data_mensual %>% 
+data_anual <- data_mensual2 %>% 
   group_by(impacto_presupuestario_anio) %>%
   summarise(credito_devengado = sum(credito_devengado), credito_devengado_real = sum(credito_devengado_real))
-
-#Para 2024, calcular el credito_devengado anual, divido por 2 y multiplico por 13
-data_anual <- data_anual %>%
-    mutate(credito_devengado = ifelse(impacto_presupuestario_anio == 2024, credito_devengado/2*13, credito_devengado),credito_devengado_real = ifelse(impacto_presupuestario_anio == 2024, credito_devengado_real/2*13, credito_devengado_real))
 
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
 ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(impacto_presupuestario_anio))) +
@@ -150,14 +152,16 @@ data_mensual14 <- data %>%
     group_by(fecha,impacto_presupuestario_anio) %>%
   summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0))
 
+marzo14<-tail(data_mensual14,1) %>% mutate(fecha=as.Date("2024-03-1"),credito_devengado=credito_devengado,credito_devengado_real=(credito_devengado_real)/1.12)
+#Create a data frame with fecha 2024-04-01 to 2024-12-01, with credito_devengado = 0 and credito_devengado_real equal to marzo$credito_devengado_real
+resto14<-data.frame(fecha=seq(as.Date("2024-04-01"), as.Date("2024-12-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(marzo14$credito_devengado_real,9))
+#join data_mensual with marzo and resto
+data_mensual14_2 <- rbind(data_mensual14, marzo14, resto14)
 #Calcular data anual
-data_anual14 <- data_mensual14 %>% 
+data_anual14 <- data_mensual14_2 %>% 
   group_by(impacto_presupuestario_anio) %>%
   summarise(credito_devengado = sum(credito_devengado), credito_devengado_real = sum(credito_devengado_real))
 
-#Para 2024, calcular el credito_devengado anual, divido por 2 y multiplico por 13
-data_anual14 <- data_anual14 %>%
-    mutate(credito_devengado = ifelse(impacto_presupuestario_anio == 2024, credito_devengado/2*12, credito_devengado),credito_devengado_real = ifelse(impacto_presupuestario_anio == 2024, credito_devengado_real/2*13, credito_devengado_real))
 
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
 ggplot(data_anual14, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(impacto_presupuestario_anio))) +
@@ -174,10 +178,17 @@ ggplot(data_anual14, aes(x=as.factor(impacto_presupuestario_anio), y=credito_dev
 ggsave("UNC_presupuesto_anual_func_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
 #Gráfico con el aumento del 70% del valor para 2024
+marzo14<-tail(data_mensual14,1) %>% mutate(fecha=as.Date("2024-03-1"),credito_devengado=credito_devengado,credito_devengado_real=(credito_devengado_real+.7*384)/1.12)
+#Create a data frame with fecha 2024-04-01 to 2024-12-01, with credito_devengado = 0 and credito_devengado_real equal to marzo$credito_devengado_real
+resto14<-data.frame(fecha=seq(as.Date("2024-04-01"), as.Date("2024-12-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(marzo14$credito_devengado_real,9))
+#join data_mensual with marzo and resto
+data_mensual14_3 <- rbind(data_mensual14, marzo14, resto14)
+#Calcular data anual
+data_anual_aumento70 <- data_mensual14_3 %>% 
+  group_by(impacto_presupuestario_anio) %>%
+  summarise(credito_devengado = sum(credito_devengado), credito_devengado_real = sum(credito_devengado_real))
 
-data_anual_aumento70 <- data_anual14 %>% 
-      mutate(credito_devengado_real = ifelse(impacto_presupuestario_anio == 2024,credito_devengado_real+1.7,credito_devengado_real))
-  
+
 
 ggplot(data_anual_aumento70, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(impacto_presupuestario_anio))) +
   geom_bar(stat="identity") +
