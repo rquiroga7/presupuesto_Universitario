@@ -95,8 +95,22 @@ dataed %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = "Devengado en $ (millones)", title = "Crédito mensual devengado 2023-2024\nactividad 14 (funcionamiento)")
-
 ggsave("plot_14.png", width = 10, height = 6, dpi = 300)
+
+dataed %>% 
+  mutate(fecha = as.Date(fecha)) %>%  # convert to date if not already
+  filter(fecha <= as.Date("2024-02-01")) %>% 
+  group_by(fecha) %>% 
+  summarise(credito_devengado = sum(credito_devengado)) %>% 
+  ggplot(aes(x = fecha, y = credito_devengado)) +
+  geom_bar(stat = "identity", fill = "blue", width = 20) +  # set width to 1 to fill the entire day
+  scale_x_date(date_breaks = "1 month", date_labels = "%b %Y",expand = c(0.01,0.01)) +  # set date breaks and labels
+  scale_y_continuous(labels = scales::dollar_format(scale = 1)) +
+  theme_light(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Mes", y = "Devengado en $ (millones)", title = "Crédito mensual devengado 2023-2024\nactividad 14 (funcionamiento)")
+
+ggsave("plot_all_nominal.png", width = 10, height = 6, dpi = 300)
 
 
 #IPC
