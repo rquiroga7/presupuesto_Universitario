@@ -3,10 +3,10 @@ Análisis de ejecución presupuestaria de las Universidades Nacionales de Argent
 
 Última actualización 08/04/2024
 
-| **Dr. Rodrigo Quiroga**  
-| Investigador Asistente INFIQC-CONICET  
-| Profesor Adjunto de Bioinformática y Biología Computacional  
-| Facultad de Ciencias Químicas, Universidad Nacional de Córdoba  
+ **Dr. Rodrigo Quiroga**  
+ Investigador Asistente INFIQC-CONICET  
+ Profesor Adjunto de Bioinformática y Biología Computacional  
+ Facultad de Ciencias Químicas, Universidad Nacional de Córdoba  
 
 INTRODUCCIÓN Y METODOLOGÍA
 ============
