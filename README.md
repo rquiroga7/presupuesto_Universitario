@@ -17,23 +17,33 @@ Todo éste análisis se basa en analizar el crédito devengado bajo el programa 
 - #actividad_id==11 Fundar
 - #actividad_id==12 Salarios Docentes
 - #actividad_id==13 Salarios No-Docentes
-- #actividad_id==14 Asistencia Financiera para el Funcionamiento Universitarios
+- #actividad_id==14 Asistencia Financiera para el Funcionamiento Universitario
 - #actividad_id==15 Salud (Hospitales Universitarios)
 - #actividad_id==16 CyT
 - #actividad_id==23 Desarrollo de Institutos Tecnologicos de Formacion Profesional
 - #actividad_id==24 Promoción de carreras estratégicas
 - #actividad_id==25 Extensión Universitaria
 
+En general vamos a enfocarnos en el presupuesto total (programa 26), o en particular en el presupuesto de funcionamiento, es decir, la actividad 14 (Asistencia Financiera para el Funcionamiento Universitario).
+
 Como metodología, en general vamos a mostrar gráficos de ejecución presupuestaria (crédito devengado) en pesos reales, es decir ajustado por inflación. Esto permite una comparación más realista de los presupuestos de cada mes, dado que los montos se ajustan por IPC para estimar cómo permite afrontar los costos que ese presupuesto está destinado a afrontar. Adicionalmente, cabe aclarar que los montos en pesos se expresarán en millones de pesos equivalentes a los del último mes analizado. Por lo tanto, los montos devengados coinciden para el último mes con los datos que uno puede encontrar en la página de presupuesto abierto, pero para meses anteriores, no habrá coincidencias dado que la página muestra montos nominales.
 
 El código de bash y R utilizado para descargar, analizar y graficar los datos de ejecución presupuestaria de 2017-2024 están disponibles abiertamente en este repositorio. Los datos se descargan de la API de Presupuesto abierto (aunque no es necesario que el usuario los descargue ya que están disponibles en este repositorio). El script API_datos.R analiza y genera los gráficos de ejecución presupuestaria mensual, y los scripts UNC_2015-2024.R y 2015_2024.R generan los gráficos anuales, para la UNC y para la totalidad de las Universidades Nacionales, respectivamente. 
 </details>
 
+Ejecución presupuestaria mensual de 2023 y 2024
+============
 
-Aquí la ejecución mensual para presupuesto total (todas las actividades) y la actividad 14 (funcionamiento).
-
+Presupuesto de funcionamiento
+-----------------------------
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plot_14_70p_prom.png)
+Presupuesto total
+-----------------
+
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plot_all_70p_prom.png)
+
+
+
 
 Aquí los gráficos de ejecución anual, suponiendo que para 2024 el crédito devengado se ajustará por IPC desde abril en adelante.
 Presupuesto de funcionamiento (act 14):
