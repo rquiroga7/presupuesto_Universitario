@@ -77,10 +77,14 @@ No sólo eso, sino que el presupuesto real de marzo está por debajo del presupu
 Ejecución presupuestaria anual para el período 2017-2024
 ============
 
-Para poner en contexto histórico el presupuesto 2024, realizamos el siguiente ejercicio. Realizamos la optimista presunción de que el presupuesto se ajustaría por inflación (IPC) a partir de abril, y comparamos ese presupuesto anual ajustado por inflación con años anteriores.
+Para poner en contexto histórico el presupuesto 2024, realizamos el siguiente ejercicio. Realizamos la optimista presunción de que el presupuesto se ajustaría por inflación (IPC) a partir de abril, y comparamos ese presupuesto anual ajustado por inflación con años anteriores. Es decir, calculamos cual sería el presupuesto anual para 2024 si no hay aumentos del presupuesto y si a partir de abril se ajusta por IPC. Analizamos primero el presupuesto de funcionamiento y luego el presupuesto total.
 
 Presupuesto de funcionamiento (act 14):
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/presupuesto_anual_func_2017-2024.png)
 
-Presupuesto total:
+Observamos que sin aumentos adicionales, a pesar del aumento de 70% de marzo, el presupuesto de funcionamiento ajustado por inflación para 2024 es aproximadamente el 50% del presupuesto de 2023. También podemos observar que el presupuesto de funcionamiento 2024 sería incluso inferior al de 2020, cuando en plena pandemia las Universidades no funcionaron de manera presencial! Debería quedar claro que las Universidades son objeto de un ajuste presupuestario fenomenal, lo cual también confirma las afirmaciones del rector y vicerector de la UBA, quienes dijeron que [sin aumentos presupuestarios significativos será imposible afrontar un funcionamiento normal durante el segundo cuatrimestre](https://www.pagina12.com.ar/726980-la-universidad-publica-al-borde-del-abismo).
+
+Respecto al Presupuesto total:
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/presupuesto_anual_2017-2024.png)
+
+Observamos que el presupuesto sería el menor desde que se comenzaron a recopilar datos de Presupuesto Abierto.
