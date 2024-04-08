@@ -36,7 +36,19 @@ Ejecución presupuestaria mensual de 2023 y 2024
 
 Presupuesto de funcionamiento
 -----------------------------
+El presupuesto de funcionamiento para enero y febrero de 2024  se mantuvo exactamente igual al de 2023,en términos nominales. Es decir, el crédito devengado en pesos fue exactamente el mismo desde enero de 2023 a febrero de 2024. Cabe aclarar que el presupuesto para funcionamiento anual se calcula a principio de año en base a la inflación esperada. Luego, ese monto se divide por 12 y se envía ese monto en cada mes del año. Por lo tanto, durante 2023 el presupuesto de funcionamiento no estuvo "congelado" como dijo el actual subsecretario de políticas universitarias [aquí](https://x.com/AleCiroAlvarez/status/1768374421440410066)), sino que se calcula en base a la inflación esperada para ese año. Justamente, lo esperable para 2024, es que se actualizara el monto en base a la inflación de 2023 y la esperada para 2024, estimando un nuevo presupuesto anual de funcionamiento, que debería haberse dividido en 12. No ocurrió eso, sino que como estipula el [Decreto 23/2024](https://www.boletinoficial.gob.ar/detalleAviso/primera/301615/20240105), se volvieron a utilizar los montos de 2023, sin ajustar por inflación. Todo esto fue explicado en detalle por Jorge Aliaga (actual miembro del directorio de CONICET) [en este hilo de Twitter](https://x.com/jorgeluisaliaga/status/1769806057600081985).
+
+También es importante explicar que las Universidades Nacionales en muchos casos generan fondos propios que se destinan a funcionamiento (en general por prestación de servicios). Sin embargo, en la mayoría de las Universidades el presupuesto enviado por el gobierno nacional para tal fin es determinante.
+
+En Marzo de 2024, se otorgó un aumento del 70% del presupuesto mensual de funcionamiento, que efectivamemte fue devengado. Sin embargo, al ajustar por inflación, observamos que el presupuesto mensual para funcionamiento había quedado tan licuado por inflación, que ese aumento del 70% sigue representando un monto real que está aprox un 40% por debajo del promedio de lo enviado mensualmente en 2023. 
+
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plot_14_70p_prom.png)
+
+Podemos resumir esta sección aclarando que sería necesario OTRO AUMENTO del 70% para que las Universidades vuelvan a tener un presupuesto de funcionamiento similar al promedio de 2023. Además, vale aclarar que con los aumentos de tarifas de servicios previstos para 2024, y el hecho de que el gobierno eliminó a las instituciones educativas de los subsidios de energía eléctrica () incluso un nuevo aumento del 70% sería insuficiente para afrontar los costos operativos del año 2024.
+
+Actualmente las Universidades Nacionales están gastando ahorros para poder seguir funcionando en este contexto, y en estos días se difundió la [noticia](https://www.lmneuquen.com/neuquen/no-la-dejemos-morir-la-universidad-nacional-del-comahue-entro-cesacion-pagos-n1104420) de que la Universidad Nacional del Comahue entró en cesación de pagos por no poder afrontar las boletas de servicios. Es la primera Universidad en esta situación, pero si no hay un aumento urgente del presupuesto de funcionamiento, seguramente no será la única.
+
+
 Presupuesto total
 -----------------
 
