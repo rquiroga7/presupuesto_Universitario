@@ -68,10 +68,13 @@ En el siguiente gráfico observamos el presupuesto mensual real total (ajustado 
 
 
 **Como vemos en el gráfico, el aumento del 70% anunciado por el gobierno con bombos y platillos en realidad representa un aumento del 2.2% del presupuesto total!**
-No sólo eso, sino 
+No sólo eso, sino que el presupuesto real de marzo está por debajo del presupuesto real de febrero, debido a que los aumentos nominales fueron menores a la inflación esperada para marzo (12%).
 
+Ejecución presupuestaria anual para el período 2017-2024
+============
 
-Aquí los gráficos de ejecución anual, suponiendo que para 2024 el crédito devengado se ajustará por IPC desde abril en adelante.
+Para poner en contexto histórico el presupuesto 2024, realizamos el siguiente ejercicio. Realizamos la optimista presunción de que el presupuesto se ajustaría por inflación (IPC) a partir de abril, y comparamos ese presupuesto anual ajustado por inflación con años anteriores.
+
 Presupuesto de funcionamiento (act 14):
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/presupuesto_anual_func_2017-2024.png)
 
