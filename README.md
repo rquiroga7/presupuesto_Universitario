@@ -13,16 +13,16 @@ Ante la decisión del gobierno de Javier Milei de no enviar una ley de presupues
 El Ministerio de Economía mantiene una base de datos llamada [Presupuesto Abierto](https://www.presupuestoabierto.gob.ar/sici/) de donde pueden descargarse los datos de ejecución presupuestaria. Utilizando dichos datos, analizamos la ejecución presupuestaria mensual, no de los montos pagados, sino de los montos devengados. Para leer una explicación sobre qué significan estos términos, consultar este [glosario](https://www.presupuestoabierto.gob.ar/sici/glosario-e).
 
 Todo éste análisis se basa en analizar el crédito devengado bajo el programa 26 (DESARROLLO DE LA EDUCACIÓN SUPERIOR) del ex Ministerio de Educación y ahora Ministerio de Capital Humano. Dentro de este programa, se encuentran distintas actividades que podemos resumir en la siguiente lista:
--#actividad_id==1 - Conduccion, Gestion y Apoyo a las Politicas de Educacion Superior
--#actividad_id==11 Fundar
--#actividad_id==12 Salarios Docentes
--#actividad_id==13 Salarios No-Docentes
--#actividad_id==14 Asistencia Financiera para el Funcionamiento Universitarios
--#actividad_id==15 Salud (Hospitales Universitarios)
--#actividad_id==16 CyT
--#actividad_id==23 Desarrollo de Institutos Tecnologicos de Formacion Profesional
--#actividad_id==24 Promoción de carreras estratégicas
--#actividad_id==25 Extensión Universitaria
+- #actividad_id==1 - Conduccion, Gestion y Apoyo a las Politicas de Educacion Superior
+- #actividad_id==11 Fundar
+- #actividad_id==12 Salarios Docentes
+- #actividad_id==13 Salarios No-Docentes
+- #actividad_id==14 Asistencia Financiera para el Funcionamiento Universitarios
+- #actividad_id==15 Salud (Hospitales Universitarios)
+- #actividad_id==16 CyT
+- #actividad_id==23 Desarrollo de Institutos Tecnologicos de Formacion Profesional
+- #actividad_id==24 Promoción de carreras estratégicas
+- #actividad_id==25 Extensión Universitaria
 
 Como metodología, en general vamos a mostrar gráficos de ejecución presupuestaria (crédito devengado) en pesos reales, es decir ajustado por inflación. Esto permite una comparación más realista de los presupuestos de cada mes, dado que los montos se ajustan por IPC para estimar cómo permite afrontar los costos que ese presupuesto está destinado a afrontar. Adicionalmente, cabe aclarar que los montos en pesos se expresarán en millones de pesos equivalentes a los del último mes analizado. Por lo tanto, los montos devengados coinciden para el último mes con los datos que uno puede encontrar en la página de presupuesto abierto, pero para meses anteriores, no habrá coincidencias dado que la página muestra montos nominales.
 
