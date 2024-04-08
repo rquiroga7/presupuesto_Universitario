@@ -177,7 +177,7 @@ ggplot(data_anual14, aes(x=as.factor(impacto_presupuestario_anio), y=credito_dev
   geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5,size=5) +
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual14$credito_devengado_real) * 1.1)) +
-  theme(legend.position = "none", plot.title = element_text(hjust = 0.5))+
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
   labs(caption = "Se ajustó el crédito mensual devengado para actividad 14 por inflación utilizando IPC (índice de precios al consumidor).\nSe asume una inflación del 12% para marzo de 2024 y ajuste por IPC abril-diciembre 2024.\nSe calcula el equivalente a millones de pesos de marzo de 2024 y se anualizaron los montos.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC ")
 ggsave("presupuesto_anual_func_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
