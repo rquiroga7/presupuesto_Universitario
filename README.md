@@ -60,10 +60,15 @@ Como vemos, es absolutamente falso lo que declaró el Secretario de Educación C
 
 Presupuesto total
 -----------------
+Otro punto importante para aclarar, es que numerosos funcionarios del gobierno nacional están repitiendo el dato falso "en marzo hubo un aumento del 70% del presupuesto universitario", incluso [repetido por el vocero presidencial en conferencia de prensa](https://x.com/somoscorta/status/1776262854003310864). Como vimos arriba, esto es falso porque el aumento del 70% era del presupuesto de funcionamiento, y ese aumento está MUY por debajo del aumento necesario para compensar la inflación y aumento de tarifas.
+
+En el siguiente gráfico observamos el presupuesto mensual real total (ajustado por inflación), de todas las Universidades Nacionales del país. Se grafica también el promedio mensual 2023 como una línea punteada verde (calculado sobre los meses sin aguinaldo).
 
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plot_all_70p_prom.png)
 
 
+**Como vemos en el gráfico, el aumento del 70% anunciado por el gobierno con bombos y platillos en realidad representa un aumento del 2.2% del presupuesto total!**
+No sólo eso, sino 
 
 
 Aquí los gráficos de ejecución anual, suponiendo que para 2024 el crédito devengado se ajustará por IPC desde abril en adelante.
