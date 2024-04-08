@@ -99,4 +99,4 @@ Aquí termina la parte analítica del informe y comienza una sección con opinio
  *Comentario adicional respecto a la situación salarial docente*  
 Adicionalmente, no entramos en detalles sobre el tema en este informe, pero la pérdida de poder adquisitivo de los docentes universitarios también es un componente crítico que amenaza la continuidad de las clases en la segunda mitad del año. Adicionalmente a las paupérrimas paritarias docentes, la inexistencia de convocatoria a paritaria nacional para discutir el aumento de la garantía salarial lleva a que muchos docentes universitarios jóvenes, con cargos de dedicación simple y antiguedad menor a 5 años hayan recibido aumentos del 0% durante los meses de enero y febrero. Muchos de ellos comienzan a presentar sus renuncias a pesar de su vocación y amor por la docencia. La situación es insostenible.
 
-Para descargar este informe en versión PDF, click [aquí](https://github.com/rquiroga7/presupuesto_UNC/blob/main/informe_pres_univ.pdf?raw=true).
+Para descargar este informe en versión PDF, click [aquí]([https://github.com/rquiroga7/presupuesto_UNC/raw/main/informe_pres_univ.pdf).
