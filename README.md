@@ -49,6 +49,8 @@ También es importante explicar que las Universidades Nacionales en muchos casos
 
 En Marzo de 2024, se otorgó un aumento del 70% del presupuesto mensual de funcionamiento, que efectivamemte fue devengado. Sin embargo, al ajustar por inflación, observamos que el presupuesto mensual para funcionamiento había quedado tan licuado por inflación, que ese aumento del 70% sigue representando un monto real que está aprox un 40% por debajo del promedio de lo enviado mensualmente en 2023. 
 
+Es lo que puede observarse en el siguiente gráfico donde graficamos el presupuesto mensual real (ajustado por inflación) para funcionamiento de todas las Universidades Nacionales del país. Se grafica también el promedio mensual 2023 como una línea punteada verde.
+
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plot_14_70p_prom.png)
 
 Podemos resumir esta sección aclarando que sería necesario OTRO AUMENTO del 70% para que las Universidades vuelvan a tener un presupuesto de funcionamiento similar al promedio de 2023. Además, vale aclarar que con los aumentos de tarifas de servicios previstos para 2024, y el hecho de que el gobierno eliminó a las instituciones educativas de los subsidios de energía eléctrica () incluso un nuevo aumento del 70% sería insuficiente para afrontar los costos operativos del año 2024.
