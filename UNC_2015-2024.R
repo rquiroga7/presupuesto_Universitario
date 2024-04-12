@@ -102,17 +102,36 @@ ggplot(data_mensual, aes(x=fecha)) +
   theme(legend.position = "bottom")
 
 #Create interactive plot
+# Load the plotly library for creating interactive plots
 library(plotly)
-p <- ggplot(data_mensual3, aes(x=fecha)) +
+
+# Create a ggplot object
+# aes(x=fecha) sets the x-axis to the 'fecha' column from the 'data_mensual' dataframe
+p <- ggplot(data_mensual, aes(x=fecha)) +
+  # Add a line plot to the ggplot object
+  # aes(y=credito_devengado_real, color="credito_devengado_real") sets the y-axis to the 'credito_devengado_real' column and the color of the line to the 'credito_devengado_real' column
   geom_line(aes(y=credito_devengado_real, color="credito_devengado_real")) +
+  # Add points to the line plot
+  # aes(y=credito_devengado_real, color="credito_devengado_real") sets the y-axis for the points to the 'credito_devengado_real' column and the color of the points to the 'credito_devengado_real' column
+  geom_point(aes(y=credito_devengado_real, color="credito_devengado_real")) +
+  # Set the scale for the x-axis to be dates
+  # date_breaks = "1 year" sets the breaks in the x-axis to be every year
+  # date_labels = "%Y-%b" sets the labels for the breaks to be the year and the abbreviated month
+  # limits=as.Date(c("2017-03-01","2024-02-01")) sets the limits of the x-axis to be from March 2017 to February 2024
   scale_x_date(date_breaks = "1 year", date_labels = "%Y-%b", limits=as.Date(c("2017-03-01","2024-02-01"))) +
-  labs(title = "Crédito devengado por mes",
-       x = "Fecha",
-       y = "Credito devengado") +
-    #add vertical line for 2018-08-01
-    geom_vline(xintercept = as.numeric(as.Date("2018-08-01")), linetype="dashed", color = "blue") +
+  # Set the labels for the plot, x-axis, and y-axis
+  labs(title = "Crédito devengado por mes", x = "Fecha", y = "Credito devengado") +
+  # Add a vertical line to the plot at August 1, 2018
+  # xintercept = as.numeric(as.Date("2018-08-01")) sets the position of the line
+  # linetype="dashed" sets the line to be dashed
+  # color = "blue" sets the color of the line to be blue
+  geom_vline(xintercept = as.numeric(as.Date("2018-08-01")), linetype="dashed", color = "blue") +
+  # Set the theme of the plot to be light
   theme_light() +
+  # Set the position of the legend to be at the bottom of the plot
   theme(legend.position = "bottom")
+
+# Convert the ggplot object to a plotly object for interactivity
 ggplotly(p)
   
 
