@@ -42,7 +42,7 @@ feb23<- data2023ed %>%                  #filter(impacto_presupuestario_mes==2) %
 View(data2024ed %>% filter(impacto_presupuestario_mes==2) %>% group_by(actividad_desc) %>% summarise(credito_vigente = sum(credito_vigente),credito_comprometido = sum(credito_comprometido),credito_devengado = sum(credito_devengado),credito_pagado = sum(credito_pagado),credito_devengado = sum(credito_devengado)))
 
 #Create barplot from data2023ed, filtering actividad_id %in% c(14,15,16), and plotting one bar per month (impacto_presupuestario_mes)
-data2023ed
+#data2023ed
 #merge data2024ed and data2023ed
 dataed <- rbind(data2023ed, data2024ed)
 dataed<-dataed %>%  
@@ -76,7 +76,7 @@ dataed %>%
   scale_y_continuous(labels = scales::dollar_format(scale = 1),limits=c(0,15000)) +
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
-  labs(x = "Mes", y = "Crédito mensual devengado\n(millones de $ de 03/2024)", title = "Crédito mensual devengado 2023-2024 actividad 14+15+16\n (funcionamiento+salud+CyT)")
+  labs(x = "Mes", y = "Crédito mensual devengado", title = "Crédito mensual devengado 2023-2024 actividad 14+15+16\n (funcionamiento+salud+CyT)")
 
 ggsave("plot_14_15_16.png", width = 10, height = 6, dpi = 300)
 
@@ -93,8 +93,8 @@ dataed %>%
   scale_y_continuous(labels = scales::dollar_format(scale = 1),limits=c(0,15000)) +
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
-  labs(x = "Mes", y = "Crédito mensual devengado\n(millones de $ de 03/2024)", title = "Crédito mensual devengado 2023-2024\nactividad 14 (funcionamiento)")
-ggsave("plot_14.png", width = 10, height = 6, dpi = 300)
+  labs(x = "Mes", y = "Crédito mensual devengado", title = "Crédito mensual nominal devengado 2023-2024\nactividad 14 (funcionamiento)")
+ggsave("plot_14_nominal.png", width = 10, height = 6, dpi = 300)
 
 dataed %>% 
   mutate(fecha = as.Date(fecha)) %>%  # convert to date if not already
@@ -107,7 +107,7 @@ dataed %>%
   scale_y_continuous(labels = scales::dollar_format(scale = 1)) +
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
-  labs(x = "Mes", y = "Crédito mensual devengado\n(millones de $ de 03/2024)", title = "Crédito mensual devengado 2023-2024\nactividad 14 (funcionamiento)")
+  labs(x = "Mes", y = "Crédito mensual devengado", title = "Crédito mensual nominal devengado 2023-2024")
 
 ggsave("plot_all_nominal.png", width = 10, height = 6, dpi = 300)
 
@@ -151,6 +151,19 @@ ipc_14<-dataed %>%
   summarise(credito_devengado = sum(credito_devengado)) %>%
     left_join(ipc, by = "fecha") %>%
   mutate(credito_devengado_real = credito_devengado/cumulative)
+
+#Plot ipc14_nominal
+ipc_14 %>% 
+  filter(fecha <= as.Date("2024-03-01")) %>% 
+  ggplot(aes(x = fecha, y = credito_devengado)) +
+  geom_bar(stat = "identity", fill = "blue", width = 20) +  # set width to 1 to fill the entire day
+  scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.01,0.01)) +  # set date breaks and labels
+    scale_y_continuous(labels = scales::dollar_format(scale = 1)) +
+    geom_text(aes(label = round(credito_devengado, 0)), vjust = -0.5) +
+  theme_light(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Mes", y = "Crédito mensual devengado\n(millones de $ de 03/2024)", title = "Crédito mensual devengado para actividad 14\n (funcionamiento)")
+ggsave("plot_14_nominal.png", width = 10, height = 6, dpi = 300)
 
 
 #Plot ipc_14_15_16 as above
