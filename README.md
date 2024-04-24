@@ -1,4 +1,4 @@
-Ejecución presupuestaria 2024 de las Universidades Nacionales de Argentina
+Ejecución presupuestaria 2024: Universidades Nacionales argentinas
 =================================================================================
 
 Última actualización 24/04/2024

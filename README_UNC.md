@@ -1,4 +1,4 @@
-Ejecución presupuestaria 2024 de la Universidad Nacional de Córdoba
+Ejecución presupuestaria 2024: Universidad Nacional de Córdoba
 =================================================================================
 
 Última actualización 24/04/2024
