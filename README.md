@@ -1,7 +1,7 @@
 Ejecución presupuestaria 2024 de las Universidades Nacionales de Argentina
 =================================================================================
 
-Última actualización 08/04/2024
+Última actualización 24/04/2024
 
  **Dr. Rodrigo Quiroga**  
  Investigador Asistente INFIQC-CONICET  
