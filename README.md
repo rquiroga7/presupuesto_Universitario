@@ -63,7 +63,9 @@ Vemos que en Marzo de 2024, se otorgó un aumento del 70% del presupuesto mensua
 
 Lo que significa esto a fines prácticos es que las universidades han tenido que suspender actividades y/o están gastando ahorros para cubrir esa diferencia mensual entre lo que recibían el año pasado y éste. Esa diferencia fue de aprox 12 mil millones en enero y febrero y 9 mil millones en marzo. La situación es crítica!
 
-El nuevo aumento que prometió el gobierno para mayo es nuevamente de 4 mil millones. Previendo una inflación de 8% en abril y mayo, el presupuesto de funcionamiento de mayo sería aprox de 14 mil millones, pero serían necesarios 22 mil millones para equiparar los montos de 2023. Seguiríamos necesitando un aumento de 8 mil millones de pesos adicionales por mes!
+El nuevo aumento que prometió el gobierno para mayo es nuevamente de 4 mil millones. El presupuesto de funcionamiento de mayo sería aprox de 14 mil millones, pero previendo una inflación de 8% en abril y mayo, eserían necesarios 22 mil millones para equiparar los montos reales de 2023. 
+
+Es decir, para equiparar el presupuesto de funcionamiento 2023, el aumento de mayo debería ser de 12 mil millones en lugar de los 4 mil que anunció el gobierno.
 
 Además, vale aclarar que con los [aumentos de tarifas de servicios previstos para 2024](https://www.infobae.com/economia/2024/04/05/tarifas-de-gas-todo-lo-que-hay-que-saber-y-de-cuanto-seran-los-nuevos-aumentos/), y el hecho de que [el gobierno eliminó a las instituciones educativas de los subsidios de energía eléctrica](https://www.datadiario.com/sociedad/aumentan-las-facturas-de-luz-para-usuarios-de-mayores-ingresos-20242518120), incluso un nuevo aumento del 120% podría ser insuficiente para afrontar los costos operativos del año 2024.
 
@@ -72,9 +74,9 @@ Como vemos, es absolutamente falso lo que declaró el Secretario de Educación C
 
 Presupuesto total
 -----------------
-Otro punto importante para aclarar, es que numerosos funcionarios del gobierno nacional están repitiendo el dato falso "en marzo hubo un aumento del 70% del presupuesto universitario", incluso [repetido por el vocero presidencial en conferencia de prensa](https://x.com/somoscorta/status/1776262854003310864). Como vimos arriba, esto es falso porque el aumento del 70% era del presupuesto de funcionamiento, y ese aumento está MUY por debajo del aumento necesario para compensar la inflación y aumento de tarifas.
+Otro punto importante para aclarar, es que numerosos funcionarios del gobierno nacional están repitiendo el dato falso "en marzo hubo un aumento del 70% del presupuesto universitario", incluso [repetido por el vocero presidencial en conferencia de prensa](https://x.com/somoscorta/status/1776262854003310864). Como vimos arriba, esto es falso porque el aumento del 70% era del presupuesto de funcionamiento, y ese aumento está MUY por debajo del aumento necesario para compensar la inflación y aumento de tarifas. Un aumento nominal similar (de 4 mil millones de pesos) fue anunciado para el mes de mayo de manera no oficial, ya que [dicho aumento aún no fue comunicado formalmente al CIN](https://x.com/CINoficial/status/1781155100582359130).
 
-En el siguiente gráfico observamos el presupuesto mensual real total (ajustado por inflación), de todas las Universidades Nacionales del país. Se grafica también el promedio mensual 2023 como una línea punteada verde (calculado sobre los meses sin aguinaldo).
+En el siguiente gráfico observamos el presupuesto mensual real total (ajustado por inflación), de todas las Universidades Nacionales del país. Se grafica también el promedio mensual 2023 como una línea punteada verde (calculado sobre los meses sin aguinaldo). Vemos que como explicamos en la introducción, el presupuesto de funcionamiento se fija en 12 cuotas iguales, por lo que los montos ajustados por inflación están por arriba del promedio anual durante los primeros meses del año y luego caen por debajo. Esto ocurre TODOS LOS AÑOS. Lo que no ocurrió fue el aumento normal que ocurre con un nuevo presupuesto, que debería haber entrado en vigencia en enero de 2024.
 
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plot_all_70p_prom.png)
 
@@ -85,17 +87,17 @@ No sólo eso, sino que el presupuesto real de marzo está por debajo del presupu
 Ejecución presupuestaria anual para el período 2017-2024
 ============
 
-Para poner en contexto histórico el presupuesto 2024, realizamos el siguiente ejercicio. Realizamos la optimista presunción de que el presupuesto se ajustaría por inflación (IPC) a partir de abril, y comparamos ese presupuesto anual ajustado por inflación con años anteriores. Es decir, calculamos cual sería el presupuesto anual para 2024 si no hay aumentos del presupuesto y si a partir de abril se ajusta por IPC. Analizamos primero el presupuesto de funcionamiento y luego el presupuesto total.
+Para poner en contexto histórico el presupuesto 2024, realizamos el siguiente ejercicio. Realizamos la optimista presunción de que el presupuesto se ajustaría por inflación (IPC) a partir de abril, y comparamos ese presupuesto anual ajustado por inflación con años anteriores. Es decir, calculamos cual sería el presupuesto anual para 2024 si no hay aumentos del presupuesto y si a partir de abril se ajusta por IPC. Analizamos primero el presupuesto de funcionamiento y luego el presupuesto total. La proyección anual se realiza teniendo en cuenta tanto el aumento de marzo como el prometido para mayo de 2024.
 
 Presupuesto de funcionamiento (act 14):
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/presupuesto_anual_func_2017-2024.png)
 
-Observamos que sin aumentos adicionales, a pesar del aumento de 70% de marzo, el presupuesto de funcionamiento ajustado por inflación para 2024 es aproximadamente el 50% del presupuesto de 2023. También podemos observar que el presupuesto de funcionamiento 2024 sería incluso inferior al de 2020, cuando en plena pandemia las Universidades no funcionaron de manera presencial! Debería quedar claro que las Universidades son objeto de un ajuste presupuestario fenomenal, lo cual también confirma las afirmaciones del rector y vicerector de la UBA, quienes dijeron que [sin aumentos presupuestarios significativos será imposible afrontar un funcionamiento normal durante el segundo cuatrimestre](https://www.pagina12.com.ar/726980-la-universidad-publica-al-borde-del-abismo).
+Observamos que sin aumentos adicionales, a pesar del aumento de 70% de marzo y el prometido para mayo, el presupuesto de funcionamiento ajustado por inflación para 2024 equivale aproximadamente al 60% del presupuesto de 2023. También podemos observar que el presupuesto de funcionamiento 2024 sería incluso inferior al de 2020, cuando en plena pandemia las Universidades no funcionaron de manera presencial! Debería quedar claro que las Universidades son objeto de un ajuste presupuestario fenomenal, lo cual también confirma las afirmaciones del rector y vicerector de la UBA, quienes dijeron que [sin aumentos presupuestarios significativos será imposible afrontar un funcionamiento normal durante el segundo cuatrimestre](https://www.pagina12.com.ar/726980-la-universidad-publica-al-borde-del-abismo).
 
 Respecto al Presupuesto total:
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/presupuesto_anual_2017-2024.png)
 
-Observamos que el presupuesto sería el menor desde que se comenzaron a recopilar datos de Presupuesto Abierto. El presupuesto ajustado por inflación de 2024 representaría el 66% del presupuesto 2023.
+De no haber significativos aumentos durante 2024, el presupuesto universitario del corriente año sería por lejos el menor desde que se comenzaron a recopilar datos de Presupuesto Abierto. El presupuesto ajustado por inflación de 2024 representaría el 62% del presupuesto 2023.
 
 
 Consideraciones finales
