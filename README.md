@@ -55,15 +55,15 @@ El presupuesto de funcionamiento para enero y febrero de 2024  se mantuvo exacta
 
 También es importante explicar que las Universidades Nacionales en muchos casos generan fondos propios que se destinan a funcionamiento (en general por prestación de servicios). Sin embargo, en la mayoría de las Universidades el presupuesto enviado por el gobierno nacional para tal fin es determinante.
 
-En el siguiente gráfico observamos el presupuesto mensual real (ajustado por inflación) para funcionamiento de todas las Universidades Nacionales del país. Se grafica también el promedio mensual 2023 como una línea punteada verde.
+En el siguiente gráfico observamos el presupuesto mensual real (ajustado por inflación) para funcionamiento de todas las Universidades Nacionales del país. Se grafica también el promedio mensual 2023 como una línea punteada verde. Vemos que como explicamos en la introducción, el presupuesto de funcionamiento se fija en 12 cuotas iguales, por lo que los montos ajustados por inflación están por arriba del promedio anual durante los primeros meses del año y luego caen por debajo. Esto ocurre TODOS LOS AÑOS. Lo que no ocurrió, fue el aumento normal que ocurre con un nuevo presupuesto, que debería haber entrado en vigencia en enero de 2024.
 
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plot_14_70p_prom.png)
 
-Vemos que en Marzo de 2024, se otorgó un aumento del 70% del presupuesto mensual de funcionamiento equivalente a aprox 4 mil millones de pesos. Sin embargo, al ajustar por inflación, observamos que el presupuesto mensual para funcionamiento quedó licuado por la inflación. El monto devengado para funcionamiento en marzo representa aprox el 60% del promedio de 2023. Para equipararse con ese promedio, el aumento debiera haber sido no de 4 mil millones sino de 12 mil millones!
+Vemos que en Marzo de 2024, se otorgó un aumento del 70% del presupuesto mensual de funcionamiento equivalente a aprox 4 mil millones de pesos. Sin embargo, al ajustar por inflación, observamos que el presupuesto mensual para funcionamiento quedó licuado por la inflación. El monto devengado para funcionamiento en marzo representa aprox el 60% del promedio de 2023. Para equipararse con ese promedio, el aumento debiera haber sido no de 4 mil millones sino de 14 mil millones!
 
-Lo que significa esto a fines prácticos es que las universidades han tenido que suspender actividades y/o están gastando ahorros para cubrir esa diferencia mensual entre lo que recibían el año pasado y éste. Esa diferencia fue de aprox 10 mil millones en enero, 12 mil en febrero y 8 mil en marzo. La situación es crítica!
+Lo que significa esto a fines prácticos es que las universidades han tenido que suspender actividades y/o están gastando ahorros para cubrir esa diferencia mensual entre lo que recibían el año pasado y éste. Esa diferencia fue de aprox 12 mil millones en enero y febrero y 9 mil millones en marzo. La situación es crítica!
 
-El nuevo aumento que prometió el gobierno para mayo es nuevamente de 4 mil millones. Previendo una inflación de 8% en abril y mayo, el presupuesto de funcionamiento de mayo sería aprox de 14 mil millones, pero serían necesarios 21 mil millones para equiparar los montos de 2023. Seguiríamos necesitando un aumento de 7 mil millones de pesos adicionales!
+El nuevo aumento que prometió el gobierno para mayo es nuevamente de 4 mil millones. Previendo una inflación de 8% en abril y mayo, el presupuesto de funcionamiento de mayo sería aprox de 14 mil millones, pero serían necesarios 22 mil millones para equiparar los montos de 2023. Seguiríamos necesitando un aumento de 8 mil millones de pesos adicionales por mes!
 
 Además, vale aclarar que con los [aumentos de tarifas de servicios previstos para 2024](https://www.infobae.com/economia/2024/04/05/tarifas-de-gas-todo-lo-que-hay-que-saber-y-de-cuanto-seran-los-nuevos-aumentos/), y el hecho de que [el gobierno eliminó a las instituciones educativas de los subsidios de energía eléctrica](https://www.datadiario.com/sociedad/aumentan-las-facturas-de-luz-para-usuarios-de-mayores-ingresos-20242518120), incluso un nuevo aumento del 120% podría ser insuficiente para afrontar los costos operativos del año 2024.
 
@@ -80,7 +80,7 @@ En el siguiente gráfico observamos el presupuesto mensual real total (ajustado 
 
 
 **Como vemos en el gráfico, el aumento del 70% anunciado por el gobierno con bombos y platillos en realidad representa un aumento del 2.2% del presupuesto total!**
-No sólo eso, sino que el presupuesto real de marzo está por debajo del presupuesto real de febrero, debido a que los aumentos nominales fueron menores a la inflación esperada para marzo (12%).
+No sólo eso, sino que el presupuesto real de marzo está por debajo del presupuesto real de febrero, debido a que los aumentos nominales fueron menores a la inflación de marzo (11.7%). Es claro que los aumentos ofrecidos por el gobierno en marzo y mayo, de 4000 millones de pesos cada uno, representan un porcentaje ínfimo del monto perdido por inflación en comparación al 2023, que es de aproximadamente 80 mil millones de pesos mensuales!
 
 Ejecución presupuestaria anual para el período 2017-2024
 ============

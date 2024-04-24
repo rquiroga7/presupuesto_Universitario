@@ -76,13 +76,14 @@ Presupuesto total
 -----------------
 Otro punto importante para aclarar, es que numerosos funcionarios del gobierno nacional están repitiendo el dato falso "en marzo hubo un aumento del 70% del presupuesto universitario", incluso [repetido por el vocero presidencial en conferencia de prensa](https://x.com/somoscorta/status/1776262854003310864). Como vimos arriba, esto es falso porque el aumento del 70% era del presupuesto de funcionamiento, y ese aumento está MUY por debajo del aumento necesario para compensar la inflación y aumento de tarifas.
 
-En el siguiente gráfico observamos el presupuesto mensual real total (ajustado por inflación), para la Universidad Nacional de Córdoba. Se grafica también el promedio mensual 2023 como una línea punteada verde (calculado sobre los meses sin aguinaldo).
+En el siguiente gráfico observamos el presupuesto mensual real total (ajustado por inflación), para la Universidad Nacional de Córdoba. Se grafica también el promedio mensual 2023 como una línea punteada verde. Vemos que como explicamos en la introducción, el presupuesto de funcionamiento se fija en 12 cuotas iguales, por lo que los montos ajustados por inflación están por arriba del promedio anual durante los primeros meses del año y luego caen por debajo. Esto ocurre TODOS LOS AÑOS. Lo que no ocurrió, fue el aumento normal que ocurre con un nuevo presupuesto, que debería haber entrado en vigencia en enero de 2024.
 
 ![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plot_unc_all_70p_prom.png)
 
 
 **Como vemos en el gráfico, el aumento del 70% anunciado por el gobierno con bombos y platillos en realidad representa un aumento del 2.2% del presupuesto total!**
-No sólo eso, sino que el presupuesto real de marzo está por debajo del presupuesto real de febrero, debido a que los aumentos nominales fueron menores a la inflación esperada para marzo (12%).
+No sólo eso, sino que el presupuesto real de marzo está por debajo del presupuesto real de febrero, debido a que los aumentos nominales fueron menores a la inflación de marzo (11.7%). Es claro que los aumentos ofrecidos por el gobierno en marzo y mayo representan un porcentaje ínfimo del monto perdido por inflación en comparación al 2023, que es de aproximadamente 6 mil millones de pesos mensuales! Esos son aproximadamente los montos que la UNC ha dejado de invertir en becas, extensión y en subsidios SeCyT, o que ha comenzado a pagar con ahorros.
+
 
 Ejecución presupuestaria anual para el período 2017-2024
 ============
