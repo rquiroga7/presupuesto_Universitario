@@ -274,7 +274,7 @@ ggsave("plot_14_70p.png",plot=p14_70p, width = 10, height = 6, dpi = 300)
 p14_70p_prom <- p14_70p + geom_hline(yintercept = prom_2023_cred_real, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = prom_2023_cred_real, label = paste("Promedio 2023:\n",round(prom_2023_cred_real, 0))), vjust = -0.5,color="darkgreen")
 ggsave("plot_14_70p_prom.png",plot=p14_70p_prom, width = 10, height = 6, dpi = 300)
 
-#####HASTA ACA ACTUALIZE PARA MAYO 2024
+#####HASTA ACA ACTUALICÉ PARA MAYO 2024
 
 prom_2023_all_cred_real<-mean(ipc_all %>% filter(fecha <= as.Date("2023-12-31")) %>% pull(credito_devengado_real))
 prom_2023_all_cred_real_noagui<-mean(ipc_all %>% filter(fecha <= as.Date("2023-12-31"),fecha %notin% as.Date(c("2023-06-01","2023-12-01"))) %>% pull(credito_devengado_real))
