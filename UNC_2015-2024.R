@@ -6,13 +6,13 @@ library(zoo)
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
 
-
+norm_month<-as.Date("2024-05-01")
 
 #Load IPC from file, asumimos 12% de inflación para marzo de 2024
 ipc <- read.csv("ipc.csv")
 ipc$cumulative <- cumprod(1+ipc$ipc/100)/(1+ipc$ipc[1]/100)
 #Divide cumulative by the value corresponding to 2024-02-01
-normalize_value <- ipc %>% filter(as.Date(fecha) == as.Date("2024-03-01")) %>% pull(cumulative)
+normalize_value <- ipc %>% filter(as.Date(fecha) == norm_month) %>% pull(cumulative)
 ipc <- ipc %>% mutate(cumulative = round(cumulative / normalize_value, 4))
 ipc$fecha <- as.Date(ipc$fecha, format = "%Y-%m-%d")
 
@@ -24,7 +24,7 @@ data2019 <- fromJSON("2019.json") %>% mutate(impacto_presupuestario_fecha=as.Dat
 data2020 <- fromJSON("2020.json") %>% mutate(impacto_presupuestario_fecha=as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
 data2021 <- fromJSON("2021.json") %>% mutate(impacto_presupuestario_fecha=as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
 data2022 <- fromJSON("2022.json") %>% mutate(impacto_presupuestario_fecha=as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
-data2023 <- fromJSON("2023.json") %>% mutate(impacto_presupuestario_fecha=as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
+data2023 <- fromJSON("2023.json") 
 data2024 <- fromJSON("2024.json") 
 
 
@@ -67,7 +67,7 @@ data<-data %>%
 
 #Chequear que todo esté bien
 View(data %>% 
-filter(programa_id==26 & actividad_id == 14 & impacto_presupuestario_anio==2023) %>%
+filter(programa_id==26 & actividad_id == 14 & impacto_presupuestario_anio==2024) %>%
   group_by(fecha) %>% 
   summarise(
     credito_vigente = sum(credito_vigente),
@@ -125,18 +125,21 @@ data_mensual14 <- data %>%
   ungroup() %>%
   #mutate(impacto_presupuestario_mes=ifelse(impacto_presupuestario_anio==2024 & fecha>=as.Date("2024-03-01"),2,impacto_presupuestario_mes)) %>%
   mutate(fecha=as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>%
-  filter(fecha<=as.Date("2024-03-01"),actividad_id==14) %>%
+  filter(fecha<=as.Date("2024-05-01"),actividad_id==14) %>%
     group_by(fecha,impacto_presupuestario_anio) %>%
   summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0))
 
-marzo14<-tail(data_mensual14,1) 
-febrero14<-tail(data_mensual14,2)[1,]
+marzo14<-data_mensual14 %>% filter(fecha==as.Date("2024-03-01"))
+febrero14<-data_mensual14 %>% filter(fecha==as.Date("2024-02-01"))
+mayo14<-data_mensual14 %>% filter(fecha==as.Date("2024-05-01"))
 aumento<-round((marzo14$credito_devengado-febrero14$credito_devengado),2)
 #Create a data frame with fecha 2024-04-01 to 2024-12-01, with credito_devengado = 0 and credito_devengado_real equal to marzo$credito_devengado_real
-abril14<-data.frame(fecha=seq(as.Date("2024-04-01"), as.Date("2024-04-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=marzo14$credito_devengado_real)
-resto14<-data.frame(fecha=seq(as.Date("2024-05-01"), as.Date("2024-12-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(marzo14$credito_devengado_real+aumento,8))
+#abril14<-data.frame(fecha=seq(as.Date("2024-04-01"), as.Date("2024-04-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=marzo14$credito_devengado_real)
+#resto14<-data.frame(fecha=seq(as.Date("2024-05-01"), as.Date("2024-12-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(marzo14$credito_devengado_real+aumento,8))
+resto14<-data.frame(fecha=seq(as.Date("2024-06-01"), as.Date("2024-12-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(mayo14$credito_devengado_real,6))
 #join data_mensual with marzo and resto
 data_mensual14_2 <- rbind(data_mensual14, abril14,resto14)
+
 #Calcular data anual
 data_anual14 <- data_mensual14_2 %>% 
   group_by(impacto_presupuestario_anio) %>%
@@ -145,18 +148,20 @@ data_anual14 <- data_mensual14_2 %>%
 #Actividades no 14:
 data_mensual <- data %>% 
   ungroup() %>%
-  filter(fecha<=as.Date("2024-03-01"), actividad_id!=14) %>%
+  filter(fecha<=as.Date("2024-05-01"), actividad_id!=14) %>%
   #mutate(impacto_presupuestario_mes=ifelse(impacto_presupuestario_anio==2024 & fecha>=as.Date("2024-03-01"),2,impacto_presupuestario_mes)) %>%
   mutate(fecha=as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>%
   group_by(fecha,impacto_presupuestario_anio) %>%
   summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0))
 
 #Create a data frame with fecha 2024-04-01 to 2024-12-01, with credito_devengado = 0 and credito_devengado_real equal to marzo$credito_devengado_real
-marzo<-tail(data_mensual,1) 
-abril<-data.frame(fecha=seq(as.Date("2024-04-01"), as.Date("2024-04-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=marzo$credito_devengado_real)
-resto<-data.frame(fecha=seq(as.Date("2024-05-01"), as.Date("2024-12-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(marzo$credito_devengado_real,8))
+marzo<-data_mensual %>% filter(fecha==as.Date("2024-03-01"))
+abril<-data_mensual %>% filter(fecha==as.Date("2024-04-01"))
+mayo<-data_mensual %>% filter(fecha==as.Date("2024-05-01"))
+resto<-data.frame(fecha=seq(as.Date("2024-06-01"), as.Date("2024-12-01"), by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(mayo$credito_devengado_real,6))
 #join data_mensual with marzo and resto
 data_mensual_2 <- rbind(data_mensual, abril, resto)
+
 #Calcular data anual
 data_anualno14 <- data_mensual_2 %>% 
   group_by(impacto_presupuestario_anio) %>%
@@ -172,14 +177,14 @@ ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_deven
   geom_bar(stat="identity") +
   labs(title = "Crédito anual devengado a la UNC ajustado por inflación",subtitle="Para 2024 se proyecta asumiendo que el presupuesto se ajustará por inflación\ndesde abril y contabilizando el aumento prometido para mayo",
        x = "Año",
-       y = "Credito anual devengado\n(millones de $ de 03/2024)") +
+       y = "Credito anual devengado\n(millones de $ de 05/2024)") +
     scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d")) +
   theme_light(base_size=14) +
     geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5,size=5) +
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual$credito_devengado_real) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC abril-diciembre 2024. Se calcula el equivalente a millones\nde pesos de marzo de 2024 y se anualizaron los montos. Se calcula el monto anual teniendo en cuenta\n los aumentos para el presupuesto de funcionamiento otorgado en marzo y el prometido para mayo.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC abril-diciembre 2024. Se calcula el equivalente a millones\nde pesos de marzo de 2024 y se anualizaron los montos. Se calcula el monto anual teniendo en cuenta\n los aumentos para el presupuesto de funcionamiento otorgado en marzo y mayo.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC ")
 ggsave("UNC_presupuesto_anual_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
 
@@ -191,13 +196,13 @@ ggplot(data_anual14, aes(x=as.factor(impacto_presupuestario_anio), y=credito_dev
   geom_bar(stat="identity") +
   labs(title = "Crédito anual devengado a la UNC para funcionamiento ajustado por inflación",subtitle="Para 2024 se proyecta asumiendo que el presupuesto se ajustará por inflación\ndesde abril y contabilizando el aumento prometido para mayo",
        x = "Año",
-       y = "Credito anual devengado\n(millones de $ de 03/2024)") +
+       y = "Credito anual devengado\n(millones de $ de 05/2024)") +
   scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d")) +
   theme_light(base_size=14) +
   geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5,size=5) +
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual14$credito_devengado_real) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC abril-diciembre 2024. Se calcula el equivalente a millones\nde pesos de marzo de 2024 y se anualizaron los montos. Se calcula el monto anual teniendo en cuenta\n los aumentos para el presupuesto de funcionamiento otorgado en marzo y el prometido para mayo.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC abril-diciembre 2024. Se calcula el equivalente a millones\nde pesos de marzo de 2024 y se anualizaron los montos. Se calcula el monto anual teniendo en cuenta\n los aumentos para el presupuesto de funcionamiento otorgado en marzo y mayo.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC ")
 ggsave("UNC_presupuesto_anual_func_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
