@@ -15,7 +15,7 @@ data2022ed <- data2022ed %>% mutate(impacto_presupuestario_fecha = as.Date(paste
 data2023ed <- data2023 %>% filter(entidad_desc == "Ministerio de Educación")
 data2024ed <- data2024 %>% filter(jurisdiccion_desc == "Ministerio de Capital Humano")
 mes_minimo<-as.Date("2023-01-01")
-mes_maximo<-as.Date("2024-03-01")
+mes_maximo<-as.Date("2024-05-01")
 
 #Load 2022 data
 
@@ -70,13 +70,13 @@ View(dataed %>%
 dataed %>% 
   mutate(fecha = as.Date(fecha)) %>%  # convert to date if not already
   filter(actividad_id %in% c(14)) %>% 
-    filter(fecha>=mes_minimo & fecha <= mes_maximo) %>% 
+  filter(fecha>=mes_minimo & fecha <= mes_maximo) %>% 
   group_by(fecha) %>% 
   summarise(credito_devengado = sum(credito_devengado)) %>% 
   ggplot(aes(x = fecha, y = credito_devengado)) +
   geom_bar(stat = "identity", fill = "blue", width = 20) +  # set width to 1 to fill the entire day
   scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.01,0.01)) +  # set date breaks and labels
-  scale_y_continuous(labels = scales::dollar_format(scale = 1),limits=c(0,15000)) +
+  scale_y_continuous(labels = scales::dollar_format(scale = 1),limits=c(0,25000)) +
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = "Crédito mensual devengado", title = "Crédito mensual nominal devengado 2023-2024\nactividad 14 (funcionamiento)")
@@ -100,7 +100,9 @@ ggsave("plot_all_nominal.png", width = 10, height = 6, dpi = 300)
 
 #IPC
 #create data frame with a column "fecha" with monthly dates from 2023-01-01 to 2024-03-01, and values equal to : 6.0,6.6,7.7,8.4,7.8,6.0,6.3,12.4,12.7,8.3,12.8,25.5,20.6,13.2,10.8
-ipc <- data.frame(fecha = seq(as.Date("2023-01-01"), as.Date("2024-03-01"), by = "month"), ipc = c(6.0,6.6,7.7,8.4,7.8,6.0,6.3,12.4,12.7,8.3,12.8,25.5,20.6,13.2,12))
+#ipc <- data.frame(fecha = seq(as.Date("2023-01-01"), as.Date("2024-03-01"), by = "month"), ipc = c(6.0,6.6,7.7,8.4,7.8,6.0,6.3,12.4,12.7,8.3,12.8,25.5,20.6,13.2,12))
+#Read IPC data from ipc.csv
+ipc <- read.csv("ipc.csv") %>% mutate(fecha=as.Date(fecha))
 #add cumulative IPC column, multiplying each value by the previous one
 ipc$ipccum <- cumprod(1+ipc$ipc/100)
 ipc$cumulative <- ipc$ipccum/min(ipc$ipccum,na.rm = TRUE)
@@ -225,8 +227,13 @@ ggsave("plot_14_real.png", width = 10, height = 6, dpi = 300)
 dev_14_feb24<-ipc_14 %>% filter(fecha==as.Date("2024-02-01")) %>% pull(credito_devengado)
 aum70_mar24<- ipc_14 %>% filter(fecha==as.Date("2024-03-01")) %>% mutate(credito_devengado=credito_devengado-dev_14_feb24) %>% pull(credito_devengado) 
 prom_2023_cred_real<-mean(ipc_14 %>% filter(fecha < as.Date("2023-12-31")) %>% pull(credito_devengado_real))
+#Now do same for May
+dev_14_abril24<-ipc_14 %>% filter(fecha==as.Date("2024-04-01")) %>% pull(credito_devengado)
+aum_may24<- ipc_14 %>% filter(fecha==as.Date("2024-05-01")) %>% mutate(credito_devengado=credito_devengado-dev_14_abril24) %>% pull(credito_devengado) 
+
+
 combined_data <- ipc_14 %>% 
-filter(fecha<=as.Date("2024-02-01")) %>%
+filter(fecha != as.Date("2024-03-01") & fecha != as.Date("2024-05-01")) %>%
 mutate(type = "original") %>%
   bind_rows(
     ipc_14 %>% 
@@ -237,6 +244,16 @@ mutate(type = "original") %>%
     ipc_14 %>% 
       filter(year(fecha) == 2024, month(fecha) == 3) %>% 
       mutate(credito_devengado_real = aum70_mar24/cumulative, type = "increased")
+  ) %>%
+  bind_rows(
+    ipc_14 %>% 
+      filter(year(fecha) == 2024, month(fecha) == 5) %>% 
+      mutate(credito_devengado_real = aum_may24/cumulative, type = "increased")
+  ) %>%
+  bind_rows(
+    ipc_14 %>% 
+      filter(year(fecha) == 2024, month(fecha) == 5) %>% 
+      mutate(credito_devengado_real = dev_14_abril24/cumulative, type = "original")
   )
 
 p14_70p<-combined_data %>% 
@@ -257,6 +274,7 @@ ggsave("plot_14_70p.png",plot=p14_70p, width = 10, height = 6, dpi = 300)
 p14_70p_prom <- p14_70p + geom_hline(yintercept = prom_2023_cred_real, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = prom_2023_cred_real, label = paste("Promedio 2023:\n",round(prom_2023_cred_real, 0))), vjust = -0.5,color="darkgreen")
 ggsave("plot_14_70p_prom.png",plot=p14_70p_prom, width = 10, height = 6, dpi = 300)
 
+#####HASTA ACA ACTUALIZE PARA MAYO 2024
 
 prom_2023_all_cred_real<-mean(ipc_all %>% filter(fecha <= as.Date("2023-12-31")) %>% pull(credito_devengado_real))
 prom_2023_all_cred_real_noagui<-mean(ipc_all %>% filter(fecha <= as.Date("2023-12-31"),fecha %notin% as.Date(c("2023-06-01","2023-12-01"))) %>% pull(credito_devengado_real))
