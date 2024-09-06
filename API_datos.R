@@ -15,7 +15,7 @@ data2022ed <- data2022ed %>% mutate(impacto_presupuestario_fecha = as.Date(paste
 data2023ed <- data2023 %>% filter(entidad_desc == "Ministerio de Educación")
 data2024ed <- data2024 %>% filter(jurisdiccion_desc == "Ministerio de Capital Humano")
 mes_minimo<-as.Date("2023-01-01")
-mes_maximo<-as.Date("2024-05-01")
+mes_maximo<-as.Date("2024-07-01")
 
 #Load 2022 data
 
@@ -63,7 +63,7 @@ View(dataed %>%
   group_by(actividad_id,fecha) %>%
   summarise(credito_devengado = sum(credito_devengado)) %>%
   mutate(credito_devengado_lag = credito_devengado - lag(credito_devengado, n = 1, default = NA)) %>%
-  filter(fecha %in% c(as.Date("2023-06-01"),as.Date("2023-05-01"))))
+  filter(fecha %in% c(as.Date("2024-06-01"),as.Date("2024-05-01"))))
 
 
 
@@ -76,7 +76,7 @@ dataed %>%
   ggplot(aes(x = fecha, y = credito_devengado)) +
   geom_bar(stat = "identity", fill = "blue", width = 20) +  # set width to 1 to fill the entire day
   scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.01,0.01)) +  # set date breaks and labels
-  scale_y_continuous(labels = scales::dollar_format(scale = 1),limits=c(0,25000)) +
+  scale_y_continuous(labels = scales::dollar_format(scale = 1)) +
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = "Crédito mensual devengado", title = "Crédito mensual nominal devengado 2023-2024\nactividad 14 (funcionamiento)")
