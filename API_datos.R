@@ -15,7 +15,7 @@ data2022ed <- data2022ed %>% mutate(impacto_presupuestario_fecha = as.Date(paste
 data2023ed <- data2023 %>% filter(entidad_desc == "Ministerio de Educación")
 data2024ed <- data2024 %>% filter(jurisdiccion_desc == "Ministerio de Capital Humano")
 mes_minimo<-as.Date("2023-01-01")
-mes_maximo<-as.Date("2024-07-01")
+mes_maximo<-as.Date("2024-08-01")
 
 #Load 2022 data
 
@@ -44,6 +44,8 @@ dataed<-dataed %>%
     mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & impacto_presupuestario_fecha >= as.Date("2023-12-01") & impacto_presupuestario_fecha <=as.Date("2023-12-06"), 11, impacto_presupuestario_mes)) %>%
     mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & impacto_presupuestario_fecha >= as.Date("2024-03-01") & impacto_presupuestario_fecha <=as.Date("2024-03-06"), 2, impacto_presupuestario_mes)) 
 
+
+#View(dataed %>% filter(actividad_id ==14 & credito_devengado > 0 & subparcial_desc=="Universidad Nacional de Córdoba"))
 #create new date column using impacto_presupuestario_mes and impacto_presupuestario_anio
 dataed$impacto_presupuestario_fecha <- as.Date(dataed$impacto_presupuestario_fecha)
 dataed$fecha <- as.Date(paste(dataed$impacto_presupuestario_anio, dataed$impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")
@@ -80,7 +82,7 @@ dataed %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = "Crédito mensual devengado", title = "Crédito mensual nominal devengado 2023-2024\nactividad 14 (funcionamiento)")
-ggsave("plot_14_nominal.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_14_nominal.png", width = 10, height = 6, dpi = 300)
 
 dataed %>% 
   mutate(fecha = as.Date(fecha)) %>%  # convert to date if not already
@@ -95,7 +97,7 @@ dataed %>%
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = "Crédito mensual devengado", title = "Crédito mensual nominal devengado 2023-2024")
 
-ggsave("plot_all_nominal.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_all_nominal.png", width = 10, height = 6, dpi = 300)
 
 
 #IPC
@@ -136,6 +138,15 @@ ipc_14<-dataed %>%
     left_join(ipc, by = "fecha") %>%
   mutate(credito_devengado_real = credito_devengado/cumulative)
 
+  ipc_15<-dataed %>% 
+  filter(fecha >= mes_minimo & fecha <= mes_maximo) %>%
+  mutate(fecha = as.Date(fecha)) %>%  # convert to date if not already
+  filter(actividad_id %in% c(15)) %>% 
+  group_by(fecha) %>% 
+  summarise(credito_devengado = sum(credito_devengado)) %>%
+    left_join(ipc, by = "fecha") %>%
+  mutate(credito_devengado_real = credito_devengado/cumulative)
+
   ipc_16<-dataed %>% 
   filter(fecha >= mes_minimo & fecha <= mes_maximo) %>%
   mutate(fecha = as.Date(fecha)) %>%  # convert to date if not already
@@ -165,7 +176,7 @@ ipc_14 %>%
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado para actividad 14\n (funcionamiento)")+
   labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
-ggsave("plot_14_nominal.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_14_nominal.png", width = 10, height = 6, dpi = 300)
 
 #Plot 14_15_16 nominal
 dataed %>% 
@@ -182,7 +193,7 @@ dataed %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = "Crédito mensual devengado", title = "Universidades Nacionales, monto mensual devengado\nactividad 14+15+16 (funcionamiento+salud+CyT)")
-ggsave("plot_14_15_16_nominal.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_14_15_16_nominal.png", width = 10, height = 6, dpi = 300)
 
 #Plot ipc_14_15_16 nominal + IPC
 ipc_14_15_16 %>% 
@@ -190,14 +201,14 @@ ipc_14_15_16 %>%
   ggplot(aes(x = fecha, y = credito_devengado)) +
   geom_bar(stat = "identity", fill = "blue", width = 20) +  # set width to 1 to fill the entire day
   #plot IPC_adjusted as a line
-  geom_line(aes(y = IPC_adjusted), color = "red") +
+  geom_line(aes(y = IPC_adjusted/8), color = "red") +
   scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.01,0.01)) +  # set date breaks and labels
   scale_y_continuous(labels = scales::dollar_format(scale = 1)) +
   geom_text(aes(label = round(credito_devengado, 0)), vjust = -0.5) +
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Universidades Nacionales, monto mensual devengado\nactividad 14+15+16 (funcionamiento+salud+CyT)")
-ggsave("plot_14_15_16_nominal_IPC.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_14_15_16_nominal_IPC.png", width = 10, height = 6, dpi = 300)
 
 #Plot ipc_14_15_16 as above
 ipc_14_15_16 %>% 
@@ -210,7 +221,7 @@ ipc_14_15_16 %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Universidades Nacionales, devengado ajustado por inflación\npara funcionamiento+salud+CyT, en pesos de ",as.Date(mes_maximo,format="%Y-%m")))
-ggsave("plot_14_15_16_real.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_14_15_16_real.png", width = 10, height = 6, dpi = 300)
 
 ipc_14 %>% 
   filter(fecha>=mes_minimo & fecha <= mes_maximo) %>% 
@@ -222,7 +233,31 @@ ipc_14 %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Universidades Nacionales, devengado ajustado por inflación\npara funcionamiento (Act 14), en pesos de ",as.Date(mes_maximo,format="%Y-%m")))
-ggsave("plot_14_real.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_14_real.png", width = 10, height = 6, dpi = 300)
+
+ipc_15 %>% 
+  filter(fecha>=mes_minimo & fecha <= mes_maximo) %>% 
+  ggplot(aes(x = fecha, y = credito_devengado_real)) +
+  geom_bar(stat = "identity", fill = "blue", width = 20) +  # set width to 1 to fill the entire day
+  scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.01,0.01)) +  # set date breaks and labels
+  scale_y_continuous(labels = scales::dollar_format(scale = 1)) +
+  geom_text(aes(label = round(credito_devengado_real, 0)), vjust = -0.5) +
+  theme_light(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Universidades Nacionales, devengado ajustado por inflación\npara funcionamiento (Act 14), en pesos de ",as.Date(mes_maximo,format="%Y-%m")))
+ggsave("plots/plot_15_real.png", width = 10, height = 6, dpi = 300)
+
+ipc_16 %>% 
+  filter(fecha>=mes_minimo & fecha <= mes_maximo) %>% 
+  ggplot(aes(x = fecha, y = credito_devengado_real)) +
+  geom_bar(stat = "identity", fill = "blue", width = 20) +  # set width to 1 to fill the entire day
+  scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.01,0.01)) +  # set date breaks and labels
+  scale_y_continuous(labels = scales::dollar_format(scale = 1)) +
+  geom_text(aes(label = round(credito_devengado_real, 0)), vjust = -0.5) +
+  theme_light(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Universidades Nacionales, devengado ajustado por inflación\npara funcionamiento (Act 14), en pesos de ",as.Date(mes_maximo,format="%Y-%m")))
+ggsave("plots/plot_16_real.png", width = 10, height = 6, dpi = 300)
 
 dev_14_feb24<-ipc_14 %>% filter(fecha==as.Date("2024-02-01")) %>% pull(credito_devengado)
 aum70_mar24<- ipc_14 %>% filter(fecha==as.Date("2024-03-01")) %>% mutate(credito_devengado=credito_devengado-dev_14_feb24) %>% pull(credito_devengado) 
@@ -270,54 +305,61 @@ p14_70p<-combined_data %>%
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1))+
     labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
 # Save the plot
-ggsave("plot_14_70p.png",plot=p14_70p, width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_14_70p.png",plot=p14_70p, width = 10, height = 6, dpi = 300)
 p14_70p_prom <- p14_70p + geom_hline(yintercept = prom_2023_cred_real, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = prom_2023_cred_real, label = paste("Promedio 2023:\n",round(prom_2023_cred_real, 0))), vjust = -0.5,color="darkgreen")
-ggsave("plot_14_70p_prom.png",plot=p14_70p_prom, width = 10, height = 6, dpi = 300)
+p14_70p_prom
+ggsave("plots/plot_14_70p_prom.png",plot=p14_70p_prom, width = 10, height = 6, dpi = 300)
 
-#####HASTA ACA ACTUALICÉ PARA MAYO 2024
+
 
 prom_2023_all_cred_real<-mean(ipc_all %>% filter(fecha <= as.Date("2023-12-31")) %>% pull(credito_devengado_real))
 prom_2023_all_cred_real_noagui<-mean(ipc_all %>% filter(fecha <= as.Date("2023-12-31"),fecha %notin% as.Date(c("2023-06-01","2023-12-01"))) %>% pull(credito_devengado_real))
-ipc_allm<- ipc_all %>% 
-mutate(credito_devengado = ifelse(fecha == as.Date("2024-03-01"), credito_devengado-aum70_mar24, credito_devengado)) %>%
-mutate(credito_devengado_real = credito_devengado/cumulative)
+#ipc_allm<- ipc_all %>% 
+#mutate(credito_devengado = ifelse(fecha == as.Date("2024-03-01"), credito_devengado-aum70_mar24, credito_devengado)) %>%
+#mutate(credito_devengado_real = credito_devengado/cumulative)
 
 
-combined_data_all <- ipc_allm %>% 
-mutate(type = "original") %>%
-  bind_rows(
-    ipc_all %>% 
-      filter(year(fecha) == 2024, month(fecha) == 3) %>% 
-      mutate(credito_devengado = aum70_mar24, type = "increased") %>%
-      mutate(credito_devengado_real = credito_devengado / cumulative, type = "increased")
-  )
+combined_data_all <- ipc_all
 
-comb_plot<-combined_data_all %>% filter(fecha<=as.Date("2024-03-01")) %>%
+comb_plot<-combined_data_all %>% filter(fecha<=mes_maximo) %>%
   group_by(fecha) %>% 
-  mutate(cumulative_credito = cumsum(credito_devengado_real),
-         vjust = if_else(type == "original" & fecha==as.Date("2024-03-01"), 1.5, -0.5),
-         tcolor = if_else(type == "original" & fecha==as.Date("2024-03-01"), "white", "black")) %>% 
-  ggplot(aes(x = fecha, y = credito_devengado_real, fill = type)) +
-  geom_bar(stat = "identity", width = 20) +
-  scale_fill_manual(values = c("red","blue")) +
+  mutate(cumulative_credito = cumsum(credito_devengado_real), vjust = -1, tcolor = "black") %>% 
+  ggplot(aes(x = fecha, y = credito_devengado_real)) +
+  geom_bar(stat = "identity", width = 20, fill = "blue") +
   scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.025,0.025)) +  # set date breaks and labels
   scale_y_continuous(labels = scales::dollar_format(scale = 1)) +
   geom_text(size=3,aes(y = cumulative_credito, label = round(cumulative_credito, 0), vjust = vjust, color = tcolor)) +
   scale_color_manual(values = c("black", "orange")) +
   theme_light(base_size = 14) +
-  labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Universidades Nacionales, devengado total\najustado por inflación, en pesos de ",as.Date(mes_maximo,format="%Y-%m")), subtitle="(Aumento del 70% otorgado en marzo en rojo)") +
-  theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1))+
+  labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Universidades Nacionales, devengado total\najustado por inflación, en pesos de ",as.Date(mes_maximo,format="%Y-%m"))) +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5))+
   labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
 # Save the plot
 comb_plot
-ggsave("plot_all_70p.png",plot=comb_plot, width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_all_70p.png",plot=comb_plot, width = 10, height = 6, dpi = 300)
 comb_prom_plot<-comb_plot+geom_hline(yintercept = prom_2023_all_cred_real_noagui, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = prom_2023_all_cred_real_noagui, label = paste("Promedio 2023:\n",round(prom_2023_all_cred_real_noagui, 0))), vjust = -0.5,color="darkgreen")+ labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nEl promedio anual 2023 se calculó excluyendo los meses donde se pagan aguinaldos, junio y diciembre.\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
-ggsave("plot_all_70p_prom.png",plot=comb_prom_plot, width = 10, height = 6, dpi = 300)
+comb_prom_plot
+ggsave("plots/plot_all_70p_prom.png",plot=comb_prom_plot, width = 10, height = 6, dpi = 300)
+
+comb_plot_100<-combined_data_all %>% filter(fecha<=mes_maximo) %>%
+  group_by(fecha) %>% 
+  mutate(cumulative_credito = (credito_devengado_real/prom_2023_all_cred_real_noagui*100), vjust = -1, tcolor = "red") %>% 
+  ggplot(aes(x = fecha, y = cumulative_credito)) +
+  geom_bar(stat = "identity", width = 20, fill = "blue") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.025,0.025)) +  # set date breaks and labels
+  scale_y_continuous() +
+  geom_text(size=5,aes(y = cumulative_credito, label = round(cumulative_credito, 0), vjust = vjust, color = tcolor)) +
+  scale_color_manual(values = c("black", "orange")) +
+  theme_light(base_size = 14) +
+  labs(x = "Mes", y = paste0("Índice de crédito mensual devengado (base 100 = promedio 2023 sin aguinaldos) "), title = paste0("Universidades Nacionales, presupuesto devengado total\najustado por inflación"), subtitle="(base 100 equivalente al promedio 2023 sin aguinaldos)") +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5))+
+  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+# Save the plot
+comb_plot_100
+ggsave("plots/plot_all_base100.png",plot=comb_plot, width = 10, height = 6, dpi = 300)
 
 
-
-
-
+#####HASTA ACA ACTUALICÉ PARA septiembre 2024
 #REPETIR PARA LA UNC
 unc_ipc_14_15_16<-dataed %>% 
   filter(fecha >= mes_minimo & fecha <= mes_maximo) %>%
@@ -356,7 +398,7 @@ unc_ipc_14_15_16 %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Crédito devengado a la UNC ajustado por inflación\npara funcionamiento+salud+CyT, en pesos de ",as.Date(mes_maximo,format="%Y-%m")))
-ggsave("plot_unc_14_15_16_real.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_14_15_16_real.png", width = 10, height = 6, dpi = 300)
 
 unc_ipc_14 %>% 
   filter(fecha>=mes_minimo & fecha <= mes_maximo) %>% 
@@ -369,7 +411,7 @@ unc_ipc_14 %>%
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Credito nominal devengado a la UNC\npara gastos de funcionamiento (Act 14)"))+
   labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
-ggsave("plot_unc_14_nominal.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_14_nominal.png", width = 10, height = 6, dpi = 300)
 
 unc_ipc_14 %>% 
   filter(fecha>=mes_minimo & fecha <= mes_maximo) %>% 
@@ -381,7 +423,7 @@ unc_ipc_14 %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Crédito devengado a la UNC ajustado por inflación\npara funcionamiento (Act 14), en pesos de ",as.Date(mes_maximo,format="%Y-%m")))
-ggsave("plot_unc_14_real.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_14_real.png", width = 10, height = 6, dpi = 300)
 
 unc_ipc_14 %>% 
   filter(fecha>=mes_minimo & fecha <= mes_maximo) %>% 
@@ -397,7 +439,7 @@ unc_ipc_14 %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Crédito devengado a la UNC ajustado por inflación\npara funcionamiento (Act 14), en pesos de ",as.Date(mes_maximo,format="%Y-%m")))
-ggsave("plot_unc_14_real_promanual.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_14_real_promanual.png", width = 10, height = 6, dpi = 300)
 
 #For month 3 in 2024, add a red stacked bar with the value of credito_devengado_real for that month /1.7
 # Combine the original data and the increased data
@@ -432,9 +474,9 @@ unc14_70p<-combined_data %>%
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1))+
   labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
 # Save the plot
-ggsave("plot_unc_14_70p.png",plot=unc14_70p, width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_14_70p.png",plot=unc14_70p, width = 10, height = 6, dpi = 300)
 unc14_70p_prom <- unc14_70p + geom_hline(yintercept = unc_prom_2023_cred_real, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = unc_prom_2023_cred_real, label = paste("Promedio 2023:\n",round(unc_prom_2023_cred_real, 0))), vjust = -0.5,color="darkgreen")
-ggsave("plot_unc_14_70p_prom.png",plot=unc14_70p_prom, width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_14_70p_prom.png",plot=unc14_70p_prom, width = 10, height = 6, dpi = 300)
 
 
 unc_ipc_16 %>% 
@@ -446,7 +488,7 @@ unc_ipc_16 %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado a la UNC 2023-2024 actividad 16 (CyT)")
-ggsave("plot_unc_16_nominal.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_16_nominal.png", width = 10, height = 6, dpi = 300)
 
 
 
@@ -459,7 +501,7 @@ unc_ipc_16 %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado a la UNC 2023-2024 actividad 16\n (CyT) ajustado por inflación ($ de 03/2024)")
-ggsave("plot_unc_16_real.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_16_real.png", width = 10, height = 6, dpi = 300)
 
 
 unc_ipc_all<-dataed %>% 
@@ -484,7 +526,7 @@ unc_ipc_all %>%
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado a la UNC 2023-2024\najustado por inflación")+
   labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume una inflación del 12% para marzo de 2024 y ajuste por IPC abril-diciembre 2024.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC ")
-ggsave("plot_unc_all_real.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_all_real.png", width = 10, height = 6, dpi = 300)
 
 unc_ipc_all %>% filter(fecha<=as.Date("2024-03-01")) %>%
   ggplot(aes(x = fecha, y = credito_devengado)) +
@@ -496,7 +538,7 @@ unc_ipc_all %>% filter(fecha<=as.Date("2024-03-01")) %>%
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado a la UNC 2023-2024")+
   labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
-ggsave("plot_unc_all_nominal.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_all_nominal.png", width = 10, height = 6, dpi = 300)
 
 
 unc_ipc_allm<- unc_ipc_all %>% 
@@ -530,10 +572,10 @@ comb_plot<-combined_data_all %>% filter(fecha<=as.Date("2024-03-01")) %>%
   labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
 # Save the plot
 comb_plot
-ggsave("plot_unc_all_70p.png",plot=comb_plot, width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_all_70p.png",plot=comb_plot, width = 10, height = 6, dpi = 300)
 comb_prom_plot<-comb_plot+geom_hline(yintercept = unc_prom_2023_all_cred_real_noagui, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = unc_prom_2023_all_cred_real_noagui, label = paste("Promedio 2023:\n",round(unc_prom_2023_all_cred_real_noagui, 0))), vjust = -0.5,color="darkgreen")+ 
                 labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nEl promedio anual 2023 se calculó excluyendo los meses donde se pagan aguinaldos, junio y diciembre.\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
-ggsave("plot_unc_all_70p_prom.png",plot=comb_prom_plot, width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_all_70p_prom.png",plot=comb_prom_plot, width = 10, height = 6, dpi = 300)
 
 #TOTAL NO SALARIAL
 unc_ipc_all<-dataed %>% 
@@ -553,7 +595,7 @@ unc_ipc_all %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado a la UNC 2023-2024 no salarial\najustado por inflación ($ de 03/2024)")
-ggsave("plot_unc_nosalarial_real.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_nosalarial_real.png", width = 10, height = 6, dpi = 300)
 
 
 #TOTAL SALARIAL
@@ -574,7 +616,7 @@ unc_ipc_all %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado a la UNC 2023-2024 salarial\najustado por inflación ($ de 03/2024)")
-ggsave("plot_unc_salarial_real.png", width = 10, height = 6, dpi = 300)
+ggsave("plots/plot_unc_salarial_real.png", width = 10, height = 6, dpi = 300)
 
 
 
