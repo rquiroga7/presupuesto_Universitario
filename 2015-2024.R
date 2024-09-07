@@ -179,7 +179,7 @@ ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_deven
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual$credito_devengado_real) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
   labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC abril-diciembre 2024. Se calcula el equivalente a millones\nde pesos de marzo de 2024 y se anualizaron los montos. Se calcula el monto anual teniendo en cuenta\n los aumentos para el presupuesto de funcionamiento otorgado en marzo y el prometido para mayo.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC ")
-ggsave("presupuesto_anual_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
+ggsave("plots/presupuesto_anual_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
 
 
@@ -198,5 +198,5 @@ ggplot(data_anual14, aes(x=as.factor(impacto_presupuestario_anio), y=credito_dev
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual14$credito_devengado_real) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
   labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC abril-diciembre 2024. Se calcula el equivalente a millones\nde pesos de marzo de 2024 y se anualizaron los montos. Se calcula el monto anual teniendo en cuenta\n los aumentos para el presupuesto de funcionamiento otorgado en marzo y el prometido para mayo.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC ")
-ggsave("presupuesto_anual_func_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
+ggsave("plots/presupuesto_anual_func_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
