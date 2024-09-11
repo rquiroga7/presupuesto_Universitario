@@ -164,6 +164,14 @@ ipc_14<-dataed %>%
     left_join(ipc, by = "fecha") %>%
   mutate(credito_devengado_real = credito_devengado/cumulative)
 
+    ipc_all_pagado<-dataed %>% 
+  filter(fecha >= mes_minimo & fecha <= mes_maximo) %>%
+  mutate(fecha = as.Date(fecha)) %>%  # convert to date if not already
+  group_by(fecha) %>% 
+  summarise(credito_pagado = sum(credito_pagado)) %>%
+  left_join(ipc, by = "fecha") %>%
+  mutate(credito_pagado_real = credito_pagado/cumulative)
+
     ipc_UBA<-dataed %>% 
   filter(fecha >= mes_minimo & fecha <= mes_maximo) %>%
   filter(subparcial_desc=="Universidad de Buenos Aires") %>%
@@ -376,6 +384,26 @@ comb_plot_100<-combined_data_all %>% filter(fecha<=mes_maximo) %>%
 # Save the plot
 comb_plot_100
 ggsave("plots/plot_all_base100.png",plot=comb_plot_100, width = 10, height = 6, dpi = 300)
+
+prom_2023_all_pag_real_noagui<-mean(ipc_all_pagado %>% filter(fecha <= as.Date("2023-12-31"),fecha %notin% as.Date(c("2023-06-01","2023-12-01"))) %>% pull(credito_pagado_real))
+comb_plot_100<-ipc_all_pagado %>% filter(fecha<=mes_maximo) %>%
+  group_by(fecha) %>% 
+  mutate(cumulative_credito = (credito_pagado_real/prom_2023_all_pag_real_noagui*100), vjust = -1, tcolor = "red") %>% 
+  ggplot(aes(x = fecha, y = cumulative_credito)) +
+  geom_bar(stat = "identity", width = 20, fill = "blue") +
+  scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.025,0.025)) +  # set date breaks and labels
+  scale_y_continuous(expand=c(0,0)) +
+  coord_cartesian( ylim=c(0,260))+
+  geom_text(size=5,aes(y = cumulative_credito, label = round(cumulative_credito, 0), vjust = vjust, color = tcolor)) +
+  scale_color_manual(values = c("black", "orange")) +
+  theme_light(base_size = 14) +
+  labs(x = "Mes", y = paste0("Índice de crédito mensual pagado (base 100 = promedio 2023 sin aguinaldos) "), title = paste0("Universidades Nacionales, presupuesto pagado total\najustado por inflación"), subtitle="(base 100 equivalente al promedio 2023 sin aguinaldos)") +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5))+
+  labs(caption = "Se ajustó el crédito pagado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+# Save the plot
+comb_plot_100
+ggsave("plots/PAGADO_plot_all_base100.png",plot=comb_plot_100, width = 10, height = 6, dpi = 300)
+
 
 
 prom_2023_all_cred_real_noagui_UBA<-mean(ipc_UBA %>% filter(fecha <= as.Date("2023-12-31"),fecha %notin% as.Date(c("2023-06-01","2023-12-01"))) %>% pull(credito_devengado_real))
