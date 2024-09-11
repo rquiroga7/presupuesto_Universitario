@@ -365,7 +365,8 @@ comb_plot_100<-combined_data_all %>% filter(fecha<=mes_maximo) %>%
   ggplot(aes(x = fecha, y = cumulative_credito)) +
   geom_bar(stat = "identity", width = 20, fill = "blue") +
   scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.025,0.025)) +  # set date breaks and labels
-  scale_y_continuous() +
+  scale_y_continuous(expand=c(0,0)) +
+  coord_cartesian( ylim=c(0,260))+
   geom_text(size=5,aes(y = cumulative_credito, label = round(cumulative_credito, 0), vjust = vjust, color = tcolor)) +
   scale_color_manual(values = c("black", "orange")) +
   theme_light(base_size = 14) +
@@ -384,7 +385,8 @@ comb_plot_100UBA<-ipc_UBA %>% filter(fecha<=mes_maximo) %>%
   ggplot(aes(x = fecha, y = cumulative_credito)) +
   geom_bar(stat = "identity", width = 20, fill = "blue") +
   scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.025,0.025)) +  # set date breaks and labels
-  scale_y_continuous(expand=c(0.1,0.1)) +
+  scale_y_continuous(expand=c(0,0)) +
+  coord_cartesian( ylim=c(0,260))+
   geom_text(size=5,aes(y = cumulative_credito, label = round(cumulative_credito, 0), vjust = vjust, color = tcolor)) +
   scale_color_manual(values = c("black", "orange")) +
   theme_light(base_size = 14) +
@@ -402,7 +404,8 @@ comb_plot_100NOUBA<-ipc_NOUBA %>% filter(fecha<=mes_maximo) %>%
   ggplot(aes(x = fecha, y = cumulative_credito)) +
   geom_bar(stat = "identity", width = 20, fill = "blue") +
   scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.025,0.025)) +  # set date breaks and labels
-  scale_y_continuous(expand=c(0.1,0.1)) +
+  scale_y_continuous(expand=c(0,0)) +
+  coord_cartesian( ylim=c(0,260))+
   geom_text(size=5,aes(y = cumulative_credito, label = round(cumulative_credito, 0), vjust = vjust, color = tcolor)) +
   scale_color_manual(values = c("black", "orange")) +
   theme_light(base_size = 14) +
