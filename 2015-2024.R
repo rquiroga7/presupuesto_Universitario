@@ -137,6 +137,7 @@ last_month<-as.Date(paste0(year(last$fecha),"-12-01"))
 #hoy many months between first_proj_month and last_month
 n_months <- interval(first_proj_month, last_month) %/% months(1) +1
 resto14<-data.frame(fecha=seq(first_proj_month, last_month, by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(last14$credito_devengado_real,n_months))
+resto14$credito_devengado_real[-1]<-resto14$credito_devengado_real[-1]*1.6
 #join data_mensual with marzo and resto
 data_mensual14_2 <- rbind(data_mensual14, resto14)
 #Calcular data anual
@@ -156,6 +157,7 @@ data_mensual <- data %>%
 #Create a data frame with renaububg fecha, with credito_devengado = 0 and credito_devengado_real equal to last$credito_devengado_real
 last<-tail(data_mensual,1) 
 resto<-data.frame(fecha=seq(first_proj_month, last_month, by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(last$credito_devengado_real,n_months))
+resto$credito_devengado_real[-1]<-resto$credito_devengado_real[-1]*1.6
 #join data_mensual with marzo and resto
 data_mensual_2 <- rbind(data_mensual, resto)
 #Calcular data anual
@@ -183,22 +185,49 @@ ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_deven
   labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC abril-diciembre 2024. Se calcula el equivalente a millones\nde pesos de ", max_mes, "y se anualizaron los montos. Se calcula el monto anual teniendo en cuenta\n los aumentos para el presupuesto de funcionamiento otorgado en marzo y el prometido para mayo.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
 ggsave("plots/presupuesto_anual_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
+#Repeat plot but with 2013 == 100
+data_anual_100 <- data_anual %>% 
+  mutate(credito_devengado_real_base100 = credito_devengado_real/credito_devengado_real[1]*100)
 
+View(data_anual_100)
 
+#Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
+ggplot(data_anual_100, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_base100, fill=as.factor(impacto_presupuestario_anio))) +
+  geom_bar(stat="identity") +
+  labs(title = "Crédito anual devengado ajustado por inflación",subtitle="Para 2024 se proyecta asumiendo que el presupuesto se ajustará por inflación\ndesde septiembre a diciembre y contabilizando el medio aguinaldo de diciembre",
+       x = "Año",
+       y = "Credito anual devengado\n(base 100 = 2017)") +
+    scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d")) +
+  theme_light(base_size=14) +
+    geom_text(aes(y = credito_devengado_real_base100, label = round(credito_devengado_real_base100, 0)), vjust = -0.5,size=5) +
+  #scale y axis to show values in millions
+  scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_100$credito_devengado_real_base100) * 1.1)) +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (se estima el presupuesto diciembre como noviembre*1.60). Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+ggsave("plots/presupuesto_anual_100_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
+
+#Presupuesto por número de estudiantes
+anios<-c(2017,2018,2019,2020,2021,2022,2023,2024)
+estudiantes<-c(2005152,2071270,2187292,2318255,2549789,2540854,2730754,2730754+(2730754-2540854))
+
+df_estudiantes<-data.frame(anio=anios,estudiantes=estudiantes)
+data_anual_estudiantes<-merge(data_anual,df_estudiantes,by.x="impacto_presupuestario_anio",by.y="anio")
+data_anual_estudiantes<-data_anual_estudiantes %>% 
+  mutate(credito_devengado_real_por_estudiante = credito_devengado_real/estudiantes) %>%
+  mutate(credito_devengado_real_por_est_100 = credito_devengado_real_por_estudiante/credito_devengado_real_por_estudiante[1]*100)
 
 
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
-ggplot(data_anual14, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(impacto_presupuestario_anio))) +
+ggplot(data_anual_estudiantes, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_por_est_100, fill=as.factor(impacto_presupuestario_anio))) +
   geom_bar(stat="identity") +
-  labs(title = "Crédito anual devengado para funcionamiento ajustado por inflación",subtitle="Para 2024 se proyecta asumiendo que el presupuesto se ajustará por inflación\ndesde abril y contabilizando el aumento prometido para mayo",
+  labs(title = "Crédito anual devengado ajustado por inflación en relación al número de estudiantes",subtitle="Para 2024 se proyecta asumiendo que el presupuesto se ajustará por inflación\ndesde septiembre a diciembre y contabilizando el medio aguinaldo de diciembre",
        x = "Año",
-       y = "Credito anual devengado\n(millones de $ de 03/2024)") +
-  scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d")) +
+       y = "Credito anual devengado por estudiante\n(base 100 = 2017)\n") +
+    scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d")) +
   theme_light(base_size=14) +
-  geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5,size=5) +
+    geom_text(aes(y = credito_devengado_real_por_est_100, label = round(credito_devengado_real_por_est_100, 0)), vjust = -0.5,size=5) +
   #scale y axis to show values in millions
-  scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual14$credito_devengado_real) * 1.1)) +
+  scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_estudiantes$credito_devengado_real_por_est_100) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC abril-diciembre 2024. Se calcula el equivalente a millones\nde pesos de ", max_mes, "y se anualizaron los montos. Se calcula el monto anual teniendo en cuenta\n los aumentos para el presupuesto de funcionamiento otorgado en marzo y el prometido para mayo.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
-ggsave("plots/presupuesto_anual_func_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
-
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (se estima el presupuesto diciembre como noviembre*1.60).\nEl cambio en el número de estudiantes de 2024 se estima como el mismo que 2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+ggsave("plots/presupuesto_anual_porest_100_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
