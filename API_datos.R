@@ -37,12 +37,13 @@ dataed <- rbind(data2022ed,data2023ed, data2024ed)
 #Corrijo el mes asignado
 dataed<-dataed %>%  
     #If impacto_presupuestario_fecha is 2023-03-30 or 2023-03-31, then the value of impacto_presupuestario_mes should change to 4
-    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & impacto_presupuestario_fecha >= as.Date("2023-03-30") & impacto_presupuestario_fecha <=as.Date("2023-03-31"), 4, impacto_presupuestario_mes)) %>%
-    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & impacto_presupuestario_fecha >= as.Date("2023-06-23") & impacto_presupuestario_fecha <=as.Date("2023-06-30"), 7, impacto_presupuestario_mes)) %>%
-    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & impacto_presupuestario_fecha >= as.Date("2023-07-30") & impacto_presupuestario_fecha <=as.Date("2023-07-31"), 8, impacto_presupuestario_mes)) %>%
-    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & impacto_presupuestario_fecha >= as.Date("2023-09-28") & impacto_presupuestario_fecha <=as.Date("2023-09-30"), 1, impacto_presupuestario_mes)) %>%
-    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & impacto_presupuestario_fecha >= as.Date("2023-12-01") & impacto_presupuestario_fecha <=as.Date("2023-12-06"), 11, impacto_presupuestario_mes)) %>%
-    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & impacto_presupuestario_fecha >= as.Date("2024-03-01") & impacto_presupuestario_fecha <=as.Date("2024-03-06"), 2, impacto_presupuestario_mes)) 
+    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & credito_devengado>0 & impacto_presupuestario_fecha >= as.Date("2023-03-30") & impacto_presupuestario_fecha <=as.Date("2023-03-31"), 4, impacto_presupuestario_mes)) %>%
+    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & credito_devengado>0 & impacto_presupuestario_fecha >= as.Date("2023-06-23") & impacto_presupuestario_fecha <=as.Date("2023-06-30"), 7, impacto_presupuestario_mes)) %>%
+    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & credito_devengado>0 & impacto_presupuestario_fecha >= as.Date("2023-07-30") & impacto_presupuestario_fecha <=as.Date("2023-07-31"), 8, impacto_presupuestario_mes)) %>%
+    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & credito_devengado>0 & impacto_presupuestario_fecha >= as.Date("2023-09-28") & impacto_presupuestario_fecha <=as.Date("2023-09-30"), 1, impacto_presupuestario_mes)) %>%
+    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & credito_devengado>0 & impacto_presupuestario_fecha >= as.Date("2023-12-01") & impacto_presupuestario_fecha <=as.Date("2023-12-06"), 11, impacto_presupuestario_mes)) %>%
+    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & credito_devengado>0 & impacto_presupuestario_fecha >= as.Date("2024-03-01") & impacto_presupuestario_fecha <=as.Date("2024-03-06"), 2, impacto_presupuestario_mes)) %>%
+    mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & credito_pagado>0 & impacto_presupuestario_fecha >= as.Date("2024-07-30") & impacto_presupuestario_fecha <=as.Date("2024-07-31"), 8, impacto_presupuestario_mes))
 
 
 #View(dataed %>% filter(actividad_id ==14 & credito_devengado > 0 & subparcial_desc=="Universidad Nacional de Córdoba"))
@@ -56,7 +57,7 @@ dataed$fecha <- as.Date(paste(dataed$impacto_presupuestario_anio, dataed$impacto
 View(dataed %>% filter(credito_devengado >0 & actividad_id==14 & subparcial_desc=="Universidad de Buenos Aires" & credito_devengado>300))
 
 #Count amount of non zero credito_devengado dates
-dataed %>% filter(credito_devengado > 0 & actividad_id==14) %>% mutate(cuantos=count(fecha))
+#dataed %>% filter(credito_devengado > 0 & actividad_id==14) %>% mutate(cuantos=count(fecha))
 
 #Do not plot, for dataed dataframe, group_by actividad_id and substract the sum of credito_devengado for 2023-06-01 from the sum of credito_devengado for 2023-05-01, create a table
 View(dataed %>% 
@@ -138,6 +139,15 @@ ipc_14<-dataed %>%
     left_join(ipc, by = "fecha") %>%
   mutate(credito_devengado_real = credito_devengado/cumulative)
 
+  ipc_14_pagado<-dataed %>% 
+  filter(fecha >= mes_minimo & fecha <= mes_maximo) %>%
+  mutate(fecha = as.Date(fecha)) %>%  # convert to date if not already
+  filter(actividad_id %in% c(14)) %>% 
+  group_by(fecha) %>% 
+  summarise(credito_pagado = sum(credito_pagado)) %>%
+    left_join(ipc, by = "fecha") %>%
+  mutate(credito_pagado_real = credito_pagado/cumulative)
+
   ipc_15<-dataed %>% 
   filter(fecha >= mes_minimo & fecha <= mes_maximo) %>%
   mutate(fecha = as.Date(fecha)) %>%  # convert to date if not already
@@ -201,8 +211,21 @@ ipc_14 %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado para actividad 14\n (funcionamiento)")+
-  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
 ggsave("plots/plot_14_nominal.png", width = 10, height = 6, dpi = 300)
+
+ipc_14_pagado %>% 
+  filter(fecha>=mes_minimo & fecha <= mes_maximo) %>% 
+  ggplot(aes(x = fecha, y = credito_pagado)) +
+  geom_bar(stat = "identity", fill = "blue", width = 20) +  # set width to 1 to fill the entire day
+  scale_x_date(date_breaks = "1 month", date_labels = "%Y-%m",expand = c(0.01,0.01)) +  # set date breaks and labels
+  scale_y_continuous(labels = scales::dollar_format(scale = 1)) +
+   geom_text(aes(label = round(credito_pagado, 0)), vjust = -0.5) +
+  theme_light(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x = "Mes", y = paste0("Crédito mensual pagado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual pagado para actividad 14\n (funcionamiento)")+
+  labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+ggsave("plots/pagado_plot_14_nominal.png", width = 10, height = 6, dpi = 300)
 
 #Plot 14_15_16 nominal
 dataed %>% 
