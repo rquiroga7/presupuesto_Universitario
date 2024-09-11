@@ -203,7 +203,7 @@ ggplot(data_anual_100, aes(x=as.factor(impacto_presupuestario_anio), y=credito_d
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_100$credito_devengado_real_base100) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (se estima el presupuesto diciembre como noviembre*1.60). Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024.\nSe estima el presupuesto diciembre como noviembre*1.60. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
 ggsave("plots/presupuesto_anual_100_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
 #Presupuesto por número de estudiantes
@@ -229,5 +229,5 @@ ggplot(data_anual_estudiantes, aes(x=as.factor(impacto_presupuestario_anio), y=c
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_estudiantes$credito_devengado_real_por_est_100) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (se estima el presupuesto diciembre como noviembre*1.60).\nEl cambio en el número de estudiantes de 2024 se estima como el mismo que 2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (se estima el presupuesto diciembre como noviembre*1.60).\nNúmero de estudiantes según Anuario SPU. Dato 2024 estimado como 2023 + cambio 2022-2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
 ggsave("plots/presupuesto_anual_porest_100_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
