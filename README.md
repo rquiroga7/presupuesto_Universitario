@@ -1,7 +1,7 @@
 Ejecución presupuestaria 2024: Universidades Nacionales argentinas
 =================================================================================
 
-Última actualización 24/04/2024
+Última actualización 11/09/2024
 
  **Dr. Rodrigo Quiroga**  
  Investigador Asistente INFIQC-CONICET  
@@ -57,56 +57,60 @@ También es importante explicar que las Universidades Nacionales en muchos casos
 
 En el siguiente gráfico observamos el presupuesto mensual real (ajustado por inflación) para funcionamiento de todas las Universidades Nacionales del país. Se grafica también el promedio mensual 2023 como una línea punteada verde. Vemos que como explicamos en la introducción, el presupuesto de funcionamiento se fija en 12 cuotas iguales, por lo que los montos ajustados por inflación están por arriba del promedio anual durante los primeros meses del año y luego caen por debajo. Esto ocurre TODOS LOS AÑOS. Lo que no ocurrió, fue el aumento normal que ocurre con un nuevo presupuesto, que debería haber entrado en vigencia en enero de 2024.
 
-![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plot_14_70p_prom.png)
+![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plots/plot_14_70p_prom.png)
 
-Vemos que en Marzo de 2024, se otorgó un aumento del 70% del presupuesto mensual de funcionamiento equivalente a aprox 4 mil millones de pesos. Sin embargo, al ajustar por inflación, observamos que el presupuesto mensual para funcionamiento quedó licuado por la inflación. El monto devengado para funcionamiento en marzo representa aprox el 60% del promedio de 2023. Para equipararse con ese promedio, el aumento debiera haber sido no de 4 mil millones sino de 14 mil millones!
+Vemos que en Marzo de 2024 y en Mayo (luego de la masiva marcha federal universitaria) se otorgaron aumentos del presupuesto mensual de funcionamiento que equiparan aproximadamente los montos recibidos mensualmente durante 2023.
 
-Lo que significa esto a fines prácticos es que las universidades han tenido que suspender actividades y/o están gastando ahorros para cubrir esa diferencia mensual entre lo que recibían el año pasado y éste. Esa diferencia fue de aprox 12 mil millones en enero y febrero y 9 mil millones en marzo. La situación es crítica!
+Además, vale aclarar que con los [aumentos de tarifas de servicios previstos para 2024](https://www.infobae.com/economia/2024/04/05/tarifas-de-gas-todo-lo-que-hay-que-saber-y-de-cuanto-seran-los-nuevos-aumentos/), y el hecho de que [el gobierno eliminó a las instituciones educativas de los subsidios de energía eléctrica](https://www.datadiario.com/sociedad/aumentan-las-facturas-de-luz-para-usuarios-de-mayores-ingresos-20242518120), incluso estos aumentos otorgados resultan insuficientes para afrontar los costos de funcionamiento que aumentaron por encima de la inflación durante 2024.
 
-El nuevo aumento que prometió el gobierno para mayo es nuevamente de 4 mil millones. El presupuesto de funcionamiento de mayo sería aprox de 14 mil millones, pero previendo una inflación de 8% en abril y mayo, eserían necesarios 22 mil millones para equiparar los montos reales de 2023. 
-
-Es decir, para equiparar el presupuesto de funcionamiento 2023, el aumento de mayo debería ser de 12 mil millones en lugar de los 4 mil que anunció el gobierno.
-
-Además, vale aclarar que con los [aumentos de tarifas de servicios previstos para 2024](https://www.infobae.com/economia/2024/04/05/tarifas-de-gas-todo-lo-que-hay-que-saber-y-de-cuanto-seran-los-nuevos-aumentos/), y el hecho de que [el gobierno eliminó a las instituciones educativas de los subsidios de energía eléctrica](https://www.datadiario.com/sociedad/aumentan-las-facturas-de-luz-para-usuarios-de-mayores-ingresos-20242518120), incluso un nuevo aumento del 120% podría ser insuficiente para afrontar los costos operativos del año 2024.
-
-Como vemos, es absolutamente falso lo que declaró el Secretario de Educación Carlos Torrendel el 8 de abril [aquí](https://twitter.com/somoscorta/status/1777322866268139561). Sin dudas existe una política de desfinanciamiento presupuestario de las Universidades, y la situación es absolutamente crítica. Actualmente las Universidades Nacionales están gastando ahorros para poder seguir funcionando en este contexto, y en estos días se difundió la [noticia](https://www.lmneuquen.com/neuquen/no-la-dejemos-morir-la-universidad-nacional-del-comahue-entro-cesacion-pagos-n1104420) de que la Universidad Nacional del Comahue entró en cesación de pagos por no poder afrontar las boletas de servicios. Es la primera Universidad en esta situación, pero si no hay un nuevo aumento urgente del presupuesto de funcionamiento (que debería ser mayor al 70%), seguramente entrarán en cesación de pagos muchas otras universidades y será imposible afrontar la continuidad de las clases en el segundo cuatrimestre del año. 
 </div>
 
 Presupuesto total
 -----------------
-Otro punto importante para aclarar, es que numerosos funcionarios del gobierno nacional están repitiendo el dato falso "en marzo hubo un aumento del 70% del presupuesto universitario", incluso [repetido por el vocero presidencial en conferencia de prensa](https://x.com/somoscorta/status/1776262854003310864). Como vimos arriba, esto es falso porque el aumento del 70% era del presupuesto de funcionamiento, y ese aumento está MUY por debajo del aumento necesario para compensar la inflación y aumento de tarifas. Un aumento nominal similar (de 4 mil millones de pesos) fue anunciado para el mes de mayo de manera no oficial, ya que [dicho aumento aún no fue comunicado formalmente al CIN](https://x.com/CINoficial/status/1781155100582359130).
 
-En el siguiente gráfico observamos el presupuesto mensual real total (ajustado por inflación), de todas las Universidades Nacionales del país. Se grafica también el promedio mensual 2023 como una línea punteada verde (calculado sobre los meses sin aguinaldo). Vemos que como explicamos en la introducción, el presupuesto de funcionamiento se fija en 12 cuotas iguales, por lo que los montos ajustados por inflación están por arriba del promedio anual durante los primeros meses del año y luego caen por debajo. Esto ocurre TODOS LOS AÑOS. Lo que no ocurrió fue el aumento normal que ocurre con un nuevo presupuesto, que debería haber entrado en vigencia en enero de 2024.
+En el siguiente gráfico observamos el presupuesto mensual real total (ajustado por inflación), de todas las Universidades Nacionales del país. Se grafica también el promedio mensual 2023 como una línea punteada verde (calculado sobre los meses sin aguinaldo). Vemos que los presupuestos mensuales asignados están muy por debajo de 2023.
 
-![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plot_all_70p_prom.png)
+![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plots/plot_all_70p_prom.png)
 
 
-**Como vemos en el gráfico, el aumento del 70% anunciado por el gobierno con bombos y platillos en realidad representa un aumento del 2.2% del presupuesto total!**
-No sólo eso, sino que el presupuesto real de marzo está por debajo del presupuesto real de febrero, debido a que los aumentos nominales fueron menores a la inflación de marzo (11.7%). Es claro que los aumentos ofrecidos por el gobierno en marzo y mayo, de 4000 millones de pesos cada uno, representan un porcentaje ínfimo del monto perdido por inflación en comparación al 2023, que es de aproximadamente 80 mil millones de pesos mensuales!
+**Como vemos en el gráfico, los aumentos de gastos de funcionamiento de marzo y mayo (acumulando un 270% aumento interanual) anunciado por el gobierno con bombos y platillos, en realidad representan un aumento del 2.2% del presupuesto total!**
+Es claro que los aumentos ofrecidos por el gobierno en marzo y mayo, representan un porcentaje ínfimo del monto perdido por inflación en comparación al 2023, que es de aproximadamente 80 mil millones de pesos mensuales!
 
 Ejecución presupuestaria anual para el período 2017-2024
 ============
 
-Para poner en contexto histórico el presupuesto 2024, realizamos el siguiente ejercicio. Realizamos la optimista presunción de que el presupuesto se ajustaría por inflación (IPC) a partir de abril, y comparamos ese presupuesto anual ajustado por inflación con años anteriores. Es decir, calculamos cual sería el presupuesto anual para 2024 si no hay aumentos del presupuesto y si a partir de abril se ajusta por IPC. Analizamos primero el presupuesto de funcionamiento y luego el presupuesto total. La proyección anual se realiza teniendo en cuenta tanto el aumento de marzo como el prometido para mayo de 2024.
+Para poner en contexto histórico el presupuesto 2024, realizamos el siguiente ejercicio. Realizamos la optimista presunción de que el presupuesto se ajustaría por inflación (IPC) a partir de octubre, y comparamos ese presupuesto anual ajustado por inflación con años anteriores. Es decir, calculamos cual sería el presupuesto anual para 2024 si no hay aumentos del presupuesto y si a partir de octubre se ajusta por IPC. Estimo el presupuesto de diciembre como noviembre*1.60 debido al medio aguinaldo. 
 
-Presupuesto de funcionamiento (act 14):
-![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/presupuesto_anual_func_2017-2024.png)
+Presupuesto total:
+![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plots/presupuesto_anual_2017-2024.png)
 
-Observamos que sin aumentos adicionales, a pesar del aumento de 70% de marzo y el prometido para mayo, el presupuesto de funcionamiento ajustado por inflación para 2024 equivale aproximadamente al 60% del presupuesto de 2023. También podemos observar que el presupuesto de funcionamiento 2024 sería incluso inferior al de 2020, cuando en plena pandemia las Universidades no funcionaron de manera presencial! Debería quedar claro que las Universidades son objeto de un ajuste presupuestario fenomenal, lo cual también confirma las afirmaciones del rector y vicerector de la UBA, quienes dijeron que [sin aumentos presupuestarios significativos será imposible afrontar un funcionamiento normal durante el segundo cuatrimestre](https://www.pagina12.com.ar/726980-la-universidad-publica-al-borde-del-abismo).
+De no haber significativos aumentos durante 2024, el presupuesto universitario del corriente año sería por lejos el menor desde que se comenzaron a recopilar datos de Presupuesto Abierto. El presupuesto ajustado por inflación de 2024 representaría el 80% del presupuesto 2023.
 
-Respecto al Presupuesto total:
-![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/presupuesto_anual_2017-2024.png)
 
-De no haber significativos aumentos durante 2024, el presupuesto universitario del corriente año sería por lejos el menor desde que se comenzaron a recopilar datos de Presupuesto Abierto. El presupuesto ajustado por inflación de 2024 representaría el 62% del presupuesto 2023.
+Podemos analizar estos mismos datos con base 100 = el presupuesto de 2017. Este gráfico es un poco más intuitivo. Lo que observamos es que el presupuesto cayó enormemente durante 2019, creció levemente desde 2020-2023 y vuelve a caer fuertemente en 2024.
 
+![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plots/presupuesto_anual_100_2017-2024.png)
+
+
+Sin embargo, esto no alcanza para dimensionar por completo la magnitud de la crisis universitaria, dado que el número de alumnos del sistema universitario nacional ha aumentado considerablemente desde 2017. Realizando el mismo análisis de arriba, pero ajustamos el presupuesto por inflación, pero también por el número total de alumnos universitarios, nuevamente tomando el presupuesto por alumno del año 2017 como base = 100.
+
+![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plots/presupuesto_anual_porest_100_2017-2024.png)
+
+Aquí sí podemos dimensionar la crisis presupuestaria del sistema universitario, observamos que por cada 100 pesos por estudiante que recibían las universidades en 2017, hoy se reciben 48, es decir, menos de la mitad. 
 
 Consideraciones finales
 ============
 
 Aquí termina la parte analítica del informe y comienza una sección con opiniones personales. **La situación presupuestaria de las Universidades es crítica.** Ya se encuentran suspendidos programas valiosísimos de becas, investigación y extensión universitaria, pero aún así, el presupuesto es tan escueto que las universidades están gastando ahorros para poder pagar las tarifas de servicios básicos. Ya entró en cesación de pagos la Universidad Nacional del Comahue, a pesar de que aún no entran en efecto los incrementos de tarifas programados por el gobierno para este año. 
-**Sería necesario un nuevo aumento de 120% (o más, dependiendo de los aumentos de tarifas) del presupuesto de funcionamiento para asegurar la continuidad de las clases durante la segunda mitad del año 2024. De no ocurrir, muchas Universidades deberían cerrar sus puertas para el segundo cuatrimestre.** Esto no es "campaña de miedo" sino un necesario llamado de atención sobre el ajuste *que ya efectuó* el gobierno nacional, pero cuyos efectos aún no vemos en la práctica en algunas universidades simplemente porque aún tienen ahorros para mantener abiertas sus puertas. El CIN debe nuevamente motorizar estos reclamos ante el Ministerio de Capital Humano, pero también creo necesario que comuniquemos ampliamente esta emergencia presupuestaria a docentes, no-docentes y estudiantes. La urgencia de la situación es clara para los rectores, pero no es de amplio conocimiento en la comunidad universitaria. Aún estamos a tiempo de ponernos de pie y defender la Universidad Pública, aunque el tiempo se nos acaba rápidamente y muchas autoridades mantienen un silencio que aturde. 
+**La ley de financiamiento universitario que ya tiene media sanción y se va a tratar mañana 12 de septiembre en el senado, no es una panacea, pero permitiría garantizar la continuidad de las clases, retrotrayendo la situación presupuestaria y salarial a la de noviembre de 2023.** Esto no es "campaña de miedo" sino un necesario llamado de atención sobre el ajuste *que ya efectuó* el gobierno nacional, pero cuyos efectos aún no vemos en la práctica en algunas universidades simplemente porque aún tienen ahorros para mantener abiertas sus puertas. El CIN se ha puesto al frente de estos reclamos ante el Ministerio de Capital Humano, pero también creo necesario que comuniquemos ampliamente esta emergencia presupuestaria a docentes, no-docentes y estudiantes. La urgencia de la situación es clara para los rectores, pero no es de amplio conocimiento en la comunidad universitaria. Aún estamos a tiempo de ponernos de pie y defender la Universidad Pública, aunque el tiempo se nos acaba rápidamente y muchas autoridades mantienen un silencio que aturde. 
 
  *Comentario adicional respecto a la situación salarial docente*  
 Adicionalmente, no entramos en detalles sobre el tema en este informe, pero la pérdida de poder adquisitivo de los docentes universitarios también es un componente crítico que amenaza la continuidad de las clases en la segunda mitad del año. Adicionalmente a las paupérrimas paritarias docentes, la inexistencia de convocatoria a paritaria nacional para discutir el aumento de la garantía salarial lleva a que muchos docentes universitarios jóvenes, con cargos de dedicación simple y antiguedad menor a 5 años hayan recibido aumentos del 0% durante los meses de enero y febrero. Muchos de ellos comienzan a presentar sus renuncias a pesar de su vocación y amor por la docencia. La situación es insostenible.
+
+El gobierno anunció aumentos salariales del 3% y 2% para agosto y septiembre, y ha declarado que  [habría congelamiento de los salarios en octubre, noviembre y diciembre](https://www.eldiarioar.com/economia/gobierno-planifica-congelar-sueldos-estatales-ano-despues-otorgar-3-septiembre-octubre_1_11628962.html). De ser así, y la inflación mensual continúa su tendencia de mantenerse alrededor de 4%, los salarios reales de los docentes más jóvenes de nuestras universidades habrían perdido la mitad de su poder adquisitivo en 1 año de gobierno de Javier Milei.
+
+
+![plot](https://github.com/rquiroga7/presupuesto_UNC/blob/main/plots/salario_profesor_ayudante_ds.png)
+Podemos observar esto en el gráfico de salario mensual de bolsillo de un profesor ayudante A (DS) en azul, que en diciembre de 2024 cobraría 145 mil pesos mensuales, cuando su sueldo de noviembre de 2023 ajustado por inflación sería de 297 mil pesos, más del doble!
 
 Para descargar este informe en versión PDF, click [aquí](https://github.com/rquiroga7/presupuesto_UNC/raw/main/informe_pres_univ.pdf?raw=1).

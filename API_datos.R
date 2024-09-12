@@ -350,7 +350,7 @@ p14_70p<-combined_data %>%
   scale_y_continuous(labels = scales::dollar_format(scale = 1),expand = expansion(add = c(0, 2000))) +
   geom_text(aes(y = cumulative_credito, label = round(cumulative_credito, 0)), vjust = -0.5) +
   theme_light(base_size = 14) +
-  labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Universidades Nacionales, devengado ajustado por inflación\npara funcionamiento (Act 14), en pesos de ",as.Date(mes_maximo,format="%Y-%m")), subtitle="(Aumento del 70% otorgado en marzo en rojo)") +
+  labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Universidades Nacionales, devengado ajustado por inflación\npara funcionamiento (Act 14), en pesos de ",as.Date(mes_maximo,format="%Y-%m")), subtitle="(Aumentos de marzo y mayo indicados en rojo)") +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1))+
     labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
 # Save the plot
