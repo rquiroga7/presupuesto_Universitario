@@ -10,13 +10,18 @@ library(tidyverse)
 
 #Load IPC from file
 ipc <- read.csv("ipc.csv")
-ipc$cumulative <- cumprod(1+ipc$ipc/100)/(1+ipc$ipc[1]/100)
-
-#Divide cumulative by the value corresponding to 2024-02-01
+#ipc$cumulative <- cumprod(1+ipc$ipc/100)/(1+ipc$ipc[1]/100)
+ipc$cumulative<-ipc$ipc_indice
+#Divide cumulative by the value corresponding to max month
 normalize_value <- ipc %>% filter(as.Date(fecha) == max_mes) %>% pull(cumulative)
 ipc <- ipc %>% mutate(cumulative = round(cumulative / normalize_value, 4))
 ipc$fecha <- as.Date(ipc$fecha, format = "%Y-%m-%d")
 max_mes <- max(ipc$fecha)
+
+#Load IPC25 from file
+ipc25 <- read.csv("ipc_proy2025.csv")
+ipc25$fecha <- as.Date(ipc25$fecha, format = "%Y-%m-%d")
+ipc25 <- ipc25 %>% mutate(ipc_indice = round(ipc_indice / normalize_value, 4)) %>% rename(cumulative = ipc_indice)
 
 
 #Read json files into table (2017-2024)
@@ -108,74 +113,108 @@ ggplot(data_mensual, aes(x=fecha)) +
   theme(legend.position = "bottom")
 
 #Create interactive plot
-library(plotly)
-p <- ggplot(data_mensual3, aes(x=fecha)) +
-  geom_line(aes(y=credito_devengado_real, color="credito_devengado_real")) +
-  scale_x_date(date_breaks = "1 year", date_labels = "%Y-%b", limits=as.Date(c("2017-03-01","2024-02-01"))) +
-  labs(title = "Crédito devengado por mes",
-       x = "Fecha",
-       y = "Credito devengado") +
-    #add vertical line for 2018-08-01
-    geom_vline(xintercept = as.numeric(as.Date("2018-08-01")), linetype="dashed", color = "blue") +
-  theme_light() +
-  theme(legend.position = "bottom")
-ggplotly(p)
+#library(plotly)
+#p <- ggplot(data_mensual3, aes(x=fecha)) +
+#  geom_line(aes(y=credito_devengado_real, color="credito_devengado_real")) +
+#  scale_x_date(date_breaks = "1 year", date_labels = "%Y-%b", limits=as.Date(c("2017-03-01","2024-02-01"))) +
+#  labs(title = "Crédito devengado por mes",
+#       x = "Fecha",
+#       y = "Credito devengado") +
+#    #add vertical line for 2018-08-01
+#    geom_vline(xintercept = as.numeric(as.Date("2018-08-01")), linetype="dashed", color = "blue") +
+#  theme_light() +
+#  theme(legend.position = "bottom")
+#ggplotly(p)
   
-#Primero calculo los presupuestos act 14 para 2024
-data_mensual14 <- data %>% 
-  ungroup() %>%
-  #mutate(impacto_presupuestario_mes=ifelse(impacto_presupuestario_anio==2024 & fecha>=max_mes,2,impacto_presupuestario_mes)) %>%
-  mutate(fecha=as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>%
-  filter(fecha<=max_mes,actividad_id==14) %>%
-    group_by(fecha,impacto_presupuestario_anio) %>%
-  summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0))
+# #Primero calculo los presupuestos act 14 para 2024
+# data_mensual14 <- data %>% 
+#   ungroup() %>%
+#   #mutate(impacto_presupuestario_mes=ifelse(impacto_presupuestario_anio==2024 & fecha>=max_mes,2,impacto_presupuestario_mes)) %>%
+#   mutate(fecha=as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>%
+#   filter(fecha<=max_mes,actividad_id==14) %>%
+#     group_by(fecha,impacto_presupuestario_anio) %>%
+#   summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0))
 
-last14 <- tail(data_mensual14,1)
-#Create a data frame with fecha 2024-04-01 to 2024-12-01, with credito_devengado = 0 and credito_devengado_real equal to marzo$credito_devengado_real
-first_proj_month<-as.Date(paste0(year(last$fecha),"-",month(last$fecha)+1,"-01"))
-last_month<-as.Date(paste0(year(last$fecha),"-12-01"))
-#hoy many months between first_proj_month and last_month
-n_months <- interval(first_proj_month, last_month) %/% months(1) +1
-resto14<-data.frame(fecha=seq(first_proj_month, last_month, by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(last14$credito_devengado_real,n_months))
-resto14$credito_devengado_real[-1]<-resto14$credito_devengado_real[-1]*1.6
-#join data_mensual with marzo and resto
-data_mensual14_2 <- rbind(data_mensual14, resto14)
-#Calcular data anual
-data_anual14 <- data_mensual14_2 %>% 
-  group_by(impacto_presupuestario_anio) %>%
-  summarise(credito_devengado = sum(credito_devengado), credito_devengado_real = sum(credito_devengado_real))
+# last14 <- tail(data_mensual14,1)
+# #Create a data frame with fecha 2024-04-01 to 2024-12-01, with credito_devengado = 0 and credito_devengado_real equal to marzo$credito_devengado_real
+# first_proj_month<-as.Date(paste0(year(last$fecha),"-",month(last$fecha)+1,"-01"))
+# last_month<-as.Date(paste0(year(last$fecha),"-12-01"))
+# #hoy many months between first_proj_month and last_month
+# n_months <- interval(first_proj_month, last_month) %/% months(1) +1
+# resto14<-data.frame(fecha=seq(first_proj_month, last_month, by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(last14$credito_devengado_real,n_months))
+# resto14$credito_devengado_real[-1]<-resto14$credito_devengado_real[-1]*1.6
+# #join data_mensual with marzo and resto
+# data_mensual14_2 <- rbind(data_mensual14, resto14)
+# #Calcular data anual
+# data_anual14 <- data_mensual14_2 %>% 
+#   group_by(impacto_presupuestario_anio) %>%
+#   summarise(credito_devengado = sum(credito_devengado), credito_devengado_real = sum(credito_devengado_real))
 
-#Actividades no 14:
+# #Actividades no 14:
+# data_mensual <- data %>% 
+#   ungroup() %>%
+#   filter(fecha<=max_mes, actividad_id!=14) %>%
+#   #mutate(impacto_presupuestario_mes=ifelse(impacto_presupuestario_anio==2024 & fecha>=max_mes,2,impacto_presupuestario_mes)) %>%
+#   mutate(fecha=as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>%
+#   group_by(fecha,impacto_presupuestario_anio) %>%
+#   summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0))
+
+# #Create a data frame with renaububg fecha, with credito_devengado = 0 and credito_devengado_real equal to last$credito_devengado_real
+# last<-tail(data_mensual,1) 
+# resto<-data.frame(fecha=seq(first_proj_month, last_month, by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(last$credito_devengado_real,n_months))
+# resto$credito_devengado_real[-1]<-resto$credito_devengado_real[-1]*1.6
+# #join data_mensual with marzo and resto
+# data_mensual_2 <- rbind(data_mensual, resto)
+# #Calcular data anual
+# data_anualno14 <- data_mensual_2 %>% 
+#   group_by(impacto_presupuestario_anio) %>%
+#   summarise(credito_devengado = sum(credito_devengado), credito_devengado_real = sum(credito_devengado_real))
+
+# #Join data_anual14 and data_anualno14, summing credito_devengado_real from each
+# data_anual <- rbind(data_anual14, data_anualno14) %>% 
+#   group_by(impacto_presupuestario_anio) %>%
+#   summarise(credito_devengado_real = sum(credito_devengado_real))
+
+#######TEST##############
 data_mensual <- data %>% 
   ungroup() %>%
-  filter(fecha<=max_mes, actividad_id!=14) %>%
-  #mutate(impacto_presupuestario_mes=ifelse(impacto_presupuestario_anio==2024 & fecha>=max_mes,2,impacto_presupuestario_mes)) %>%
-  mutate(fecha=as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>%
-  group_by(fecha,impacto_presupuestario_anio) %>%
-  summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0))
+  mutate(fecha = as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>% 
+  filter(fecha <= max_mes) %>% 
+  group_by(fecha, impacto_presupuestario_anio,impacto_presupuestario_mes) %>% 
+  summarise(credito_devengado = round(sum(credito_devengado), 0), credito_devengado_real = round(sum(credito_devengado_real), 0),cumulative=mean(cumulative))
 
-#Create a data frame with renaububg fecha, with credito_devengado = 0 and credito_devengado_real equal to last$credito_devengado_real
-last<-tail(data_mensual,1) 
-resto<-data.frame(fecha=seq(first_proj_month, last_month, by="months"),impacto_presupuestario_anio=2024,credito_devengado=0,credito_devengado_real=rep(last$credito_devengado_real,n_months))
-resto$credito_devengado_real[-1]<-resto$credito_devengado_real[-1]*1.6
-#join data_mensual with marzo and resto
-data_mensual_2 <- rbind(data_mensual, resto)
-#Calcular data anual
-data_anualno14 <- data_mensual_2 %>% 
-  group_by(impacto_presupuestario_anio) %>%
+last <- tail(data_mensual, 1)
+first_proj_month <- as.Date(paste0(year(last$fecha), "-", month(last$fecha) + 1, "-01"))
+last_month <- as.Date(paste0(year(last$fecha), "-12-01"))
+n_months <- interval(first_proj_month, last_month) %/% months(1) + 1
+
+resto <- data.frame(
+  fecha = seq(first_proj_month, last_month, by = "months"),
+  impacto_presupuestario_mes = month(seq(first_proj_month, last_month, by = "months")),
+  impacto_presupuestario_anio = 2024,
+  credito_devengado = 0,
+  credito_devengado_real = rep(last$credito_devengado_real, n_months)
+)
+# If fecha is 2024-12-01 or 2024-06-01 and credito_devengado is 0, then modify the value of credito_devengado_real to be 1.6 times the previous value
+resto <- resto %>% 
+  mutate(credito_devengado_real = ifelse(fecha %in% as.Date(c("2024-12-01", "2024-06-01")) & credito_devengado == 0, credito_devengado_real * 1.5, credito_devengado_real))
+
+resto2 <- merge(resto, ipc25, by.x = "fecha", by.y = "fecha") %>% 
+          select(-ipc) %>%
+          mutate(credito_devengado = round(if_else(credito_devengado == 0, credito_devengado_real*cumulative, credito_devengado),0))
+data_mensual_2 <- rbind(data_mensual, resto2)
+
+data_anual <- data_mensual_2 %>% 
+  group_by(impacto_presupuestario_anio) %>% 
   summarise(credito_devengado = sum(credito_devengado), credito_devengado_real = sum(credito_devengado_real))
-
-#Join data_anual14 and data_anualno14, summing credito_devengado_real from each
-data_anual <- rbind(data_anual14, data_anualno14) %>% 
-  group_by(impacto_presupuestario_anio) %>%
-  summarise(credito_devengado_real = sum(credito_devengado_real))
+#########################
 
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
 ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(impacto_presupuestario_anio))) +
   geom_bar(stat="identity") +
-  labs(title = "Crédito anual devengado ajustado por inflación",subtitle="Para 2024 se proyecta asumiendo que el presupuesto se ajustará por inflación\ndesde abril y contabilizando el aumento prometido para mayo",
+  labs(title = "Universidades Nacionales: Presupuesto anual devengado",subtitle=paste0("Ajustado por inflación (IPC). En pesos de ",max_mes),
        x = "Año",
-       y = "Credito anual devengado\n(millones de $ de 03/2024)") +
+       y = paste0("Credito anual devengado\n(millones de $ de ",max_mes)) +
     scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d")) +
   theme_light(base_size=14) +
     geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5,size=5) +
@@ -194,7 +233,7 @@ View(data_anual_100)
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
 ggplot(data_anual_100, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_base100, fill=as.factor(impacto_presupuestario_anio))) +
   geom_bar(stat="identity") +
-  labs(title = "Crédito anual devengado ajustado por inflación",subtitle="Para 2024 se proyecta asumiendo que el presupuesto se ajustará por inflación\ndesde septiembre a diciembre y contabilizando el medio aguinaldo de diciembre",
+  labs(title = "Universidades Nacionales: Presupuesto anual devengado",subtitle="Ajustado por inflación (IPC). Base 100 = 2017",
        x = "Año",
        y = "Credito anual devengado\n(base 100 = 2017)") +
     scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d")) +
@@ -203,12 +242,12 @@ ggplot(data_anual_100, aes(x=as.factor(impacto_presupuestario_anio), y=credito_d
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_100$credito_devengado_real_base100) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024.\nSe estima el presupuesto diciembre como noviembre*1.60. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (incluyendo aguinaldos).\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
 ggsave("plots/presupuesto_anual_100_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
 #Presupuesto por número de estudiantes
 anios<-c(2017,2018,2019,2020,2021,2022,2023,2024)
-estudiantes<-c(2005152,2071270,2187292,2318255,2549789,2540854,2730754,2730754+(2730754-2540854))
+estudiantes<-c(2005152,2071270,2187292,2318255,2549789,2540854,2730754,2730754)
 
 df_estudiantes<-data.frame(anio=anios,estudiantes=estudiantes)
 data_anual_estudiantes<-merge(data_anual,df_estudiantes,by.x="impacto_presupuestario_anio",by.y="anio")
@@ -220,7 +259,7 @@ data_anual_estudiantes<-data_anual_estudiantes %>%
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
 ggplot(data_anual_estudiantes, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_por_est_100, fill=as.factor(impacto_presupuestario_anio))) +
   geom_bar(stat="identity") +
-  labs(title = "Crédito anual devengado ajustado por inflación en relación al número de estudiantes",subtitle="Para 2024 se proyecta asumiendo que el presupuesto se ajustará por inflación\ndesde septiembre a diciembre y contabilizando el medio aguinaldo de diciembre",
+  labs(title = "Universidades Nacionales: Presupuesto anual devengado",subtitle="Ajustado por inflación y número de estudiantes. Base 100 = 2017",
        x = "Año",
        y = "Credito anual devengado por estudiante\n(base 100 = 2017)\n") +
     scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d")) +
@@ -229,5 +268,99 @@ ggplot(data_anual_estudiantes, aes(x=as.factor(impacto_presupuestario_anio), y=c
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_estudiantes$credito_devengado_real_por_est_100) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (se estima el presupuesto diciembre como noviembre*1.60).\nNúmero de estudiantes según Anuario SPU. Dato 2024 estimado como 2023 + cambio 2022-2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (se estima el presupuesto diciembre como noviembre*1.50).\nNúmero de estudiantes según Anuario SPU. Dato 2024 estimado como = 2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
 ggsave("plots/presupuesto_anual_porest_100_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
+
+
+
+
+# Annual budget for 2025 is 3804260. The ipc_indice column is the cumulative IPC index for each month. Calculate the budget for each month of 2025
+data_2025 <- data_mensual_2 %>% 
+  filter(impacto_presupuestario_anio == 2024) %>%
+  mutate(impacto_presupuestario_anio = 2025) %>%
+  mutate(fecha = as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d"))
+
+data_2025 <- data_2025 %>% 
+  select(-cumulative) %>%
+  ungroup() %>%
+  group_by(fecha) %>%
+  left_join(ipc25, by = "fecha")
+
+# Calculate initial credito_devengado values
+data_2025 <- data_2025 %>%
+  ungroup() %>%
+  mutate(
+    initial_credito_devengado = 3804260 * cumulative / (13 * data_2025$cumulative[1])
+  )
+
+# Apply the 1.5 multiplier to the specified dates
+data_2025 <- data_2025 %>%
+  mutate(
+    initial_credito_devengado = ifelse(fecha %in% as.Date(c("2025-12-01", "2025-06-01")), initial_credito_devengado * 1.5, initial_credito_devengado)
+  )
+
+# Calculate the sum of initial values
+sum_initial <- sum(data_2025$initial_credito_devengado)
+
+# Adjust values proportionally to ensure the total sum is 3804260
+data_2025 <- data_2025 %>%
+  mutate(
+    credito_devengado = round(initial_credito_devengado * (3804260 / sum_initial), 0)
+  ) %>%
+  mutate(credito_devengado_real = round(credito_devengado / cumulative, 0)) %>%
+  select(-ipc, -initial_credito_devengado)
+
+# Check the sum of credito_devengado
+sum(data_2025$credito_devengado)
+
+
+data_mensual_3<-rbind(data_mensual_2,data_2025)
+data_anual_2025_100 <- data_mensual_3 %>% 
+  group_by(impacto_presupuestario_anio) %>% 
+  summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0)) %>%
+
+  mutate(credito_devengado_real_base100 = credito_devengado_real/credito_devengado_real[1]*100)
+
+View(data_mensual_3)  
+
+  
+ggplot(data_anual_2025_100, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_base100, fill=as.factor(impacto_presupuestario_anio))) +
+  geom_bar(stat="identity") +
+    labs(title = "Universidades Nacionales: Presupuesto anual devengado",subtitle="Ajustado por inflación (IPC). Base 100 = 2017",
+       x = "Año",
+       y = "Credito anual devengado\n(base 100 = 2017)") +
+    scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d", "#a8009d")) +
+  theme_light(base_size=14) +
+    geom_text(aes(y = credito_devengado_real_base100, label = round(credito_devengado_real_base100, 0)), vjust = -0.5,size=5) +
+  #scale y axis to show values in millions
+  scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_100$credito_devengado_real_base100) * 1.1)) +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos del presupuesto equivalentes al IPC para septiembre-diciembre 2024 (incluyendo aguinaldos).\nSe toma el presupuesto 2025, y de allí, IPC anual de 18,3%. Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  ggsave("plots/presupuesto_anual_100_2017-2025.png",width = 10, height = 6, units = "in",dpi=300)
+
+
+
+#Presupuesto por número de estudiantes
+anios25<-c(anios,2025)
+estudiantes25<-c(estudiantes,2730754)
+df_estudiantes<-data.frame(anio=anios25,estudiantes=estudiantes25)
+data_anual_estudiantes_25<-merge(data_anual_2025_100,df_estudiantes,by.x="impacto_presupuestario_anio",by.y="anio")
+data_anual_estudiantes_25<-data_anual_estudiantes_25 %>% 
+  mutate(credito_devengado_real_por_estudiante = credito_devengado_real/estudiantes) %>%
+  mutate(credito_devengado_real_por_est_100 = credito_devengado_real_por_estudiante/credito_devengado_real_por_estudiante[1]*100)
+
+
+#Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
+ggplot(data_anual_estudiantes_25, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_por_est_100, fill=as.factor(impacto_presupuestario_anio))) +
+  geom_bar(stat="identity") +
+  labs(title = "Universidades Nacionales: Presupuesto anual devengado",subtitle="Ajustado por inflación y número de estudiantes. Base 100 = 2017",
+       x = "Año",
+       y = "Credito anual devengado por estudiante\n(base 100 = 2017)\n") +
+    scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d", "#a8009d")) +
+  theme_light(base_size=14) +
+    geom_text(aes(y = credito_devengado_real_por_est_100, label = round(credito_devengado_real_por_est_100, 0)), vjust = -0.5,size=5) +
+  #scale y axis to show values in millions
+  scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_estudiantes$credito_devengado_real_por_est_100) * 1.1)) +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos del presupuesto equivalentes al IPC para septiembre-diciembre 2024 (incluyendo aguinaldos). \nPara 2025 se toma el proyecto de Presupuesto 2025. Número de estudiantes según Anuario SPU (2024 y 2025 estimados como = 2023).\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+ggsave("plots/presupuesto_anual_porest_100_2017-2025.png",width = 10, height = 6, units = "in",dpi=300)
