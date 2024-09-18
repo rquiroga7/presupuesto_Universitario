@@ -13,10 +13,11 @@ ipc <- read.csv("ipc.csv")
 #ipc$cumulative <- cumprod(1+ipc$ipc/100)/(1+ipc$ipc[1]/100)
 ipc$cumulative<-ipc$ipc_indice
 #Divide cumulative by the value corresponding to max month
+max_mes <- max(ipc$fecha)
 normalize_value <- ipc %>% filter(as.Date(fecha) == max_mes) %>% pull(cumulative)
 ipc <- ipc %>% mutate(cumulative = round(cumulative / normalize_value, 4))
 ipc$fecha <- as.Date(ipc$fecha, format = "%Y-%m-%d")
-max_mes <- max(ipc$fecha)
+
 
 #Load IPC25 from file
 ipc25 <- read.csv("ipc_proy2025.csv")
@@ -221,7 +222,7 @@ ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_deven
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual$credito_devengado_real) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC abril-diciembre 2024. Se calcula el equivalente a millones\nde pesos de ", max_mes, "y se anualizaron los montos. Se calcula el monto anual teniendo en cuenta\n los aumentos para el presupuesto de funcionamiento otorgado en marzo y el prometido para mayo.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC septiembre-diciembre 2024. Se calcula el equivalente a millones de pesos de ", max_mes, " y se anualizaron los montos.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
 ggsave("plots/presupuesto_anual_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
 #Repeat plot but with 2013 == 100
@@ -318,10 +319,35 @@ data_mensual_3<-rbind(data_mensual_2,data_2025)
 data_anual_2025_100 <- data_mensual_3 %>% 
   group_by(impacto_presupuestario_anio) %>% 
   summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0)) %>%
-
   mutate(credito_devengado_real_base100 = credito_devengado_real/credito_devengado_real[1]*100)
 
 View(data_mensual_3)  
+
+max_mes25 <- as.Date("2025-06-01")
+normalize_value25 <- ipc25 %>% filter(as.Date(fecha) == max_mes25) %>% pull(cumulative)
+#Recalculate credito_devengado_real for data_mensual_3
+data_mensual_3_25 <- data_mensual_3 %>% 
+  ungroup() %>%
+  mutate(credito_devengado_real = credito_devengado/cumulative*normalize_value25)
+data_anual_2025 <- data_mensual_3_25 %>% 
+  group_by(impacto_presupuestario_anio) %>% 
+  summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0))
+
+ggplot(data_anual_2025, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(impacto_presupuestario_anio))) +
+  geom_bar(stat="identity") +
+  labs(title = "Universidades Nacionales: Presupuesto anual devengado",subtitle=paste0("Ajustado por inflación (IPC). En pesos de ",max_mes25),
+       x = "Año",
+       y = paste0("Credito anual devengado\n(millones de $ de ",max_mes25)) +
+    scale_fill_manual(values=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d", "#a8009d")) +
+  theme_light(base_size=14) +
+    geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5,size=5) +
+  #scale y axis to show values in millions
+  scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_2025$credito_devengado_real) * 1.10)) +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC septiembre-diciembre 2024. Se calcula el equivalente a millones de pesos de ", max_mes25, " y se anualizan los montos.\nPara 2025 se toma el proyecto de presupuesto 2025, y de allí una inflación anual de 18,3%.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+ggsave("plots/presupuesto_anual_2017-2025.png",width = 10, height = 6, units = "in",dpi=300)
+
+
 
   
 ggplot(data_anual_2025_100, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_base100, fill=as.factor(impacto_presupuestario_anio))) +
