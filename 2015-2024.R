@@ -162,7 +162,7 @@ ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_deven
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual$credito_devengado_real) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC septiembre-diciembre 2024. Se calcula el equivalente a millones de pesos de ", max_mes, " y se anualizaron los montos.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC septiembre-diciembre 2024.En millones de pesos de ", max_mes, ", con montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
 ggsave("plots/presupuesto_anual_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
 #Repeat plot but with 2013 == 100
@@ -209,7 +209,7 @@ ggplot(data_anual_estudiantes, aes(x=as.factor(impacto_presupuestario_anio), y=c
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_estudiantes$credito_devengado_real_por_est_100) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (se estima el presupuesto diciembre como noviembre*1.50).\nNúmero de estudiantes según Anuario SPU. Dato 2024 estimado como = 2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (incluyendo aguinaldos).\nNúmero de estudiantes según Anuario SPU. Dato 2024 estimado como = 2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
 ggsave("plots/presupuesto_anual_porest_100_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
 
 
@@ -284,7 +284,7 @@ ggplot(data_anual_2025, aes(x=as.factor(impacto_presupuestario_anio), y=credito_
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_2025$credito_devengado_real) * 1.10)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC septiembre-diciembre 2024. Se calcula el equivalente a millones de pesos de ", max_mes25, " y se anualizan los montos.\nPara 2025 se toma el proyecto de presupuesto 2025, y de allí una inflación anual de 18,3%.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC septiembre-diciembre 2024. En millones de pesos de ", max_mes25, ", con montos anualizados.\nPara 2025 se toma el proyecto de presupuesto 2025, que estima inflación anual para 2025 de 18,3%.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
 ggsave("plots/presupuesto_anual_2017-2025.png",width = 10, height = 6, units = "in",dpi=300)
 
 
@@ -301,7 +301,7 @@ ggplot(data_anual_2025_100, aes(x=as.factor(impacto_presupuestario_anio), y=cred
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_100$credito_devengado_real_base100) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos del presupuesto equivalentes al IPC para septiembre-diciembre 2024 (incluyendo aguinaldos).\nSe toma el presupuesto 2025, y de allí, IPC anual de 18,3%. Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos del presupuesto equivalentes al IPC para septiembre-diciembre 2024 (incluyendo aguinaldos).\nSe toma el presupuesto 2025 que estima IPC anual de 18,3%.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
   ggsave("plots/presupuesto_anual_100_2017-2025.png",width = 10, height = 6, units = "in",dpi=300)
 
 
@@ -319,7 +319,7 @@ data_anual_estudiantes_25<-data_anual_estudiantes_25 %>%
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
 ggplot(data_anual_estudiantes_25, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_por_est_100, fill=as.factor(impacto_presupuestario_anio))) +
   geom_bar(stat="identity") +
-  labs(title = "Universidades Nacionales: Presupuesto anual devengado",subtitle="Ajustado por inflación y número de estudiantes. Base 100 = 2017. Inflación 2025 estimada 18,3%",
+  labs(title = "Universidades Nacionales: Presupuesto anual devengado",subtitle="Ajustado por inflación y número de estudiantes. Inflación 2025 estimada 18,3%",
        x = "Año",
        y = "Credito anual devengado por estudiante\n(base 100 = 2017)\n") +
     scale_fill_manual(values=colors9) +
@@ -328,5 +328,5 @@ ggplot(data_anual_estudiantes_25, aes(x=as.factor(impacto_presupuestario_anio), 
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_estudiantes$credito_devengado_real_por_est_100) * 1.1)) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos del presupuesto equivalentes al IPC para septiembre-diciembre 2024 (incluyendo aguinaldos). \nPara 2025 se toma el proyecto de Presupuesto 2025. Número de estudiantes según Anuario SPU (2024 y 2025 estimados como = 2023).\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
+  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos del presupuesto equivalentes al IPC para septiembre-diciembre 2024 (incluyendo aguinaldos). \nPara 2025 se toma el proyecto de Presupuesto 2025, que estima IPC de 18,3% para 2025.\nNúmero de estudiantes según Anuario SPU (2024 y 2025 estimados como = 2023).\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC "))
 ggsave("plots/presupuesto_anual_porest_100_2017-2025.png",width = 10, height = 6, units = "in",dpi=300)

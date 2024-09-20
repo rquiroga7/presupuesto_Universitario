@@ -279,6 +279,14 @@ data_anual_25_combined <- data_anual_25_combined %>%
   ungroup() %>%
   mutate(credito_devengado_real_base100 = credito_devengado_real/credito_devengado_real[1]*100)
 
+#Calculate per student
+data_anual_est_25_combined<-merge(data_anual_25_combined,df_estudiantes,by.x="impacto_presupuestario_anio",by.y="anio")
+data_anual_est_25_combined<-data_anual_est_25_combined %>% 
+  mutate(credito_devengado_real_por_estudiante = credito_devengado_real/estudiantes) %>%
+  mutate(credito_devengado_real_por_est_100 = credito_devengado_real_por_estudiante/credito_devengado_real_por_estudiante[1]*100)
+View(data_anual_est_25_combined)
+
+
 # Generate the plot
 ggplot(data_anual_25_combined, aes(x = as.factor(impacto_presupuestario_anio), y = credito_devengado_real_base100, fill = ipc_label)) +
   geom_bar(stat = "identity", position = position_dodge(width = 0.9)) +
