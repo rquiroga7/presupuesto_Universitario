@@ -9,7 +9,7 @@ library(tidyverse)
 
 
 #Load IPC from file
-ipc <- read.csv("ipc.csv")
+ipc <- read.csv("ipc/ipc.csv")
 #ipc$cumulative <- cumprod(1+ipc$ipc/100)/(1+ipc$ipc[1]/100)
 ipc$cumulative<-ipc$ipc_indice
 #Divide cumulative by the value corresponding to max month
@@ -20,7 +20,7 @@ ipc$fecha <- as.Date(ipc$fecha, format = "%Y-%m-%d")
 
 
 #Load ipc25_18 from file
-ipc25_18 <- read.csv("ipc_proy2025_18anual.csv")
+ipc25_18 <- read.csv("ipc/ipc_proy2025_18anual.csv")
 ipc25_18$fecha <- as.Date(ipc25_18$fecha, format = "%Y-%m-%d")
 ipc25_18 <- ipc25_18 %>% mutate(ipc_indice = round(ipc_indice / normalize_value, 4)) %>% rename(cumulative = ipc_indice)
 
