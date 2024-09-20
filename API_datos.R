@@ -211,7 +211,7 @@ ipc_14 %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado para actividad 14\n (funcionamiento)")+
-  labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 ggsave("plots/plot_14_nominal.png", width = 10, height = 6, dpi = 300)
 
 ipc_14_pagado %>% 
@@ -224,7 +224,7 @@ ipc_14_pagado %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual pagado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual pagado para actividad 14\n (funcionamiento)")+
-  labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 ggsave("plots/pagado_plot_14_nominal.png", width = 10, height = 6, dpi = 300)
 
 #Plot 14_15_16 nominal
@@ -352,7 +352,7 @@ p14_70p<-combined_data %>%
   theme_light(base_size = 14) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Universidades Nacionales, devengado ajustado por inflación\npara funcionamiento (Act 14), en pesos de ",as.Date(mes_maximo,format="%Y-%m")), subtitle="(Aumentos de marzo y mayo indicados en rojo)") +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1))+
-    labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+    labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 # Save the plot
 ggsave("plots/plot_14_70p.png",plot=p14_70p, width = 10, height = 6, dpi = 300)
 p14_70p_prom <- p14_70p + geom_hline(yintercept = prom_2023_cred_real, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = prom_2023_cred_real, label = paste("Promedio 2023:\n",round(prom_2023_cred_real, 0))), vjust = -0.5,color="darkgreen")
@@ -382,11 +382,11 @@ comb_plot<-combined_data_all %>% filter(fecha<=mes_maximo) %>%
   theme_light(base_size = 14) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Universidades Nacionales, devengado total\najustado por inflación, en pesos de ",as.Date(mes_maximo,format="%Y-%m"))) +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5))+
-  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 # Save the plot
 comb_plot
 ggsave("plots/plot_all_70p.png",plot=comb_plot, width = 10, height = 6, dpi = 300)
-comb_prom_plot<-comb_plot+geom_hline(yintercept = prom_2023_all_cred_real_noagui, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = prom_2023_all_cred_real_noagui, label = paste("Promedio 2023:\n",round(prom_2023_all_cred_real_noagui, 0))), vjust = -0.5,color="darkgreen")+ labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nEl promedio anual 2023 se calculó excluyendo los meses donde se pagan aguinaldos, junio y diciembre.\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+comb_prom_plot<-comb_plot+geom_hline(yintercept = prom_2023_all_cred_real_noagui, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = prom_2023_all_cred_real_noagui, label = paste("Promedio 2023:\n",round(prom_2023_all_cred_real_noagui, 0))), vjust = -0.5,color="darkgreen")+ labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nEl promedio anual 2023 se calculó excluyendo los meses donde se pagan aguinaldos, junio y diciembre.\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 comb_prom_plot
 ggsave("plots/plot_all_70p_prom.png",plot=comb_prom_plot, width = 10, height = 6, dpi = 300)
 
@@ -403,7 +403,7 @@ comb_plot_100<-combined_data_all %>% filter(fecha<=mes_maximo) %>%
   theme_light(base_size = 14) +
   labs(x = "Mes", y = paste0("Índice de crédito mensual devengado (base 100 = promedio 2023 sin aguinaldos) "), title = paste0("Universidades Nacionales, presupuesto devengado total\najustado por inflación"), subtitle="(base 100 equivalente al promedio 2023 sin aguinaldos)") +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5))+
-  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 # Save the plot
 comb_plot_100
 ggsave("plots/plot_all_base100.png",plot=comb_plot_100, width = 10, height = 6, dpi = 300)
@@ -422,7 +422,7 @@ comb_plot_100<-ipc_all_pagado %>% filter(fecha<=mes_maximo) %>%
   theme_light(base_size = 14) +
   labs(x = "Mes", y = paste0("Índice de crédito mensual pagado (base 100 = promedio 2023 sin aguinaldos) "), title = paste0("Universidades Nacionales, presupuesto pagado total\najustado por inflación"), subtitle="(base 100 equivalente al promedio 2023 sin aguinaldos)") +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5))+
-  labs(caption = "Se ajustó el crédito pagado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Se ajustó el crédito pagado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 # Save the plot
 comb_plot_100
 ggsave("plots/PAGADO_plot_all_base100.png",plot=comb_plot_100, width = 10, height = 6, dpi = 300)
@@ -443,7 +443,7 @@ comb_plot_100UBA<-ipc_UBA %>% filter(fecha<=mes_maximo) %>%
   theme_light(base_size = 14) +
   labs(x = "Mes", y = paste0("Índice de crédito mensual devengado (base 100 = promedio 2023 sin aguinaldos) "), title = paste0("UBA, presupuesto devengado total\najustado por inflación"), subtitle="(base 100 equivalente al promedio 2023 sin aguinaldos)") +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5))+
-  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 # Save the plot
 comb_plot_100UBA
 ggsave("plots/plot_all_base100-UBA.png",plot=comb_plot_100UBA, width = 10, height = 6, dpi = 300)
@@ -462,7 +462,7 @@ comb_plot_100NOUBA<-ipc_NOUBA %>% filter(fecha<=mes_maximo) %>%
   theme_light(base_size = 14) +
   labs(x = "Mes", y = paste0("Índice de crédito mensual devengado (base 100 = promedio 2023 sin aguinaldos) "), title = paste0("Universidades Nacionales No UBA, presupuesto devengado total\najustado por inflación"), subtitle="(base 100 equivalente al promedio 2023 sin aguinaldos)") +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1,vjust=0.5))+
-  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 # Save the plot
 comb_plot_100NOUBA
 ggsave("plots/plot_all_base100-NOUBA.png",plot=comb_plot_100NOUBA, width = 10, height = 6, dpi = 300)
@@ -518,7 +518,7 @@ unc_ipc_14 %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = paste0("Credito nominal devengado a la UNC\npara gastos de funcionamiento (Act 14)"))+
-  labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 ggsave("plots/plot_unc_14_nominal.png", width = 10, height = 6, dpi = 300)
 
 unc_ipc_14 %>% 
@@ -580,7 +580,7 @@ unc14_70p<-combined_data %>%
   theme_light(base_size = 14) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y"),")"), title = "Crédito devengado a la UNC para actividad 14\n (funcionamiento) ajustado por inflación", subtitle="(Aumento del 70% otorgado en marzo en rojo)") +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1))+
-  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 # Save the plot
 ggsave("plots/plot_unc_14_70p.png",plot=unc14_70p, width = 10, height = 6, dpi = 300)
 unc14_70p_prom <- unc14_70p + geom_hline(yintercept = unc_prom_2023_cred_real, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = unc_prom_2023_cred_real, label = paste("Promedio 2023:\n",round(unc_prom_2023_cred_real, 0))), vjust = -0.5,color="darkgreen")
@@ -633,7 +633,7 @@ unc_ipc_all %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado a la UNC 2023-2024\najustado por inflación")+
-  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume una inflación del 12% para marzo de 2024 y ajuste por IPC abril-diciembre 2024.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume una inflación del 12% para marzo de 2024 y ajuste por IPC abril-diciembre 2024.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario ")
 ggsave("plots/plot_unc_all_real.png", width = 10, height = 6, dpi = 300)
 
 unc_ipc_all %>% filter(fecha<=as.Date("2024-03-01")) %>%
@@ -645,7 +645,7 @@ unc_ipc_all %>% filter(fecha<=as.Date("2024-03-01")) %>%
   theme_light(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5),axis.text.x = element_text(angle = 90, hjust = 1)) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y")), title = "Crédito mensual devengado a la UNC 2023-2024")+
-  labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Rodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 ggsave("plots/plot_unc_all_nominal.png", width = 10, height = 6, dpi = 300)
 
 
@@ -677,12 +677,12 @@ comb_plot<-combined_data_all %>% filter(fecha<=as.Date("2024-03-01")) %>%
   theme_light(base_size = 14) +
   labs(x = "Mes", y = paste0("Crédito mensual devengado\n(millones de $ de ", as.Date(mes_maximo,format="%m-%Y"),")"), title = "Crédito mensual devengado a la UNC ajustado por inflación",subtitle = "(Aumento de marzo del 70% para presupuesto de funcionamiento en rojo)") +
   theme(legend.position = "none", plot.title = element_text(hjust = 0.5),plot.subtitle = element_text(hjust = 0.5), axis.text.x = element_text(angle = 90, hjust = 1))+
-  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+  labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 # Save the plot
 comb_plot
 ggsave("plots/plot_unc_all_70p.png",plot=comb_plot, width = 10, height = 6, dpi = 300)
 comb_prom_plot<-comb_plot+geom_hline(yintercept = unc_prom_2023_all_cred_real_noagui, color = "darkgreen", linetype = "dashed") +     geom_text(aes(x = as.Date("2024-02-01"), y = unc_prom_2023_all_cred_real_noagui, label = paste("Promedio 2023:\n",round(unc_prom_2023_all_cred_real_noagui, 0))), vjust = -0.5,color="darkgreen")+ 
-                labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nEl promedio anual 2023 se calculó excluyendo los meses donde se pagan aguinaldos, junio y diciembre.\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_UNC ")
+                labs(caption = "Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nEl promedio anual 2023 se calculó excluyendo los meses donde se pagan aguinaldos, junio y diciembre.\nRodrigo Quiroga, investigador INFIQC-CONICET. Código disponible en: https://github.com/rquiroga7/presupuesto_Universitario ")
 ggsave("plots/plot_unc_all_70p_prom.png",plot=comb_prom_plot, width = 10, height = 6, dpi = 300)
 
 #TOTAL NO SALARIAL
