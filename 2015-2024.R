@@ -189,8 +189,23 @@ ggsave("plots/presupuesto_anual_100_2017-2024.png",width = 10, height = 6, units
 #Presupuesto por número de estudiantes
 anios<-c(2017,2018,2019,2020,2021,2022,2023,2024)
 estudiantes<-c(2005152,2071270,2187292,2318255,2549789,2540854,2730754,2730754)
-
 df_estudiantes<-data.frame(anio=anios,estudiantes=estudiantes)
+#Create barplot of estudiantes
+ggplot(df_estudiantes, aes(x=as.factor(anio), y=estudiantes, fill=as.factor(anio))) +
+  geom_bar(stat="identity") +
+  labs(title = "Universidades Nacionales: Número de estudiantes",subtitle="Anuario SPU",
+       x = "Año",
+       y = "Número de estudiantes") +
+    scale_fill_manual(values=colors8) +
+  theme_light(base_size=14) +
+    geom_text(aes(y = estudiantes, label = round(estudiantes, 0)), vjust = -0.5,size=5) +
+  #scale y axis to show values in millions
+  scale_y_continuous(labels = scales::comma, limits = c(NA, max(df_estudiantes$estudiantes) * 1.1)) +
+  theme(legend.position = "none", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
+  labs(caption = paste0("Número de estudiantes según Anuario SPU. Dato 2024 estimado como = 2023.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))
+ggsave("plots/estudiantes_2017-2024.png",width = 10, height = 6, units = "in",dpi=300)
+
+
 data_anual_estudiantes<-merge(data_anual,df_estudiantes,by.x="impacto_presupuestario_anio",by.y="anio")
 data_anual_estudiantes<-data_anual_estudiantes %>% 
   mutate(credito_devengado_real_por_estudiante = credito_devengado_real/estudiantes) %>%
