@@ -3,8 +3,90 @@ library(jsonlite)
 library(lubridate)
 library(ggplot2)
 library(zoo)
+library(scales)
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
+
+plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Presupuesto mensual devengado", 
+                             x_axis_title = "Año-Mes", y_axis_title = "Crédito mensual devengado (millones de $)", 
+                             output_file = "plot.png", max_mes, color_mapping= color_mapping, dark_color_mapping = dark_color_mapping, 
+                             coord_cartesian_min = 200000, breaks_y=10000, marcha_y= 400000,
+                             caption = paste0(
+        "Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\n",
+        "En millones de pesos de ", max_mes, ", promedios trimestrales mostrados como una línea. Meses con aguinaldo fueron normalizados.\n",
+        "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario"
+      )
+                             ) {
+  
+  # Base plot
+  p <- ggplot(data, aes(x = as.factor(fecha), y = credito_devengado_real, fill = as.factor(gobierno), color = as.factor(gobierno))) +
+    geom_bar(stat = "identity", alpha = 0.5) +
+    geom_vline(
+      xintercept = as.factor("2024-04-01"), # Convert the date to match the x-axis factor
+      color = "red", linetype = "dashed", size = 0.8
+    ) +
+    geom_vline(
+      xintercept = as.factor("2024-10-01"), # Convert the date to match the x-axis factor
+      color = "red", linetype = "dashed", size = 0.8
+    ) +
+    labs(
+      title = title,
+      subtitle = paste0("Ajustado por inflación (IPC). En pesos de ", max_mes),
+      x = x_axis_title,
+      y = y_axis_title,
+      fill = "Gobierno", color = "Gobierno"
+    ) +
+    scale_fill_manual(values = color_mapping) + # Use the same color mapping for bars
+    scale_color_manual(values = dark_color_mapping) +
+    theme_light(base_size = 13) +
+    geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), 
+              vjust = 0.5, size = 3, hjust = 1.5, angle = 90, color = "black") +
+    scale_x_discrete(
+      labels = function(x) format(as.Date(x), "%Y-%m") # Format factor levels as YYYY-MM
+    ) +
+    scale_y_continuous(
+      breaks = seq(0, max(data$credito_devengado_real) * 1.1, breaks_y),
+      labels = scales::comma,
+      limits = c(0, max(data$credito_devengado_real) * 1.1),
+      expand = c(0, 0)
+    ) +
+    coord_cartesian(ylim = c(coord_cartesian_min, max(data$credito_devengado_real) * 1.1)) +
+    theme(
+      axis.text.x = element_text(angle = 90, vjust = 0.5),
+      legend.position = "top",
+      plot.title = element_text(hjust = 0.5),
+      plot.subtitle = element_text(hjust = 0.5)
+    ) +
+    labs(
+      caption = caption
+    ) +
+    annotate(
+      "text",
+      x = as.factor("2024-04-01"), y = marcha_y, # Adjust `y` value as needed
+      label = "1ra marcha\nuniversitaria",
+      color = "red", size = 4, hjust = 0, angle = 90
+    ) +
+    annotate(
+      "text",
+      x = as.factor("2024-10-01"), y = marcha_y, # Adjust `y` value as needed
+      label = "2da marcha\nuniversitaria",
+      color = "red", size = 4, hjust = 0, angle = 90
+    )
+  
+  # Add 3-month average line if requested
+  if (include_three_month_avg) {
+    p <- p + geom_line(
+      aes(y = average_credito_devengado_real, group = 1),
+      size = 1
+    )
+  }
+  
+  # Save the plot
+  ggsave(output_file, plot = p, width = 10, height = 10, units = "in", dpi = 300)
+  
+  # Return the plot object (optional, for further customization or display)
+  return(p)
+}
 
 mutate_month <- function(data, source_month, target_month, year) {
   # Group by the first 49 columns and perform operations
@@ -52,6 +134,53 @@ generate_government_column <- function(df) {
   
   # Return the modified dataframe
   return(df)
+}
+
+calculate_three_month_averages <- function(data) {
+  # Calculate 3-month averages
+  three_month_averages <- data %>%
+    mutate(quarter = paste0(year(fecha), "-Q", quarter(fecha))) %>% # Add a quarter column
+    group_by(quarter) %>%
+    summarise(average_credito_devengado_real = mean(credito_devengado_real, na.rm = TRUE)) %>%
+    ungroup()
+  
+  # Add 3-month averages to the original dataset
+  data_with_three_month_averages <- data %>%
+    mutate(quarter = paste0(year(fecha), "-Q", quarter(fecha))) %>% # Add a quarter column
+    left_join(three_month_averages, by = "quarter") # Join 3-month averages back to the dataset
+  
+  # Return the modified dataset
+  return(data_with_three_month_averages)
+}
+
+remove_aguinaldo_effect <- function(data, max_mes, min_mes, value=1.4) {
+  library(dplyr)
+  library(lubridate)
+  
+  # Filter and adjust the data
+  data_no_aguinaldo <- data %>%
+    filter(fecha <= max_mes & fecha >= min_mes) %>%
+    mutate(
+      credito_devengado_real = ifelse(
+        month(fecha) == 6 & credito_devengado_real > 0,
+        credito_devengado_real / value,
+        credito_devengado_real
+      ),
+      credito_devengado_real = ifelse(
+        month(fecha) == 12 & credito_devengado_real > 0,
+        credito_devengado_real / value,
+        credito_devengado_real
+      ),
+      credito_devengado_real = ifelse(
+        credito_devengado_real < 0,
+        0,
+        credito_devengado_real
+      ),
+      credito_devengado_real = round(credito_devengado_real, 0)
+    )
+  
+  # Return the modified dataset
+  return(data_no_aguinaldo)
 }
 
 #Load IPC from file
@@ -111,6 +240,15 @@ data$fecha <- as.Date(paste(data$impacto_presupuestario_anio, data$impacto_presu
 ##actividad_id==23 Desarrollo de Institutos Tecnologicos de Formacion Profesional
 ##actividad_id==1 - Conduccion, Gestion y Apoyo a las Politicas de Educacion Superior
 
+
+#Chequeo devengado salarial Universidad de Buenos Aires para meses 3,4,5 y 6 de 2023
+salario_BSAS <- data %>% filter(
+  subparcial_desc == "Universidad de Buenos Aires" &
+  programa_id == 26 &
+  actividad_id %in% c(12) &
+  impacto_presupuestario_anio == 2023 &
+  impacto_presupuestario_mes %in% c(3, 4, 5, 6)
+) 
 
 data<-data %>% 
     ungroup() %>%
@@ -190,6 +328,7 @@ data_mensual <- data %>%
 
 View(data_mensual)
 
+#check plot
 ggplot(data_mensual, aes(x=fecha)) +
     geom_rect(aes(xmin=as.Date("2017-03-01"), xmax=as.Date("2019-11-30"), ymin=-Inf, ymax=Inf), fill="#ffffc5") +
     geom_rect(aes(xmin=as.Date("2019-12-01"), xmax=as.Date("2023-11-30"), ymin=-Inf, ymax=Inf), fill="#a4fcfc") +
@@ -208,75 +347,75 @@ ggplot(data_mensual, aes(x=fecha)) +
 
 #Remover efecto de aguinaldos para meses de junio y diciembre
 min_mes=as.Date("2023-01-01")
-data_mensual_noagui <- data_mensual %>% 
-  filter(fecha<=max_mes & fecha >= min_mes) %>%
-    mutate(credito_devengado_real = ifelse(month(fecha) == 6 & credito_devengado_real > 0, credito_devengado_real / 1.4, credito_devengado_real)) %>%
-  mutate(credito_devengado_real = ifelse(month(fecha) == 12 & credito_devengado_real > 0, credito_devengado_real /1.4, credito_devengado_real)) %>%
-  mutate(credito_devengado_real = ifelse(credito_devengado_real < 0, 0, credito_devengado_real)) %>%
-  mutate(credito_devengado_real = round(credito_devengado_real,0))
+max_mes=as.Date("2025-03-01")
+data_mensual_noagui <- remove_aguinaldo_effect(data_mensual, max_mes, min_mes,1.4)
 
 # Calculate 3-month averages
-three_month_averages <- data_mensual_noagui %>%
-  mutate(quarter = paste0(year(fecha), "-Q", quarter(fecha))) %>% # Add a quarter column
-  group_by(quarter) %>%
-  summarise(average_credito_devengado_real = mean(credito_devengado_real, na.rm = TRUE)) %>%
-  ungroup()
+data_with_three_month_averages<- calculate_three_month_averages(data_mensual_noagui)
 
-# Add 3-month averages to the original dataset
-data_with_three_month_averages <- data_mensual_noagui %>%
-  mutate(quarter = paste0(year(fecha), "-Q", quarter(fecha))) %>% # Add a quarter column
-  left_join(three_month_averages, by = "quarter") # Join 3-month averages back to the dataset
+plot_budget_data(
+  data = data_with_three_month_averages,
+  include_three_month_avg = TRUE,
+  title = "Universidades Nacionales: Presupuesto mensual total",
+  output_file = paste0("plots/presupuesto_mensual_2023-",proy_anio,".png"),
+  max_mes = as.Date("2025-03-01"),
+  color_mapping = color_mapping,
+  dark_color_mapping = dark_color_mapping,
+  coord_cartesian_min = 200000, # Custom minimum value for coord_cartesian
+  breaks_y = 100000 # Custom breaks for y-axis
+)
 
-#Plot monthly data show every year in x axis. Fill columns 2017-2019 in yellow (d4d400), 2020-2023 in cyan (31ffff) and 2024-2025 in purple (a8009d)
-ggplot(data_with_three_month_averages, aes(x=as.factor(fecha), y=credito_devengado_real, fill=as.factor(gobierno), color = as.factor(gobierno))) +
-  geom_vline(
-    xintercept = as.factor("2024-04-01"), # Convert the date to match the x-axis factor
-    color = "red", linetype = "dashed", size = 0.8
-  ) +
-    geom_vline(
-    xintercept = as.factor("2024-10-01"), # Convert the date to match the x-axis factor
-    color = "red", linetype = "dashed", size = 0.8
-  ) +
-  geom_bar(stat = "identity", alpha = 0.5)+
-  labs(title = "Universidades Nacionales: Presupuesto anual devengado",
-      subtitle=paste0("Ajustado por inflación (IPC). En pesos de ",max_mes),
-      x = "Año-Mes",
-      y = paste0("Credito anual devengado\n(millones de $ de ",max_mes,")"),
-      fill = "Gobierno", color = "Gobierno" # Change legend title to "Gobierno"
-      ) +
-  scale_fill_manual(values = color_mapping) + # Use the same color mapping for bars
-  scale_color_manual(values = dark_color_mapping) +
-  theme_light(base_size=13) +
-  geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = 0.5,size=3, hjust = 1.5, angle = 90, color = "black") +
-  geom_line(
-    aes(y = average_credito_devengado_real, group = 1),
-    size = 1
-    ) +
-  scale_x_discrete(
-    labels = function(x) format(as.Date(x), "%Y-%m") # Format factor levels as YYYY-MM
-  ) +
-  #scale y axis to show values in millions
-  scale_y_continuous(breaks = seq(0,max(data_mensual_noagui$credito_devengado_real)*1.1,100000) ,labels = scales::comma, limits = c(0, max(data_mensual_noagui$credito_devengado_real) * 1.1), expand = c(0,0)) +
-  coord_cartesian(ylim = c(200000, max(data_mensual_noagui$credito_devengado_real) * 1.1)) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5),legend.position = "top", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nEn millones de pesos de ", max_mes, ", promedios trimestrales mostrados como una línea. Meses con aguinaldo fueron normalizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))+
-annotate(
-    "text",
-    x = as.factor("2024-04-01"), y = 400000, # Adjust `y` value as needed
-    label = "1ra marcha\nuniversitaria",
-    color = "red", size = 4, hjust = 0, angle = 90
-  ) +
-  annotate(
-    "text",
-    x = as.factor("2024-10-01"), y = 400000, # Adjust `y` value as needed
-    label = "2da marcha\nuniversitaria",
-    color = "red", size = 4, hjust = 0, angle = 90
+#Ahora mensual no salarial y salarial
+s_data_mensual <- data %>%
+  mutate(salarial = ifelse(actividad_id %in% c(12, 13), "salarial", "no_salarial")) %>%
+  group_by(fecha, impacto_presupuestario_anio, gobierno, salarial) %>%
+  summarise(
+    credito_devengado = round(sum(credito_devengado), 0),
+    credito_devengado_real = round(sum(credito_devengado_real), 0),
+    .groups = "drop"
   )
-ggsave(paste0("plots/presupuesto_mensual_2023-",proy_anio,".png"),width = 10, height = 10, units = "in",dpi=300)
+  
+#Salarial
+#Remover efecto de aguinaldos para meses de junio y diciembre
+s_data_mensual_noagui <- remove_aguinaldo_effect(s_data_mensual %>%
+        filter(salarial=="salarial"), max_mes, min_mes,1.5)
+# Calculate 3-month averages
+s_data_with_three_month_averages<- calculate_three_month_averages(s_data_mensual_noagui)
 
+plot_budget_data(
+  data = s_data_with_three_month_averages,
+  include_three_month_avg = TRUE,
+  title = "Universidades Nacionales: Presupuesto mensual salarial",
+  output_file = paste0("plots/presupuesto_mensual_salarial_2023-",proy_anio,".png"),
+  max_mes = as.Date("2025-03-01"),
+  color_mapping = color_mapping,
+  dark_color_mapping = dark_color_mapping,
+  coord_cartesian_min = 200000, # Custom minimum value for coord_cartesian
+  breaks_y = 100000 # Custom breaks for y-axis
+)
 
+#NO salarial
+ns_data_mensual_noagui <- s_data_mensual %>% 
+                          filter(salarial=="no_salarial" & fecha<=max_mes & fecha>=min_mes)
+ns_data_with_three_month_averages<- calculate_three_month_averages(ns_data_mensual_noagui)
 
-
+plot_budget_data(
+  data = ns_data_with_three_month_averages,
+  include_three_month_avg = TRUE,
+  title = "Universidades Nacionales: Presupuesto mensual no salarial",
+  output_file = paste0("plots/presupuesto_mensual_nosalarial_2023-",proy_anio,".png"),
+  max_mes = as.Date("2025-03-01"),
+  color_mapping = color_mapping,
+  dark_color_mapping = dark_color_mapping,
+  coord_cartesian_min = 0, # Custom minimum value for coord_cartesian
+  breaks_y = 10000, # Custom breaks for y-axis
+  marcha_y= 60000,
+  caption = paste0(
+        "Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\n",
+        "Se incluyen todas las actividades excepto las salariales (12 y 13). Esto incluye funcionamiento, ciencia, salud, becas, extensión, etc.\nEn millones de pesos de ", max_mes, ", promedios trimestrales mostrados como una línea.\n",
+        "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario"
+      )
+)
 
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024-2025 in purple
 ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real, fill=as.factor(gobierno))) +
@@ -291,7 +430,7 @@ ggplot(data_anual, aes(x=as.factor(impacto_presupuestario_anio), y=credito_deven
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual$credito_devengado_real) * 1.1)) +
   theme(legend.position = "top", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC para los meses faltantes de ",proy_anio,". En millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))
+  labs(caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume ajuste por IPC para los meses faltantes de ",proy_anio,". En millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))
 ggsave(paste0("plots/presupuesto_anual_2017-",proy_anio,".png"),width = 10, height = 10, units = "in",dpi=300)
 
 #Repeat plot but with 2013 == 100
@@ -313,7 +452,7 @@ ggplot(data_anual_100, aes(x=as.factor(impacto_presupuestario_anio), y=credito_d
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_100$credito_devengado_real_base100) * 1.1)) +
   theme(legend.position = "top", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (incluyendo aguinaldos).\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))
+  labs(caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para septiembre-diciembre 2024 (incluyendo aguinaldos).\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))
 ggsave(paste0("plots/presupuesto_anual_100_2017-",proy_anio,".png"),width = 10, height = 10, units = "in",dpi=300)
 
 #Presupuesto por número de estudiantes
@@ -359,7 +498,7 @@ ggplot(data_anual_estudiantes, aes(x=as.factor(impacto_presupuestario_anio), y=c
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_estudiantes$credito_devengado_real_por_est_100) * 1.1)) +
   theme(legend.position = "top", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para 2025 (incluyendo aguinaldos).\nNúmero de estudiantes según Anuario SPU. Dato 2024 y 2025 estimado como = 2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))
+  labs(caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para 2025 (incluyendo aguinaldos).\nNúmero de estudiantes según Anuario SPU. Dato 2024 y 2025 estimado como = 2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))
 ggsave("plots/presupuesto_anual_porest_100_2017-2025.png",width = 10, height = 6, units = "in",dpi=300)
 
 
