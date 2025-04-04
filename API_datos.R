@@ -3,19 +3,22 @@ library(jsonlite)
 library(lubridate)
 library(ggplot2)
 `%notin%` <- Negate(`%in%`)
-#Read 2022_1.json into table
-data2022 <- fromJSON("2022.json")
-data2023 <- fromJSON("2023.json")
-data2024 <- fromJSON("2024.json")
 
+
+#Read json files into table (2017-2024)
+data2022 <- fromJSON("datos/2022.json") %>% mutate(impacto_presupuestario_fecha=as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
+data2023 <- fromJSON("datos/2023.json") %>% mutate(impacto_presupuestario_fecha=as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
+data2024 <- fromJSON("datos/2024.json") 
+data2025 <- fromJSON("datos/2025.json") 
 
 #Get data where the value of entidad_desc equals "Ministerio de Educación"
 data2022ed <- data2022 %>% filter(entidad_desc == "Ministerio de Educación")
 data2022ed <- data2022ed %>% mutate(impacto_presupuestario_fecha = as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
 data2023ed <- data2023 %>% filter(entidad_desc == "Ministerio de Educación")
 data2024ed <- data2024 %>% filter(jurisdiccion_desc == "Ministerio de Capital Humano")
-mes_minimo<-as.Date("2023-01-01")
-mes_maximo<-as.Date("2024-08-01")
+data2025ed <- data2025 %>% filter(jurisdiccion_desc == "Ministerio de Capital Humano")
+mes_minimo<-as.Date("2022-01-01")
+mes_maximo<-as.Date("2025-03-01")
 
 #Load 2022 data
 
@@ -33,7 +36,7 @@ mes_maximo<-as.Date("2024-08-01")
 ##actividad_id==1 - Conduccion, Gestion y Apoyo a las Politicas de Educacion Superior
 
 #merge data2024ed and data2023ed
-dataed <- rbind(data2022ed,data2023ed, data2024ed)
+dataed <- rbind(data2022ed,data2023ed, data2024ed, data2025ed)
 #Corrijo el mes asignado
 dataed<-dataed %>%  
     #If impacto_presupuestario_fecha is 2023-03-30 or 2023-03-31, then the value of impacto_presupuestario_mes should change to 4
