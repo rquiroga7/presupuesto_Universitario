@@ -243,6 +243,30 @@ plot_annual_budget( data = data_anual,
   color_mapping = color_mapping
 )
 
+View(data %>% filter(fecha == "2024-12-01" & actividad_id == 12 & subparcial_desc == "Universidad de Buenos Aires") )
+
+data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE,inc=c("Universidad de Buenos Aires"),actividad_ids = c(15))
+data_anual <- annualize(data_mensual_2)
+#ANUAL TOTAL
+plot_annual_budget( data = data_anual, 
+  title = "UBA: Presupuesto anual (Salud)",
+  caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
+  output_file = paste0("plots/UBA_presupuesto_salud_2017-",proy_anio,".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping
+)
+
+data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE,noinc=c("Universidad de Buenos Aires"),actividad_ids = c(15))
+data_anual <- annualize(data_mensual_2)
+#ANUAL TOTAL
+plot_annual_budget( data = data_anual, 
+  title = "Universidades Nacionales (sin UBA): Presupuesto anual (Salud)",
+  caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
+  output_file = paste0("plots/noUBA_presupuesto_salud_2017-",proy_anio,".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping
+)
+
 #ANUAL SALARIAL
 data_mensual_2 <- generate_projection(data, ipc25_18,actividad_ids = c(12,13) ,adjust_specific_months = TRUE, adjustment_factor = 1.5,use_average = TRUE)
 data_anual_salarial <- annualize(data_mensual_2)
@@ -277,6 +301,18 @@ plot_annual_budget( data = data_anual_cyt,
   color_mapping = color_mapping
 )
 
+
+#ANUAL SALUD
+data_mensual_2 <- generate_projection(data, ipc25_18,actividad_ids = c(15) ,adjust_specific_months = FALSE, use_average = TRUE)
+data_anual_cyt <- annualize(data_mensual_2)
+plot_annual_budget( data = data_anual_cyt, 
+  title = "Universidades Nacionales: Presupuesto anual devengado (Salud)",
+  caption = paste0(
+    "Se ajustó el crédito devengado para ciencia (act 15) en cada mes por inflación, utilizando el IPC-INDEC.\n",     "Se toma el promedio para ", proy_anio, " y se asume ajuste por IPC para los meses faltantes.\n",     "En millones de pesos de ", max_mes, ", montos anualizados.\n",     "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario"),
+  output_file = paste0("plots/presupuesto_anual_salud_2017-", proy_anio, ".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping
+)
 
 
 #Repeat plot but with 2013 == 100

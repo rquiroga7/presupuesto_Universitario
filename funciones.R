@@ -214,11 +214,19 @@ plot_annual_budget <- function(data, title = "Universidades Nacionales: Presupue
   ggsave(output_file, width = 10, height = 10, units = "in", dpi = 300)
 }
 
-generate_projection <- function(data, ipc25_18, actividad_ids = NULL, adjust_specific_months = FALSE, adjustment_factor = 1.5, use_average = FALSE) {
+generate_projection <- function(data, ipc25_18, actividad_ids = NULL, adjust_specific_months = FALSE, adjustment_factor = 1.5, use_average = FALSE, inc = NULL, noinc = NULL) {
   
   # Filter data if actividad_ids is provided
   if (!is.null(actividad_ids) && length(actividad_ids) > 0) {
     data <- data %>% filter(actividad_id %in% actividad_ids)
+  }
+
+  if (!is.null(inc) && length(inc) > 0) {
+    data <- data %>% filter(subparcial_desc %in% inc)
+  }
+
+    if (!is.null(noinc) && length(noinc) > 0) {
+    data <- data %>% filter(subparcial_desc %notin% noinc)
   }
 
 data_mensual<-data %>% 
