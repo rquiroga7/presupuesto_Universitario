@@ -243,11 +243,11 @@ plot_annual_budget( data = data_anual,
   color_mapping = color_mapping
 )
 
-View(data %>% filter(fecha == "2024-12-01" & actividad_id == 12 & subparcial_desc == "Universidad de Buenos Aires") )
+#View(data %>% filter(fecha == "2024-12-01" & actividad_id == 12 & subparcial_desc == "Universidad de Buenos Aires") )
 
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE,inc=c("Universidad de Buenos Aires"),actividad_ids = c(15))
+data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1,use_average = TRUE,inc=c("Universidad de Buenos Aires"),actividad_ids = c(15))
 data_anual <- annualize(data_mensual_2)
-#ANUAL TOTAL
+#Salud UBA
 plot_annual_budget( data = data_anual, 
   title = "UBA: Presupuesto anual (Salud)",
   caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
@@ -256,9 +256,9 @@ plot_annual_budget( data = data_anual,
   color_mapping = color_mapping
 )
 
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE,noinc=c("Universidad de Buenos Aires"),actividad_ids = c(15))
+data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1,use_average = TRUE,noinc=c("Universidad de Buenos Aires"),actividad_ids = c(15))
 data_anual <- annualize(data_mensual_2)
-#ANUAL TOTAL
+#Salud no-UBA
 plot_annual_budget( data = data_anual, 
   title = "Universidades Nacionales (sin UBA): Presupuesto anual (Salud)",
   caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
@@ -300,6 +300,19 @@ plot_annual_budget( data = data_anual_cyt,
   max_mes = max_mes,
   color_mapping = color_mapping
 )
+
+#ANUAL EXTENSIÓN
+data_mensual_2 <- generate_projection(data, ipc25_18,actividad_ids = c(25) ,adjust_specific_months = FALSE, use_average = TRUE)
+data_anual_ext <- annualize(data_mensual_2)
+plot_annual_budget( data = data_anual_ext, 
+  title = "Universidades Nacionales: Presupuesto anual devengado (Extensión)",
+  caption = paste0(
+    "Se ajustó el crédito devengado para extensión (act 25) en cada mes por inflación, utilizando el IPC-INDEC.\n",     "Se toma el promedio para ", proy_anio, " y se asume ajuste por IPC para los meses faltantes.\n",     "En millones de pesos de ", max_mes, ", montos anualizados.\n",     "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario"),
+  output_file = paste0("plots/presupuesto_anual_extension_2017-", proy_anio, ".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping
+)
+
 
 
 #ANUAL SALUD
@@ -383,3 +396,64 @@ ggplot(data_anual_estudiantes, aes(x=as.factor(impacto_presupuestario_anio), y=c
   labs(caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para 2025 (incluyendo aguinaldos).\nNúmero de estudiantes según Anuario SPU. Dato 2024 y 2025 estimado como = 2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))
 ggsave("plots/presupuesto_anual_porest_100_2017-2025.png",width = 10, height = 6, units = "in",dpi=300)
 
+
+
+
+###############
+#UNC
+###############
+
+data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE,inc=c("Universidad Nacional de Córdoba"))
+data_anual <- annualize(data_mensual_2)
+#Total UNC
+plot_annual_budget( data = data_anual, 
+  title = "UNC: Presupuesto anual total devengado",
+  caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
+  output_file = paste0("plots/UNC_presupuesto_total_2017-",proy_anio,".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping
+)
+
+data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.5,use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(12,13))
+data_anual <- annualize(data_mensual_2)
+#Salarios UNC
+plot_annual_budget( data = data_anual, 
+  title = "UNC: Presupuesto anual (Salarios)",
+  caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
+  output_file = paste0("plots/UNC_presupuesto_salarios_2017-",proy_anio,".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping
+)
+
+data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = FALSE, use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(16))
+data_anual <- annualize(data_mensual_2)
+#Ciencia UNC
+plot_annual_budget( data = data_anual, 
+  title = "UNC: Presupuesto anual (Ciencia)",
+  caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
+  output_file = paste0("plots/UNC_presupuesto_ciencia_2017-",proy_anio,".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping
+)
+
+data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = FALSE, use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(15))
+data_anual <- annualize(data_mensual_2)
+#Salud UNC
+plot_annual_budget( data = data_anual, 
+  title = "UNC: Presupuesto anual (Salud)",
+  caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
+  output_file = paste0("plots/UNC_presupuesto_salud_2017-",proy_anio,".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping
+)
+
+data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = FALSE, use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(25), last_year = 2025)
+data_anual <- annualize(data_mensual_2)
+#Extensión UNC
+plot_annual_budget( data = data_anual, 
+  title = "UNC: Presupuesto anual (Extensión)",
+  caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
+  output_file = paste0("plots/UNC_presupuesto_extension_2017-",proy_anio,".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping
+)

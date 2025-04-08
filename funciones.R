@@ -214,7 +214,7 @@ plot_annual_budget <- function(data, title = "Universidades Nacionales: Presupue
   ggsave(output_file, width = 10, height = 10, units = "in", dpi = 300)
 }
 
-generate_projection <- function(data, ipc25_18, actividad_ids = NULL, adjust_specific_months = FALSE, adjustment_factor = 1.5, use_average = FALSE, inc = NULL, noinc = NULL) {
+generate_projection <- function(data, ipc25_18, actividad_ids = NULL, adjust_specific_months = FALSE, adjustment_factor = 1.5, use_average = FALSE, inc = NULL, noinc = NULL, last_year = NULL) {
   
   # Filter data if actividad_ids is provided
   if (!is.null(actividad_ids) && length(actividad_ids) > 0) {
@@ -225,32 +225,42 @@ generate_projection <- function(data, ipc25_18, actividad_ids = NULL, adjust_spe
     data <- data %>% filter(subparcial_desc %in% inc)
   }
 
-    if (!is.null(noinc) && length(noinc) > 0) {
+  if (!is.null(noinc) && length(noinc) > 0) {
     data <- data %>% filter(subparcial_desc %notin% noinc)
   }
 
-data_mensual<-data %>% 
-  ungroup() %>%
-  mutate(fecha = as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>% 
-  filter(fecha <= max_mes) %>% 
-  group_by(fecha, gobierno, impacto_presupuestario_anio,impacto_presupuestario_mes) %>% 
-  summarise(credito_devengado = round(sum(credito_devengado), 0), credito_devengado_real = round(sum(credito_devengado_real), 0),cumulative=mean(cumulative))
+  data_mensual <- data %>% 
+    ungroup() %>%
+    mutate(fecha = as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>% 
+    filter(fecha <= max_mes) %>% 
+    group_by(fecha, gobierno, impacto_presupuestario_anio, impacto_presupuestario_mes) %>% 
+    summarise(
+      credito_devengado = round(sum(credito_devengado), 0),
+      credito_devengado_real = round(sum(credito_devengado_real), 0),
+      cumulative = mean(cumulative)
+    )
 
-  # Get the last year of data_mensual
-  last_year <- max(data_mensual$impacto_presupuestario_anio)
-  last_year_data <- data_mensual %>% filter(impacto_presupuestario_anio == last_year)
-  
-  # Determine the value to use for projections
-  projection_value <- if (use_average) {
-    mean(last_year_data$credito_devengado_real, na.rm = TRUE)
-  } else {
-    tail(last_year_data$credito_devengado_real, 1)
+  # Ensure last_year is defined
+  if (is.null(last_year)) {
+    last_year <- max(data_mensual$impacto_presupuestario_anio)
   }
-  
+
+  # Define last_year_data
+  last_year_data <- data_mensual %>% filter(impacto_presupuestario_anio == last_year)
+
+  # Determine the value to use for projections
+  if (use_average && nrow(last_year_data) > 0) {
+    projection_value <- mean(last_year_data$credito_devengado_real, na.rm = TRUE)
+  } else if (!use_average && nrow(last_year_data) > 0) {
+    projection_value <- tail(last_year_data$credito_devengado_real, 1)
+  } else {
+    projection_value <- 0
+  }
+
   # Define projection parameters
   last <- tail(data_mensual, 1)
   first_proj_month <- as.Date(paste0(year(last$fecha), "-", month(last$fecha) + 1, "-01"))
-  last_month <- as.Date(paste0(year(last$fecha), "-12-01"))
+  last_month <- as.Date(paste0(last_year, "-12-01"))
   n_months <- interval(first_proj_month, last_month) %/% months(1) + 1
   proy_anio <- year(last$fecha)
   
@@ -262,16 +272,43 @@ data_mensual<-data %>%
     credito_devengado = 0,
     credito_devengado_real = rep(projection_value, n_months)
   )
-  
+
   # Adjust specific months if enabled
-  if (adjust_specific_months) {
+  if (adjust_specific_months & is.null(adjustment_factor)) {
+    print("Please provide an adjustment factor.")
+    return(NULL)
+  }
+  if (adjust_specific_months & !is.null(adjustment_factor)) {
+    # Dynamically calculate the specific months for all years in the projection
+    specific_months <- as.Date(unlist(lapply(unique(na.omit(resto$impacto_presupuestario_anio)), function(year) {
+    as.Date(c(paste0(year, "-12-01"), paste0(year, "-06-01")))
+    })))
+    
+    # Apply the adjustment to all specific months
     resto <- resto %>% 
       mutate(credito_devengado_real = ifelse(
-        fecha %in% as.Date(c("2024-12-01", "2024-06-01")) & credito_devengado == 0,
+        fecha %in% specific_months & credito_devengado == 0,
         credito_devengado_real * adjustment_factor,
         credito_devengado_real
       ))
   }
+
+  # Project empty years
+  if (last_year > year(last$fecha)) {
+    anios <- last_year - year(last$fecha)
+    for (i in 1:anios) {
+      # Generate months for each year up to `last_year`
+      resto <- rbind(resto, data.frame(
+        fecha = seq(as.Date(paste0(year(last$fecha) + i, "-01-01")), as.Date(paste0(year(last$fecha) + i, "-12-01")), by = "months"),
+        impacto_presupuestario_mes = month(seq(as.Date(paste0(year(last$fecha) + i, "-01-01")), as.Date(paste0(year(last$fecha) + i, "-12-01")), by = "months")),
+        impacto_presupuestario_anio = year(last$fecha) + i,
+        credito_devengado = rep(0, 12),
+        credito_devengado_real = rep(0, 12)
+      ))
+    }
+  }
+  
+
   
   # Add government column
   resto <- generate_government_column(resto)
