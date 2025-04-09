@@ -5,7 +5,7 @@ Análisis de ejecución presupuestaria 2024 y presupuesto 2025
 Última actualización 09/04/2025
 
 **Dr. Rodrigo Quiroga**  
-Investigador Asistente INFIQC-CONICET  
+Investigador Adjunto INFIQC-CONICET  
 Profesor Adjunto de Bioinformática y Biología Computacional  
 Departamento de Química Teórica y Computacional, Facultad de Ciencias Químicas, Universidad Nacional de Córdoba
 
@@ -14,22 +14,23 @@ Repositorio disponible con todo el código utilizado para descargar, analizar y 
 Ejecución presupuestaria mensual 2023-2025
 ============
 
-Podemos analizar la evolución presupuestaria mensual durante los últimos años, que estuvo marcada por cuatro momentos clave:
+Podemos analizar la evolución presupuestaria mensual durante los últimos años, que estuvo marcada por 5 momentos clave:
 
-2. **Diciembre 2023**: Asume Javier Milei
+1. **Diciembre 2023**: Asume Javier Milei
     - Enorme reducción de los salarios y presupuestos reales debido a la devaluación del 52% del peso implementada por el gobierno el 12 de diciembre de 2023.
 
 2. **Abril 2024**: Primera Marcha Universitaria Federal
    - Logró un aumento del presupuesto de funcionamiento del 70%
    - Sin incrementos significativos en otras partidas presupuestarias, incluyendo salarios
 
-3. **Octubre 2024**: Segunda Marcha Universitaria Federal
-   - Nuevo aumento de gastos de funcionamiento
-   - Recomposición parcial de salarios docentes y no-docentes
+3. **Septiembre 2024**: Se sanciona la ley de financiamiento universitario
 
-4. **Enero 2025**: Nuevo Presupuesto
-   - Caída real del presupuesto total del 29% respecto al promedio 2023 y del 14% respecto al último trimestre de 2024.
-   - Profundización de la crisis presupuestaria universitaria
+4. **Octubre 2024**: Veto presidencial de la ley de financiamiento universitario. En respuesta, ocurre la Segunda Marcha Universitaria Federal
+   - Luego de la marcha, el gobierno decide un nuevo aumento de gastos de funcionamiento y una recomposición parcial (pequeña) de salarios docentes y no-docentes
+
+5. **Enero 2025**: Nuevo Presupuesto 2025 (re-re-conducción del presupuesto 2023)
+   - Caída real del presupuesto universitario total del 29% respecto al promedio 2023 y del 14% respecto al último trimestre de 2024.
+   - Retroceso salarial y presupuestario, casi a los mismos niveles de inicio de 2024, previo a las marchas universitarias. Profundización de la crisis presupuestaria universitaria
 
 ![plot](plots/presupuesto_mensual_funcionamiento_2023-2025.png)
 
@@ -44,8 +45,17 @@ Ejecución presupuestaria anual 2017-2025
 
 Para poner en contexto los presupuestos 2024 y 2025, es importante analizar la evolución anual, al menos desde 2017 en adelante. Para poder comparar 2025 con años anteriores, tomo los datos mensuales promedios para 2025, y realizo una proyección hasta fin de año, teniendo en cuenta aguinaldos, y suponiendo que el presupuesto universitario se aumentará mensualmente de acuerdo al IPC. Es decir, este es un escenario bastante optimista con el cual proyecto la ejecución presupuestaria para 2025. 
 
-Análisis por componente presupuestario:
+### Análisis del presupuesto total anual
 
+![plot](plots/presupuesto_anual_2017-2025.png)
+El presupuesto total anual muestra una caída muy significativa para el año 2018, una relativa estabilidad presupuestaria hasta 2022, un pequeño aumento en 2023, y una nueva caída dramática para 2024 y 2025.
+
+![plot](plots/presupuesto_anual_porest_base100__2017-2025.png)
+
+Si tomamos los datos del número de estudiantes universitarios de los anuarios estadísticos de la SPU, y normalizamos el presupuesto por la cantidad de estudiantes, tomando 2017 como la base 100, vemos que por cada 100 pesos por estudiante que se recibían en 2017, en 2025 las universidades recibirán 33 pesos. De esta manera, es imposible sostener la calidad académica de nuestras universidades públicas. 
+
+
+### Análisis por componente presupuestario:
 ### Presupuesto de funcionamiento
 ![plot](plots/presupuesto_anual_funcionamiento_2017-2025.png)
 
@@ -64,7 +74,6 @@ La investigación universitaria enfrenta su peor crisis histórica:
 
 El presupuesto que proviene del gobierno nacional para hacer extensión universitaria (una de las tres funciones sustantivas de las universidades públicas junto a la docencia y la investigación) se redujo a cero durante 2024 y lo mismo sucedió en los primeros tres meses de 2025. Una aberración.
 
-
 ### Presupuesto para Salud Universitaria
 ![plot](plots/UBA_presupuesto_salud_2017-2025.png)
 ![plot](plots/noUBA_presupuesto_salud_2017-2025.png)
@@ -75,29 +84,29 @@ El sistema hospitalario universitario también está en crisis:
 Conclusiones
 ============
 
-La crisis presupuestaria universitaria 2024-2025 representa un punto de inflexión histórico:
+La crisis presupuestaria universitaria en el gobierno de Milei representa un punto de inflexión histórico, y de no haber una recomposición presupuestaria este año, los resultados serían catastróficos:
 
-1. **Caída generalizada del presupuesto**
-   - Funcionamiento: -45% real (2023-2025)
-   - Ciencia: -55% real (2023-2025)
-   - Salud: -60% real (2023-2025)
+1. **Caída generalizada del presupuesto 2025 en comparación al promedio 2023**
+   - Funcionamiento: -35% real
+   - Salarios: -26% real
+   - Ciencia: -87% real
+   - Salud (excluyendo a la UBA): -50% real
 
-2. **Impacto en funciones esenciales**
-   - Suspensión de programas de investigación
-   - Deterioro de servicios hospitalarios
-   - Crisis en gastos operativos básicos
+2. **Impacto en funciones esenciales y riesgo institucional**
+   - Universidades en virtual cesación de pagos dado que la mayoría de los ahorros que existían fueron consumidos durante 2024.
+   - Discontinuidad de líneas de investigación y extensión.
+   - Pérdida de recursos humanos calificados. Los docentes universitarios están eligiendo otros rumbos, ya sea en el exterior, o en el sector privado. Los docentes que están al frente de los trabajos prácticos, con poca antiguedad, están cobrando alrededor de 160 mil pesos de bolsillo.
 
-3. **Riesgo institucional**
-   - Universidades en virtual cesación de pagos
-   - Discontinuidad de programas académicos
-   - Pérdida de recursos humanos calificados
+Si bien es claro que las marchas fueron la única manera en la cual se logró que el gobierno recompusiera al menos parcialmente los presupuestos de funcionamiento, los salarios y los presupuestos de ciencia, extensión y salud nunca se recompusieron. Adicionalmente, en los primeros meses de 2025 hubo una clara marcha atrás de estas mejoras presupuestarias conseguidas en 2024. 
+Esto ha impactado de manera directa en las universidades, con la suspensión de líneas de investigación y proyectos de extensión comunitaria. Adicionalmente, se suspenden o reducen la cantidad, variedad y complejidad de las actividades prácticas debido a la restricción presupuestaria, resultando en una menor calidad académica. La excelencia y el prestigio académico que las universidades públicas argentinas siempre tuvieron está en franco declive, y vamos rumbo al colapso.
 
-La defensa de la universidad pública requiere:
-- Recomposición presupuestaria urgente
-- Actualización por inflación real
-- Garantías de financiamiento sostenible
+A nivel personal, opino que la ley de financiamiento universitario no representaba una panacea, pero sí al menos una posibilidad de frenar la destrucción lenta pero sistemática e inevitable a la que nos arroja la crisis presupuestaria.
 
-INTRODUCCIÓN Y METODOLOGÍA
+Dado que el gobierno de Milei vetó dicha ley, dejando claro que el sistema universitario argentino le importa poco y nada, entiendo que la única manera de poder salvarlo de la destrucción lenta y segura, es que algún diputado presente un proyecto de ley de recomposición salarial y presupuestaria para las universidades, y que dicho proyecto se someta a una consulta popular vinculante (ver artículo 40 de la constitución). Esta consulta popular debería aprobarse por mayoría simple en ambas cámaras, y de resultar positiva, el proyecto se convertiría automáticamente en ley, sin posibilidades de que sea vetada por el presidente Milei.
+
+Repito a modo de conclusión, que el declive de la calidad académica que vemos en nuestras universidades es extremadamente alarmante, y junto a la parálisis de las actividades científicas y extensionistas, marcan un rumbo de franco declive para las universidades nacionales argentinas. Nuestro sistema de educación superior era, hasta hace unos años, motivo de orgullo y una de nuestras ventajas estratégicas relativas de cara al resto del mundo. Deberíamos retomar una agenda pública que nos permita evitar su destrucción inminente, por el bien futuro de nuestros jóvenes y nuestro país.
+
+METODOLOGÍA
 ============
 
 <details>
@@ -105,7 +114,7 @@ INTRODUCCIÓN Y METODOLOGÍA
 
 <div align="justify">
  
-Ante la decisión del gobierno de Javier Milei de no enviar una ley de presupuesto para 2024, se recondujo el presupuesto 2023 ([Decreto 23/2024](https://www.boletinoficial.gob.ar/detalleAviso/primera/301615/20240105)). Debido a la alta inflación que se observa en el país desde principios de 2023, con un gran salto a fines del 2023 relacionado a la decisión de devaluar el peso un 55% el 12 de diciembre (el precio del dólar oficial saltó un 118%, de 367 a 800 pesos, ver [aquí](https://elpais.com/argentina/2023-12-12/milei-anuncia-una-devaluacion-del-peso-del-50-y-grandes-recortes-del-gasto-publico.html)), el presupuesto 2024 (con montos similares a los de 2023) es obviamente insuficiente para mantener funcionando a las distintas dependencias estatales. En particular esto aplica también para las Universidades Nacionales. Aquí es necesario aclarar que el presupuesto para salarios se está actualizando con cada paritaria, mientras que otros presupuestos como los de funcionamiento, hospitales, extensión, becas e investigación se vieron prácticamente congelados desde noviembre de 2023 hasta febrero de 2024.
+Ante la decisión del gobierno de Javier Milei de no enviar una ley de presupuesto para 2024, se recondujo el presupuesto 2023 ([Decreto 23/2024](https://www.boletinoficial.gob.ar/detalleAviso/primera/301615/20240105)). Debido a la alta inflación que se observa en el país desde principios de 2023, con un gran salto a fines del 2023 relacionado a la decisión de devaluar el peso un 55% el 12 de diciembre (el precio del dólar oficial saltó un 118%, de 367 a 800 pesos, ver [aquí](https://elpais.com/argentina/2023-12-12/milei-anuncia-una-devaluacion-del-peso-del-50-y-grandes-recortes-del-gasto-publico.html)), el presupuesto 2024 (con montos similares a los de 2023) es obviamente insuficiente para mantener funcionando a las distintas dependencias estatales. En particular esto aplica también para las Universidades Nacionales. Aquí es necesario aclarar que el presupuesto para salarios se está actualizando con cada paritaria, mientras que otros presupuestos como los de funcionamiento, hospitales, extensión, becas e investigación se vieron prácticamente congelados desde noviembre de 2023 hasta febrero de 2024. En 2025, el gobierno de Milei decidió no enviar un proyecto de presupuesto al congreso, sino re-reconducir el presupuesto 2023 , ([Decreto 1131/2024](https://www.argentina.gob.ar/normativa/nacional/decreto-1131-2024-407815)) luego modificado por el ([Decreto 186/2025](https://www.boletinoficial.gob.ar/detalleAviso/primera/322410/20250313)).
 
 El presupuesto indica los montos que el gobierno planifica dedicar a cada ministerio, secretaría, programa y actvidad. Sin embargo, esos montos son simplemente indicativos. Los fondos finalmente devengados y pagados pueden ser mayores o menores (sobreejecución y subejecución). 
 
