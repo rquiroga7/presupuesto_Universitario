@@ -32,6 +32,11 @@ Podemos analizar la evolución presupuestaria mensual durante los últimos años
    - Caída real del presupuesto universitario total del 29% respecto al promedio 2023 y del 14% respecto al último trimestre de 2024.
    - Retroceso salarial y presupuestario, casi a los mismos niveles de inicio de 2024, previo a las marchas universitarias. Profundización de la crisis presupuestaria universitaria
 
+<div style="page-break-after: always;"></div>
+
+Análisis de ejecución presupuestaria mensual
+============
+
 ![plot](plots/presupuesto_mensual_funcionamiento_2023-2025.png)
 
 El gráfico muestra la evolución mensual del presupuesto de funcionamiento en términos reales (ajustado a pesos de marzo de 2025). Los aumentos logrados tras las marchas universitarias (abril y octubre 2024) resultaron insuficientes ante la inflación y el aumento de costos operativos. Adicionalmente, la entrada en vigencia del presupuesto 2025 (en realidad de la re-re-conducción del presupuesto 2022) significó un retroceso importante en las partidas para funcionamiento, casi a los niveles previos a la primer marcha universitaria de 2024.
@@ -40,11 +45,12 @@ El gráfico muestra la evolución mensual del presupuesto de funcionamiento en t
 
 El presupuesto salarial es diferente. La primer marcha no tuvo como respuesta del gobierno una mejora salarial, lo que sí ocurrió con la segunda marcha. Sin embargo esta mejora fue muy menor, y básicamente consistió en la actualización de la garantía salarial para los docentes de menor antiguedad y dedicación. A partir de las paritarias de 0%-1% de fines de 2024 y 2025, los salarios se volvieron a deteriorar, al punto de ser similares a los niveles previos a la primer marcha universitaria de 2024.
 
+<div style="page-break-after: always;"></div>
+
 Ejecución presupuestaria anual 2017-2025
 ============
 
 Para poner en contexto los presupuestos 2024 y 2025, es importante analizar la evolución anual, al menos desde 2017 en adelante. Para poder comparar 2025 con años anteriores, tomo los datos mensuales promedios para 2025, y realizo una proyección hasta fin de año, teniendo en cuenta aguinaldos, y suponiendo que el presupuesto universitario se aumentará mensualmente de acuerdo al IPC. Es decir, este es un escenario bastante optimista con el cual proyecto la ejecución presupuestaria para 2025. 
-
 ### Análisis del presupuesto total anual
 
 ![plot](plots/presupuesto_anual_2017-2025.png)
@@ -54,6 +60,7 @@ El presupuesto total anual muestra una caída muy significativa para el año 201
 
 Si tomamos los datos del número de estudiantes universitarios de los anuarios estadísticos de la SPU, y normalizamos el presupuesto por la cantidad de estudiantes, tomando 2017 como la base 100, vemos que por cada 100 pesos por estudiante que se recibían en 2017, en 2025 las universidades recibirán 33 pesos. De esta manera, es imposible sostener la calidad académica de nuestras universidades públicas. 
 
+<div style="page-break-after: always;"></div>
 
 ### Análisis por componente presupuestario:
 ### Presupuesto de funcionamiento
@@ -81,8 +88,10 @@ El presupuesto que proviene del gobierno nacional para hacer extensión universi
 El sistema hospitalario universitario también está en crisis:
 - Mientras que la UBA consiguió un acuerdo especial, que recompuso el financiamiento de su red hospitalaria (aumento del 74% para 2025 contra 2023), los demás hospitales universitarios vieron destruído el presupuesto que reciben del gobierno nacional, con una caída del 50% en 2025 respecto a 2023. 
 
+<div style="page-break-after: always;"></div>
+
 Conclusiones
-============
+================
 
 La crisis presupuestaria universitaria en el gobierno de Milei representa un punto de inflexión histórico, y de no haber una recomposición presupuestaria este año, los resultados serían catastróficos:
 
@@ -106,8 +115,10 @@ Dado que el gobierno de Milei vetó dicha ley, dejando claro que el sistema univ
 
 Repito a modo de conclusión, que el declive de la calidad académica que vemos en nuestras universidades es extremadamente alarmante, y junto a la parálisis de las actividades científicas y extensionistas, marcan un rumbo de franco declive para las universidades nacionales argentinas. Nuestro sistema de educación superior era, hasta hace unos años, motivo de orgullo y una de nuestras ventajas estratégicas relativas de cara al resto del mundo. Deberíamos retomar una agenda pública que nos permita evitar su destrucción inminente, por el bien futuro de nuestros jóvenes y nuestro país.
 
+<div style="page-break-after: always;"></div>
+
 METODOLOGÍA
-============
+===============
 
 <details>
 <summary>Para quien quiera entrar en detalles metodológicos, expandir para leer la sección de introducción y metodología</summary>
