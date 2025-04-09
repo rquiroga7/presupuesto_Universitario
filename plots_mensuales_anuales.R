@@ -409,7 +409,7 @@ data_anual <- annualize(data_mensual_2)
 plot_annual_budget( data = data_anual, 
   title = "UNC: Presupuesto anual total devengado",
   caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
-  output_file = paste0("plots/UNC_presupuesto_total_2017-",proy_anio,".png"),
+  output_file = paste0("plots/UNC/UNC_presupuesto_total_2017-",proy_anio,".png"),
   max_mes = max_mes,
   color_mapping = color_mapping
 )
@@ -420,7 +420,7 @@ data_anual <- annualize(data_mensual_2)
 plot_annual_budget( data = data_anual, 
   title = "UNC: Presupuesto anual (Salarios)",
   caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
-  output_file = paste0("plots/UNC_presupuesto_salarios_2017-",proy_anio,".png"),
+  output_file = paste0("plots/UNC/UNC_presupuesto_salarios_2017-",proy_anio,".png"),
   max_mes = max_mes,
   color_mapping = color_mapping
 )
@@ -431,7 +431,7 @@ data_anual <- annualize(data_mensual_2)
 plot_annual_budget( data = data_anual, 
   title = "UNC: Presupuesto anual (Ciencia)",
   caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
-  output_file = paste0("plots/UNC_presupuesto_ciencia_2017-",proy_anio,".png"),
+  output_file = paste0("plots/UNC/UNC_presupuesto_ciencia_2017-",proy_anio,".png"),
   max_mes = max_mes,
   color_mapping = color_mapping
 )
@@ -442,7 +442,7 @@ data_anual <- annualize(data_mensual_2)
 plot_annual_budget( data = data_anual, 
   title = "UNC: Presupuesto anual (Salud)",
   caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
-  output_file = paste0("plots/UNC_presupuesto_salud_2017-",proy_anio,".png"),
+  output_file = paste0("plots/UNC/UNC_presupuesto_salud_2017-",proy_anio,".png"),
   max_mes = max_mes,
   color_mapping = color_mapping
 )
@@ -453,7 +453,7 @@ data_anual <- annualize(data_mensual_2)
 plot_annual_budget( data = data_anual, 
   title = "UNC: Presupuesto anual (Extensión)",
   caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\nSe toma el promedio para ",proy_anio," y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de ", max_mes, ", montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "),
-  output_file = paste0("plots/UNC_presupuesto_extension_2017-",proy_anio,".png"),
+  output_file = paste0("plots/UNC/UNC_presupuesto_extension_2017-",proy_anio,".png"),
   max_mes = max_mes,
   color_mapping = color_mapping
 )
