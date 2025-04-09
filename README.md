@@ -14,26 +14,35 @@ Repositorio disponible con todo el código utilizado para descargar, analizar y 
 Ejecución presupuestaria mensual 2023-2025
 ============
 
-La evolución presupuestaria mensual durante 2024-2025 estuvo marcada por tres momentos clave:
+Podemos analizar la evolución presupuestaria mensual durante los últimos años, que estuvo marcada por cuatro momentos clave:
 
-1. **Abril 2024**: Primera Marcha Universitaria Federal
+2. **Diciembre 2023**: Asume Javier Milei
+    - Enorme reducción de los salarios y presupuestos reales debido a la devaluación del 52% del peso implementada por el gobierno el 12 de diciembre de 2023.
+
+2. **Abril 2024**: Primera Marcha Universitaria Federal
    - Logró un aumento del presupuesto de funcionamiento del 70%
-   - Sin incrementos significativos en otras partidas presupuestarias
+   - Sin incrementos significativos en otras partidas presupuestarias, incluyendo salarios
 
-2. **Octubre 2024**: Segunda Marcha Universitaria Federal
-   - Nuevo aumento del 50% en gastos de funcionamiento
-   - Actualización parcial de salarios docentes y no-docentes
+3. **Octubre 2024**: Segunda Marcha Universitaria Federal
+   - Nuevo aumento de gastos de funcionamiento
+   - Recomposición parcial de salarios docentes y no-docentes
 
-3. **Enero 2025**: Nuevo Presupuesto
-   - Caída real del presupuesto total del 37% respecto a 2023
+4. **Enero 2025**: Nuevo Presupuesto
+   - Caída real del presupuesto total del 29% respecto al promedio 2023 y del 14% respecto al último trimestre de 2024.
    - Profundización de la crisis presupuestaria universitaria
 
-![plot](plots/plot_14_nominal.png)
+![plot](plots/presupuesto_mensual_funcionamiento_2023-2025.png)
 
-El gráfico muestra la evolución mensual del presupuesto de funcionamiento en términos nominales. Los aumentos logrados tras las marchas universitarias (abril y octubre 2024) resultaron insuficientes ante la inflación y el aumento de costos operativos.
+El gráfico muestra la evolución mensual del presupuesto de funcionamiento en términos reales (ajustado a pesos de marzo de 2025). Los aumentos logrados tras las marchas universitarias (abril y octubre 2024) resultaron insuficientes ante la inflación y el aumento de costos operativos. Adicionalmente, la entrada en vigencia del presupuesto 2025 (en realidad de la re-re-conducción del presupuesto 2022) significó un retroceso importante en las partidas para funcionamiento, casi a los niveles previos a la primer marcha universitaria de 2024.
+
+![plot](plots/presupuesto_mensual_salarial_2023-2025.png)
+
+El presupuesto salarial es diferente. La primer marcha no tuvo como respuesta del gobierno una mejora salarial, lo que sí ocurrió con la segunda marcha. Sin embargo esta mejora fue muy menor, y básicamente consistió en la actualización de la garantía salarial para los docentes de menor antiguedad y dedicación. A partir de las paritarias de 0%-1% de fines de 2024 y 2025, los salarios se volvieron a deteriorar, al punto de ser similares a los niveles previos a la primer marcha universitaria de 2024.
 
 Ejecución presupuestaria anual 2017-2025
 ============
+
+Para poner en contexto los presupuestos 2024 y 2025, es importante analizar la evolución anual, al menos desde 2017 en adelante. Para poder comparar 2025 con años anteriores, tomo los datos mensuales promedios para 2025, y realizo una proyección hasta fin de año, teniendo en cuenta aguinaldos, y suponiendo que el presupuesto universitario se aumentará mensualmente de acuerdo al IPC. Es decir, este es un escenario bastante optimista con el cual proyecto la ejecución presupuestaria para 2025. 
 
 Análisis por componente presupuestario:
 
@@ -41,40 +50,27 @@ Análisis por componente presupuestario:
 ![plot](plots/presupuesto_anual_funcionamiento_2017-2025.png)
 
 El presupuesto de funcionamiento muestra una caída histórica:
-- 2024: Reducción al 65% respecto a 2023
-- 2025: Nueva caída al 55% del presupuesto 2023
+- 2024: Debido a las recomposiciones logradas en las dos marchas universitarias, el presupuesto anual terminó siendo parecido al de 2023
+- 2025: La caída del presupuesto de funcionamiento es muy significativa para los 3 primeros meses del año en comparación a 2024. Proyectado hasta fin de año, representa una caída del 35%. 
 
 ### Presupuesto de Ciencia y Tecnología
 ![plot](plots/presupuesto_anual_ciencia_2017-2025.png)
 
-La investigación universitaria enfrenta su peor crisis:
-- Caída al 45% respecto a 2023
-- Suspensión de programas de investigación
-- Riesgo para la formación de recursos humanos
+La investigación universitaria enfrenta su peor crisis histórica:
+- En 2025 tendremos una caída del presupuesto universitario para ciencia y tecnología del 52% respecto a 2024, del 87% respecto a 2023, y del 95% respecto a 2017.
 
-### Presupuesto de Salud Universitaria
+### Presupuesto de extensión
+![plot](plots/presupuesto_anual_extension_2017-2025.png)
+
+El presupuesto que proviene del gobierno nacional para hacer extensión universitaria (una de las tres funciones sustantivas de las universidades públicas junto a la docencia y la investigación) se redujo a cero durante 2024 y lo mismo sucedió en los primeros tres meses de 2025. Una aberración.
+
+
+### Presupuesto para Salud Universitaria
+![plot](plots/UBA_presupuesto_salud_2017-2025.png)
 ![plot](plots/noUBA_presupuesto_salud_2017-2025.png)
 
-Sistema hospitalario universitario en crisis:
-- UBA: Situación crítica para su red hospitalaria
-- Otras universidades: Deterioro de servicios de salud estudiantil
-- 2025: Presupuesto real menor al 40% de 2023
-
-### Impacto en el Sistema Universitario
-
-El presupuesto total ajustado por inflación muestra una caída sin precedentes:
-![plot](plots/presupuesto_anual_2017-2025.png)
-
-- 2024: 73% del presupuesto 2023
-- 2025: 63% del presupuesto 2023
-- Peor nivel histórico desde 2017
-
-La situación es aún más grave al considerar el presupuesto por estudiante:
-![plot](plots/presupuesto_anual_porest_100_2017-2025.png)
-
-- 2024: 47% del presupuesto por estudiante de 2017
-- 2025: 41% del presupuesto por estudiante de 2017
-- Deterioro crítico de condiciones de enseñanza
+El sistema hospitalario universitario también está en crisis:
+- Mientras que la UBA consiguió un acuerdo especial, que recompuso el financiamiento de su red hospitalaria (aumento del 74% para 2025 contra 2023), los demás hospitales universitarios vieron destruído el presupuesto que reciben del gobierno nacional, con una caída del 50% en 2025 respecto a 2023. 
 
 Conclusiones
 ============
