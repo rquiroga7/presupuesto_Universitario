@@ -82,6 +82,10 @@ data<-data %>%
   mutate(credito_devengado_real = credito_devengado/cumulative) 
 
 data<-generate_government_column(data)
+data<-data %>%
+  mutate(gobierno=as.factor(gobierno))
+#Reorder levels of gobierno to 
+
 color_mapping <- c(
   "Macri" = "#d4d400", # Yellow
   "Fernández" = "#31ffff", # Cyan
@@ -234,6 +238,7 @@ plot_budget_data(
 #############
 data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE)
 data_anual <- annualize(data_mensual_2)
+
 #ANUAL TOTAL
 plot_annual_budget( data = data_anual, 
   title = "Universidades Nacionales: Presupuesto anual total devengado",
@@ -335,7 +340,7 @@ data_anual_100 <- data_anual %>%
 View(data_anual_100)
 
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024-2025 in purple
-ggplot(data_anual_100, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_base100, fill=as.factor(gobierno))) +
+ggplot(data_anual_100, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_base100, fill=gobierno)) +
   geom_bar(stat="identity") +
   labs(title = "Universidades Nacionales: Presupuesto anual devengado",subtitle="Ajustado por inflación (IPC). Base 100 = 2017",
        x = "Año",
@@ -357,8 +362,10 @@ df_estudiantes<-data.frame(anio=anios,estudiantes=estudiantes) %>%
   mutate(fecha = as.Date(paste(anio, "01", "01", sep = "-"), format = "%Y-%m-%d"))
 df_estudiantes<-generate_government_column(df_estudiantes)
 
+df_estudiantes$gobierno <- factor(df_estudiantes$gobierno, levels = c("Macri", "Fernández", "Milei"))
+
 #Create barplot of estudiantes
-ggplot(df_estudiantes, aes(x=as.factor(anio), y=estudiantes, fill=as.factor(gobierno))) +
+ggplot(df_estudiantes, aes(x=as.factor(anio), y=estudiantes, fill=gobierno)) +
   geom_bar(stat="identity") +
   labs(title = "Universidades Nacionales: Número de estudiantes",subtitle="Anuario SPU",
        x = "Año",
@@ -384,7 +391,7 @@ data_anual_estudiantes<-data_anual_estudiantes %>%
 
 
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024 in purple
-ggplot(data_anual_estudiantes, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_por_est_100, fill=as.factor(gobierno))) +
+ggplot(data_anual_estudiantes, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_por_est_100, fill=gobierno)) +
   geom_bar(stat="identity") +
   labs(title = "Universidades Nacionales: Presupuesto total anual devengado",subtitle="Ajustado por inflación y número de estudiantes. Base 100 = 2017",
        x = "Año",

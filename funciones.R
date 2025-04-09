@@ -19,7 +19,7 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
                              ) {
   
   # Base plot
-  p <- ggplot(data, aes(x = as.factor(fecha), y = credito_devengado_real, fill = as.factor(gobierno), color = as.factor(gobierno))) +
+  p <- ggplot(data, aes(x = as.factor(fecha), y = credito_devengado_real, fill = gobierno, color = gobierno)) +
     geom_bar(stat = "identity", alpha = 0.5) +
     geom_vline(
       xintercept = as.factor("2024-04-01"), # Convert the date to match the x-axis factor
@@ -190,7 +190,7 @@ plot_annual_budget <- function(data, title = "Universidades Nacionales: Presupue
   library(ggplot2)
   library(scales)
   
-  ggplot(data, aes(x = as.factor(impacto_presupuestario_anio), y = credito_devengado_real, fill = as.factor(gobierno))) +
+  ggplot(data, aes(x = as.factor(impacto_presupuestario_anio), y = credito_devengado_real, fill = gobierno)) +
     geom_bar(stat = "identity") +
     labs(
       title = title,
@@ -340,8 +340,9 @@ annualize <- function(data_mensual) {
       .groups = "drop"
     ) %>%
     mutate(fecha = as.Date(paste(impacto_presupuestario_anio, "01", "01", sep = "-"), format = "%Y-%m-%d"))
-  
+  #sort levels to Macri, Fernandez, Milei
+  data_anual$gobierno <- factor(data_anual$gobierno, levels = c("Macri", "Fernández", "Milei"))
   # Return the annualized data
-  return(data_anual)
+  return(data_anual) 
 }
 
