@@ -210,7 +210,7 @@ plot_budget_data(
   coord_cartesian_min = 200000, # Custom minimum value for coord_cartesian
   breaks_y = 100000,
   ancho = 12,
-  alto = 8, base_size =14
+  alto = 8, base_size =15,marcha_size=6
 )
 
 #NO salarial
@@ -281,7 +281,7 @@ plot_budget_data(
         "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario"
       ),
   ancho = 12,
-  alto = 8, base_size =14
+  alto = 8, base_size =15,marcha_size=6
 )
 
 ##############

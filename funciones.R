@@ -10,7 +10,7 @@ library(tidyverse)
 plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Presupuesto mensual devengado", 
                              x_axis_title = "Año-Mes", y_axis_title = "Crédito mensual devengado (millones de $)", 
                              output_file = "plot.png", max_mes, color_mapping= color_mapping, dark_color_mapping = dark_color_mapping, 
-                             coord_cartesian_min = 200000, breaks_y=10000, marcha_y= 400000, ancho = 10, alto = 10, base_size = 13,
+                             coord_cartesian_min = 200000, breaks_y=10000, marcha_y= 400000, ancho = 10, alto = 10, base_size = 13, marcha_size =4,
                              caption = paste0(
         "Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\n",
         "En millones de pesos de ", max_mes, ", promedios trimestrales mostrados como una línea. Meses con aguinaldo fueron normalizados.\n",
@@ -64,13 +64,13 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
       "text",
       x = as.factor("2024-04-01"), y = marcha_y, # Adjust `y` value as needed
       label = "1ra marcha\nuniversitaria",
-      color = "red", size = 4, hjust = 0, angle = 90
+      color = "red", size = marcha_size, hjust = 0, angle = 90
     ) +
     annotate(
       "text",
       x = as.factor("2024-10-01"), y = marcha_y, # Adjust `y` value as needed
       label = "2da marcha\nuniversitaria",
-      color = "red", size = 4, hjust = 0, angle = 90
+      color = "red", size = marcha_size, hjust = 0, angle = 90
     )
   
   # Add 3-month average line if requested
