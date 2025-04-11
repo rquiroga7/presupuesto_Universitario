@@ -9,7 +9,7 @@ Investigador Adjunto INFIQC-CONICET
 Profesor Adjunto de Bioinformática y Biología Computacional y Matemáticas I
 Departamento de Química Teórica y Computacional, Facultad de Ciencias Químicas, Universidad Nacional de Córdoba
 
-Repositorio público disponible con todo el código utilizado para descargar, analizar y graficar los datos de ejecución presupuestaria de Universidades Nacionales [aquí](https://github.com/rquiroga7/presupuesto_Universitario). Para descargar este informe en versión PDF, click [aquí](https://github.com/rquiroga7/presupuesto_Universitario/raw/main/2025_04_Presupuesto_Univ.pdf?raw=1).
+Repositorio público con todo el código utilizado para descargar, analizar y graficar los datos de ejecución presupuestaria de Universidades Nacionales disponible [aquí](https://github.com/rquiroga7/presupuesto_Universitario).  Este informe se visualiza mejor en un navegador, [aquí](https://github.com/rquiroga7/presupuesto_Universitario). Para descargar este informe en versión PDF, click [aquí](https://github.com/rquiroga7/presupuesto_Universitario/raw/main/2025_04_Presupuesto_Univ.pdf?raw=1).
 
 ## Crisis Presupuestaria 2023-2025: Momentos Clave
 
@@ -31,7 +31,7 @@ Podemos analizar la evolución presupuestaria mensual durante los últimos años
    - Caída real del presupuesto universitario total del 29% respecto al promedio 2023 y del 14% respecto al último trimestre de 2024.
    - Retroceso salarial y presupuestario, casi a los mismos niveles de inicio de 2024, previo a las marchas universitarias. Profundización de la crisis presupuestaria universitaria
 
-<div style="page-break-after: always;"></div>
+---
 
 ## Análisis de la Ejecución Presupuestaria
 Primero analizaremos la evolución de la ejecución presupuestaria en términos mensuales, y luego en términos anuales para poner esos cambios en contexto. Analizaremos los montos devengados (crédito que el gobierno nacional se compromete a pagar), todos los montos están ajustados por IPC para sacar los equivalentes en pesos de marzo de 2023, método por el cual volvemos comparables los montos ejecutados a lo largo de los meses y años.
@@ -41,17 +41,18 @@ A continuación analizaremos la evolución mensual del presupuesto universitario
 
 #### 1a. Presupuesto mensual - Funcionamiento
 
-![plot](plots/presupuesto_mensual_funcionamiento_2023-2025.png)
+<p align="center"><img src="plots/presupuesto_mensual_funcionamiento_2023-2025.png"  height="600" width="600" ></p>
 
 El gráfico muestra la evolución mensual del presupuesto de funcionamiento en términos reales (ajustado a pesos de marzo de 2025). Los aumentos logrados tras las marchas universitarias (abril y octubre 2024) resultaron insuficientes ante la inflación y el aumento de costos operativos. Adicionalmente, la entrada en vigencia del presupuesto 2025 (en realidad de la re-re-conducción del presupuesto 2022) significó un retroceso importante en las partidas para funcionamiento, casi a los niveles previos a la primer marcha universitaria de 2024.
 
  #### 1b. Presupuesto mensual - Salarios
 
-![plot](plots/presupuesto_mensual_salarial_2023-2025.png)
+<p align="center"><img src="plots/presupuesto_mensual_salarial_2023-2025.png"  height="600" width="600" ></p>
+
 
 El presupuesto salarial es diferente. La primer marcha no tuvo como respuesta del gobierno una mejora salarial, lo que sí ocurrió con la segunda marcha. Sin embargo esta mejora fue muy menor, y básicamente consistió en la actualización de la garantía salarial para los docentes de menor antiguedad y dedicación. A partir de las paritarias de 0%-1% de fines de 2024 y 2025, los salarios se volvieron a deteriorar, al punto de ser similares a los niveles previos a la primer marcha universitaria de 2024.
 
-<div style="page-break-after: always;"></div>
+---
 
 ### 2. Evolución Presupuestaria Anual 2017-2025
 
@@ -60,41 +61,48 @@ Para poner en contexto los presupuestos universitarios de 2024 y 2025, es import
 
 #### 2a. Presupuesto Total Anual
 
-![plot](plots/presupuesto_anual_2017-2025.png)
+<p align="center"><img src="plots/presupuesto_anual_2017-2025.png"  height="600" width="600" ></p>
+
+
 El presupuesto total anual muestra una caída muy significativa para el año 2018, una relativa estabilidad presupuestaria hasta 2022, un pequeño aumento en 2023, y una nueva caída dramática para 2024 y 2025.
 
-![plot](plots/presupuesto_anual_porest_base100__2017-2025.png)
+<p align="center"><img src="plots/presupuesto_anual_porest_base100__2017-2025.png"  height="600" width="600" ></p>
+
 
 Si tomamos los datos del número de estudiantes universitarios de los anuarios estadísticos de la SPU, y normalizamos el presupuesto por la cantidad de estudiantes, tomando 2017 como la base 100, vemos que por cada 100 pesos por estudiante que se recibían en 2017, en 2025 las universidades recibirán 33 pesos. De esta manera, es imposible sostener la calidad académica de nuestras universidades públicas. 
 
-<div style="page-break-after: always;"></div>
-
 #### 2b. Presupuesto de funcionamiento
-![plot](plots/presupuesto_anual_funcionamiento_2017-2025.png)
+<p align="center"><img src="plots/presupuesto_anual_funcionamiento_2017-2025.png"  height="600" width="600" ></p>
+
 
 El presupuesto de funcionamiento muestra una caída histórica:
 - 2024: Debido a las recomposiciones logradas en las dos marchas universitarias, el presupuesto anual terminó siendo parecido al de 2023
 - 2025: La caída del presupuesto de funcionamiento es muy significativa para los 3 primeros meses del año en comparación a 2024. Proyectado hasta fin de año, representa una caída del 35%. 
 
+
 #### 2c. Presupuesto de Ciencia y Tecnología
-![plot](plots/presupuesto_anual_ciencia_2017-2025.png)
+<p align="center"><img src="plots/presupuesto_anual_ciencia_2017-2025.png"  height="600" width="600" ></p>
+
 
 La investigación universitaria enfrenta su peor crisis histórica:
 - En 2025 tendremos una caída del presupuesto universitario para ciencia y tecnología del 52% respecto a 2024, del 87% respecto a 2023, y del 95% respecto a 2017.
 
+
 #### 2d. Presupuesto de extensión
-![plot](plots/presupuesto_anual_extension_2017-2025.png)
+<p align="center"><img src="plots/presupuesto_anual_extension_2017-2025.png"  height="600" width="600" ></p>
+
 
 El presupuesto que proviene del gobierno nacional para hacer extensión universitaria (una de las tres funciones sustantivas de las universidades públicas junto a la docencia y la investigación) se redujo a cero durante 2024 y lo mismo sucedió en los primeros tres meses de 2025. Una aberración.
 
 #### 2e. Presupuesto para Salud Universitaria
-![plot](plots/UBA_presupuesto_salud_2017-2025.png)
-![plot](plots/noUBA_presupuesto_salud_2017-2025.png)
+<p align="center"><img src="plots/UBA_presupuesto_salud_2017-2025.png"  height="600" width="600" ></p>
+<p align="center"><img src="plots/noUBA_presupuesto_salud_2017-2025.png"  height="600" width="600" ></p>
+
 
 El sistema hospitalario universitario también está en crisis:
 - Mientras que la UBA consiguió un acuerdo especial, que recompuso el financiamiento de su red hospitalaria (aumento del 74% para 2025 contra 2023), los demás hospitales universitarios vieron destruído el presupuesto que reciben del gobierno nacional, con una caída del 50% en 2025 respecto a 2023. 
 
-<div style="page-break-after: always;"></div>
+---
 
 ## Conclusiones
 
@@ -124,10 +132,9 @@ Dado que presidente Milei vetó dicha ley, dejando claro que el sistema universi
 
 Repito a modo de conclusión, que el declive de la calidad académica que ya estamos viendo en nuestras universidades es extremadamente alarmante, y junto a la parálisis de las actividades científicas y extensionistas, marcan un rumbo de franco declive para las universidades públicas argentinas. Nuestro sistema de educación superior era, hasta hace unos años, motivo de orgullo a nivel mundial y una de nuestras ventajas estratégicas relativas de cara al resto del mundo. Deberíamos retomar de manera urgente una agenda pública que nos permita evitar su destrucción inminente, por el bien futuro de nuestros jóvenes y de la sociedad argentina en general. Invito a cada lector de este documento a involucrarse personalmente y sumarse a coordinar una defensa del sistema universitario argentino, y a no esperar que las soluciones las piensen e instrumenten los demás. No hay soluciones individuales para los problemas colectivos!
 
-<div style="page-break-after: always;"></div>
+---
 
-Metodología
-===============
+## Metodología
 
 <details>
 <summary>Para quien quiera entrar en detalles metodológicos, expandir para leer la sección de introducción y metodología</summary>
