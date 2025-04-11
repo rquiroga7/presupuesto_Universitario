@@ -403,8 +403,8 @@ ggplot(data_anual_estudiantes, aes(x=as.factor(impacto_presupuestario_anio), y=c
   #scale y axis to show values in millions
   scale_y_continuous(labels = scales::comma, limits = c(NA, max(data_anual_estudiantes$credito_devengado_real_por_est_100) * 1.1)) +
   theme(legend.position = "top", plot.title = element_text(hjust = 0.5), plot.subtitle = element_text(hjust = 0.5))+
-  labs(caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\nSe asume aumentos equivalentes al IPC para 2025 (incluyendo aguinaldos).\nNúmero de estudiantes según Anuario SPU. Dato 2024 y 2025 estimado como = 2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))
-ggsave("plots/presupuesto_anual_porest_base100__2017-2025.png",width = 10, height = 6, units = "in",dpi=300)
+  labs(caption = paste0("Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC.\nSe asume aumentos equivalentes al IPC para 2025 (incluyendo aguinaldos).\nNúmero de estudiantes según Anuario SPU. Dato 2024 y 2025 estimado como = 2023. Se utiliza base 100 = 2017.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "))
+ggsave("plots/presupuesto_anual_porest_base100__2017-2025.png",width = 10, height = 10, units = "in",dpi=300)
 
 
 
