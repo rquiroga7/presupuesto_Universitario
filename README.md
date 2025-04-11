@@ -9,7 +9,7 @@ Investigador Adjunto INFIQC-CONICET
 Profesor Adjunto de Bioinformática y Biología Computacional y Matemáticas I
 Departamento de Química Teórica y Computacional, Facultad de Ciencias Químicas, Universidad Nacional de Córdoba
 
-Repositorio público disponible con todo el código utilizado para descargar, analizar y graficar los datos de ejecución presupuestaria de Universidades Nacionales [aquí](https://github.com/rquiroga7/presupuesto_Universitario).
+Repositorio público disponible con todo el código utilizado para descargar, analizar y graficar los datos de ejecución presupuestaria de Universidades Nacionales [aquí](https://github.com/rquiroga7/presupuesto_Universitario). Para descargar este informe en versión PDF, click [aquí](https://github.com/rquiroga7/presupuesto_Universitario/raw/main/2025_04_Presupuesto_Univ.pdf?raw=1).
 
 ## Crisis Presupuestaria 2023-2025: Momentos Clave
 
@@ -160,4 +160,4 @@ El código de bash y R utilizado para descargar, analizar y graficar los datos d
 </details>
 </div>
 
-Para descargar este informe en versión PDF, click [aquí](https://github.com/rquiroga7/presupuesto_Universitario/raw/main/informe_pres_univ.pdf?raw=1).
+
