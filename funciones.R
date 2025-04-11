@@ -10,7 +10,7 @@ library(tidyverse)
 plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Presupuesto mensual devengado", 
                              x_axis_title = "Año-Mes", y_axis_title = "Crédito mensual devengado (millones de $)", 
                              output_file = "plot.png", max_mes, color_mapping= color_mapping, dark_color_mapping = dark_color_mapping, 
-                             coord_cartesian_min = 200000, breaks_y=10000, marcha_y= 400000,
+                             coord_cartesian_min = 200000, breaks_y=10000, marcha_y= 400000, ancho = 10, alto = 10, base_size = 13,
                              caption = paste0(
         "Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\n",
         "En millones de pesos de ", max_mes, ", promedios trimestrales mostrados como una línea. Meses con aguinaldo fueron normalizados.\n",
@@ -38,7 +38,7 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
     ) +
     scale_fill_manual(values = color_mapping) + # Use the same color mapping for bars
     scale_color_manual(values = dark_color_mapping) +
-    theme_light(base_size = 13) +
+    theme_light(base_size = base_size) +
     geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), 
               vjust = 0.5, size = 3, hjust = 1.5, angle = 90, color = "black") +
     scale_x_discrete(
@@ -82,7 +82,7 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
   }
   
   # Save the plot
-  ggsave(output_file, plot = p, width = 10, height = 10, units = "in", dpi = 300)
+  ggsave(output_file, plot = p, width = ancho, height = alto, units = "in", dpi = 300)
   
   # Return the plot object (optional, for further customization or display)
   return(p)

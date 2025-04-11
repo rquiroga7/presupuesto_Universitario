@@ -155,6 +155,20 @@ plot_budget_data(
   breaks_y = 100000 # Custom breaks for y-axis
 )
 
+plot_budget_data(
+  data = data_with_three_month_averages,
+  include_three_month_avg = TRUE,
+  title = "Universidades Nacionales: Presupuesto mensual total",
+  output_file = paste0("plots/wide_presupuesto_mensual_2023-",proy_anio,".png"),
+  max_mes = as.Date("2025-03-01"),
+  color_mapping = color_mapping,
+  dark_color_mapping = dark_color_mapping,
+  coord_cartesian_min = 200000, # Custom minimum value for coord_cartesian
+  breaks_y = 100000,
+  ancho = 12,
+  alto = 8, base_size =14
+)
+
 #Ahora mensual no salarial y salarial
 s_data_mensual <- data %>%
   mutate(salarial = ifelse(actividad_id %in% c(12, 13), "salarial", ifelse(actividad_id %in% c(14), "funcionamiento","no_salarial"))) %>%
@@ -184,6 +198,21 @@ plot_budget_data(
   breaks_y = 100000 # Custom breaks for y-axis
 )
 
+
+plot_budget_data(
+  data = s_data_with_three_month_averages,
+  include_three_month_avg = TRUE,
+  title = "Universidades Nacionales: Presupuesto mensual salarial",
+  output_file = paste0("plots/wide_presupuesto_mensual_salarial_2023-",proy_anio,".png"),
+  max_mes = as.Date("2025-03-01"),
+  color_mapping = color_mapping,
+  dark_color_mapping = dark_color_mapping,
+  coord_cartesian_min = 200000, # Custom minimum value for coord_cartesian
+  breaks_y = 100000,
+  ancho = 12,
+  alto = 8, base_size =14
+)
+
 #NO salarial
 ns_data_mensual_noagui <- s_data_mensual %>%
                 mutate(salarial = ifelse(salarial=="salarial","salarial","no salarial")) %>%
@@ -210,6 +239,8 @@ plot_budget_data(
       )
 )
 
+
+
 #funcionamiento
 ns_data_mensual_noagui <- s_data_mensual %>% 
                           filter(salarial=="funcionamiento" & fecha<=max_mes & fecha>=min_mes)
@@ -231,6 +262,26 @@ plot_budget_data(
         "Se incluye la actividad 14 (funcionamiento). Esto incluye funcionamiento, ciencia, salud, becas, extensión, etc.\nEn millones de pesos de ", max_mes, ", promedios trimestrales mostrados como una línea.\n",
         "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario"
       )
+)
+
+plot_budget_data(
+  data = ns_data_with_three_month_averages,
+  include_three_month_avg = TRUE,
+  title = "Universidades Nacionales: Presupuesto mensual funcionamiento (act. 14)",
+  output_file = paste0("plots/wide_presupuesto_mensual_funcionamiento_2023-",proy_anio,".png"),
+  max_mes = as.Date("2025-03-01"),
+  color_mapping = color_mapping,
+  dark_color_mapping = dark_color_mapping,
+  coord_cartesian_min = 0, # Custom minimum value for coord_cartesian
+  breaks_y = 10000, # Custom breaks for y-axis
+  marcha_y= 42000,
+  caption = paste0(
+        "Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\n",
+        "Se incluye la actividad 14 (funcionamiento). Esto incluye funcionamiento, ciencia, salud, becas, extensión, etc.\nEn millones de pesos de ", max_mes, ", promedios trimestrales mostrados como una línea.\n",
+        "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario"
+      ),
+  ancho = 12,
+  alto = 8, base_size =14
 )
 
 ##############
