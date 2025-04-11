@@ -1,5 +1,5 @@
-# Universidades Nacionales públicas de Argentina: 
-## Análisis de ejecución presupuestaria 2024 y presupuesto 2025
+# Crisis presupuestaria y salarial en las Universidades públicas de Argentina: 
+## En 2025 estamos en una situación similar a la que teníamos previo a la primer marcha federal universitaria
 ===============================================================
 
 Última actualización 11/04/2025
