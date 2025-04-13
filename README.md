@@ -1,5 +1,5 @@
 # Crisis presupuestaria y salarial en las Universidades públicas de Argentina: 
-## En 2025 estamos en una situación similar a la que teníamos previo a la primer marcha federal universitaria
+## En 2025 estamos en una situación similar a la que teníamos previo a la primera marcha federal universitaria
 ===============================================================
 
 Última actualización 11/04/2025
@@ -9,7 +9,7 @@ Investigador Adjunto INFIQC-CONICET
 Profesor Adjunto de Bioinformática y Biología Computacional y Matemáticas I
 Departamento de Química Teórica y Computacional, Facultad de Ciencias Químicas, Universidad Nacional de Córdoba
 
-Repositorio público con todo el código utilizado para descargar, analizar y graficar los datos de ejecución presupuestaria de Universidades Nacionales disponible [aquí](https://github.com/rquiroga7/presupuesto_Universitario).  Este informe se visualiza mejor en un navegador, [aquí](https://github.com/rquiroga7/presupuesto_Universitario). Para descargar este informe en versión PDF, click [aquí](https://github.com/rquiroga7/presupuesto_Universitario/raw/main/2025_04_Presupuesto_Univ.pdf?raw=1).
+Repositorio público con todo el código utilizado para descargar, analizar y graficar los datos de ejecución presupuestaria de Universidades Nacionales disponible [aquí](https://github.com/rquiroga7/presupuesto_Universitario).  Este informe se visualiza mejor en un navegador, [aquí](https://github.com/rquiroga7/presupuesto_Universitario). Para descargar la versión más actualizada de este informe en versión PDF, click [aquí](https://github.com/rquiroga7/presupuesto_Universitario/raw/main/2025_04_Presupuesto_Univ.pdf?raw=1).
 
 ## Crisis Presupuestaria 2023-2025: Momentos Clave
 
@@ -43,14 +43,14 @@ A continuación analizaremos la evolución mensual del presupuesto universitario
 
 <p align="center"><img src="plots/presupuesto_mensual_funcionamiento_2023-2025.png"  height="600" width="600" ></p>
 
-El gráfico muestra la evolución mensual del presupuesto de funcionamiento en términos reales (ajustado a pesos de marzo de 2025). Los aumentos logrados tras las marchas universitarias (abril y octubre 2024) resultaron insuficientes ante la inflación y el aumento de costos operativos. Adicionalmente, la entrada en vigencia del presupuesto 2025 (en realidad de la re-re-conducción del presupuesto 2022) significó un retroceso importante en las partidas para funcionamiento, casi a los niveles previos a la primer marcha universitaria de 2024.
+El gráfico muestra la evolución mensual del presupuesto de funcionamiento en términos reales (ajustado a pesos de marzo de 2025). Los aumentos logrados tras las marchas universitarias (abril y octubre 2024) resultaron insuficientes ante la inflación y el aumento de costos operativos. Adicionalmente, la entrada en vigencia del presupuesto 2025 (en realidad de la re-re-conducción del presupuesto 2022) significó un retroceso importante en las partidas para funcionamiento, casi a los niveles previos a la primera marcha universitaria de 2024.
 
  #### 1b. Presupuesto mensual - Salarios
 
 <p align="center"><img src="plots/presupuesto_mensual_salarial_2023-2025.png"  height="600" width="600" ></p>
 
 
-El presupuesto salarial es diferente. La primer marcha no tuvo como respuesta del gobierno una mejora salarial, lo que sí ocurrió con la segunda marcha. Sin embargo esta mejora fue muy menor, y básicamente consistió en la actualización de la garantía salarial para los docentes de menor antiguedad y dedicación. A partir de las paritarias de 0%-1% de fines de 2024 y 2025, los salarios se volvieron a deteriorar, al punto de ser similares a los niveles previos a la primer marcha universitaria de 2024.
+El presupuesto salarial es diferente. La primera marcha no tuvo como respuesta del gobierno una mejora salarial, lo que sí ocurrió con la segunda marcha. Sin embargo esta mejora fue muy menor, y básicamente consistió en la actualización de la garantía salarial para los docentes de menor antiguedad y dedicación. A partir de las paritarias de 0%-1% de fines de 2024 y 2025, los salarios se volvieron a deteriorar, al punto de ser similares a los niveles previos a la primera marcha universitaria de 2024.
 
 ---
 
@@ -119,7 +119,7 @@ La crisis presupuestaria universitaria en el gobierno de Milei representa un pun
    - Discontinuidad de líneas de investigación y extensión.
    - Pérdida de recursos humanos calificados. Los docentes universitarios están eligiendo otros rumbos, ya sea en el exterior, o en el sector privado. [Los docentes que están al frente de los trabajos prácticos, con poca antiguedad, están cobrando alrededor de 165 mil pesos de bolsillo](https://x.com/rquiroga777/status/1900925151975534592?t=kG0QyZaoTPUmaWuHCQ00GQ).
 
-Queda claro que las marchas universitarias federales fueron la única manera en la cual se logró que el gobierno recompusiera al menos parcialmente los presupuestos de funcionamiento. Sin embargo, los salarios, así como los presupuestos de ciencia, extensión y salud, nunca se recompusieron. Adicionalmente, en los primeros meses de 2025 hubo un claro retroceso respecto de las mejoras presupuestarias conseguidas en 2024. Esto nos sumerge en una crisis presupuestaria y salarial similar a la que teníamos antes de la primer marcha universitaria del 2024.
+Queda claro que las marchas universitarias federales fueron la única manera en la cual se logró que el gobierno recompusiera al menos parcialmente los presupuestos de funcionamiento. Sin embargo, los salarios, así como los presupuestos de ciencia, extensión y salud, nunca se recompusieron. Adicionalmente, en los primeros meses de 2025 hubo un claro retroceso respecto de las mejoras presupuestarias conseguidas en 2024. Esto nos sumerge en una crisis presupuestaria y salarial similar a la que teníamos antes de la primera marcha universitaria del 2024.
 
 Esto ha impactado de manera directa en las universidades, con la suspensión de líneas de investigación y proyectos de extensión comunitaria. Adicionalmente, en muchas carreras se suspenden o reducen la cantidad, variedad y complejidad de las actividades prácticas debido a la restricción presupuestaria, resultando en una menor calidad académica. La excelencia y el prestigio académico que las universidades públicas argentinas siempre tuvieron está en franco declive, y vamos rumbo al colapso.
 
