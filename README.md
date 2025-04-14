@@ -2,7 +2,7 @@
 ## En 2025 estamos en una situación similar a la que teníamos previo a la primera marcha federal universitaria
 ===============================================================
 
-Última actualización 11/04/2025
+Última actualización 14/04/2025
 
 **Dr. Rodrigo Quiroga**  
 Investigador Adjunto INFIQC-CONICET  
