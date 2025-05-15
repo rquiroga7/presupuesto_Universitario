@@ -8,6 +8,9 @@ library(tidyverse)
 `%notin%` <- Negate(`%in%`)
 source("funciones.R")
 
+min_mes=as.Date("2023-01-01")
+max_mes=as.Date("2025-04-01")
+
 #Load IPC from file
 ipc <- read.csv("ipc/ipc.csv")
 #ipc$cumulative <- cumprod(1+ipc$ipc/100)/(1+ipc$ipc[1]/100)
@@ -137,8 +140,6 @@ ggplot(data_mensual, aes(x=fecha)) +
 
 
 #Remover efecto de aguinaldos para meses de junio y diciembre
-min_mes=as.Date("2023-01-01")
-max_mes=as.Date("2025-04-01")
 data_mensual_noagui <- remove_aguinaldo_effect(data_mensual, max_mes, min_mes,1.4)
 
 # Calculate 3-month averages
