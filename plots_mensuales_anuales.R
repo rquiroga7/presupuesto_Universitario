@@ -6,7 +6,7 @@ library(zoo)
 library(scales)
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
-source("functions.R")
+source("funciones.R")
 
 #Load IPC from file
 ipc <- read.csv("ipc/ipc.csv")
@@ -20,7 +20,7 @@ ipc$fecha <- as.Date(ipc$fecha, format = "%Y-%m-%d")
 proy_anio <- year(max_mes)
 
 #Load ipc25_18 from file
-ipc25_18 <- read.csv("ipc/ipc_proy2025_18anual.csv")
+ipc25_18 <- read.csv("ipc/ipc_proy2025_rem.csv")
 ipc25_18$fecha <- as.Date(ipc25_18$fecha, format = "%Y-%m-%d")
 ipc25_18 <- ipc25_18 %>% mutate(ipc_indice = round(ipc_indice / normalize_value, 4)) %>% rename(cumulative = ipc_indice)
 
@@ -35,6 +35,7 @@ data2022 <- fromJSON("datos/2022.json") %>% mutate(impacto_presupuestario_fecha=
 data2023 <- fromJSON("datos/2023.json") %>% mutate(impacto_presupuestario_fecha=as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
 data2024 <- fromJSON("datos/2024.json") 
 data2025 <- fromJSON("datos/2025.json") 
+
 
 
 #Join into data
@@ -137,7 +138,7 @@ ggplot(data_mensual, aes(x=fecha)) +
 
 #Remover efecto de aguinaldos para meses de junio y diciembre
 min_mes=as.Date("2023-01-01")
-max_mes=as.Date("2025-03-01")
+max_mes=as.Date("2025-04-01")
 data_mensual_noagui <- remove_aguinaldo_effect(data_mensual, max_mes, min_mes,1.4)
 
 # Calculate 3-month averages
@@ -148,7 +149,7 @@ plot_budget_data(
   include_three_month_avg = TRUE,
   title = "Universidades Nacionales: Presupuesto mensual total",
   output_file = paste0("plots/presupuesto_mensual_2023-",proy_anio,".png"),
-  max_mes = as.Date("2025-03-01"),
+  max_mes = max_mes,
   color_mapping = color_mapping,
   dark_color_mapping = dark_color_mapping,
   coord_cartesian_min = 200000, # Custom minimum value for coord_cartesian
@@ -160,7 +161,7 @@ plot_budget_data(
   include_three_month_avg = TRUE,
   title = "Universidades Nacionales: Presupuesto mensual total",
   output_file = paste0("plots/wide_presupuesto_mensual_2023-",proy_anio,".png"),
-  max_mes = as.Date("2025-03-01"),
+  max_mes = max_mes,
   color_mapping = color_mapping,
   dark_color_mapping = dark_color_mapping,
   coord_cartesian_min = 200000, # Custom minimum value for coord_cartesian
@@ -191,7 +192,7 @@ plot_budget_data(
   include_three_month_avg = TRUE,
   title = "Universidades Nacionales: Presupuesto mensual salarial",
   output_file = paste0("plots/presupuesto_mensual_salarial_2023-",proy_anio,".png"),
-  max_mes = as.Date("2025-03-01"),
+  max_mes = max_mes,
   color_mapping = color_mapping,
   dark_color_mapping = dark_color_mapping,
   coord_cartesian_min = 200000, # Custom minimum value for coord_cartesian
@@ -204,7 +205,7 @@ plot_budget_data(
   include_three_month_avg = TRUE,
   title = "Universidades Nacionales: Presupuesto mensual salarial",
   output_file = paste0("plots/wide_presupuesto_mensual_salarial_2023-",proy_anio,".png"),
-  max_mes = as.Date("2025-03-01"),
+  max_mes = max_mes,
   color_mapping = color_mapping,
   dark_color_mapping = dark_color_mapping,
   coord_cartesian_min = 200000, # Custom minimum value for coord_cartesian
@@ -226,7 +227,7 @@ plot_budget_data(
   include_three_month_avg = TRUE,
   title = "Universidades Nacionales: Presupuesto mensual no salarial",
   output_file = paste0("plots/presupuesto_mensual_nosalarial_2023-",proy_anio,".png"),
-  max_mes = as.Date("2025-03-01"),
+  max_mes = max_mes,
   color_mapping = color_mapping,
   dark_color_mapping = dark_color_mapping,
   coord_cartesian_min = 0, # Custom minimum value for coord_cartesian
@@ -251,7 +252,7 @@ plot_budget_data(
   include_three_month_avg = TRUE,
   title = "Universidades Nacionales: Presupuesto mensual funcionamiento (act. 14)",
   output_file = paste0("plots/presupuesto_mensual_funcionamiento_2023-",proy_anio,".png"),
-  max_mes = as.Date("2025-03-01"),
+  max_mes = max_mes,
   color_mapping = color_mapping,
   dark_color_mapping = dark_color_mapping,
   coord_cartesian_min = 0, # Custom minimum value for coord_cartesian
@@ -269,7 +270,7 @@ plot_budget_data(
   include_three_month_avg = TRUE,
   title = "Universidades Nacionales: Presupuesto mensual funcionamiento (act. 14)",
   output_file = paste0("plots/wide_presupuesto_mensual_funcionamiento_2023-",proy_anio,".png"),
-  max_mes = as.Date("2025-03-01"),
+  max_mes = max_mes,
   color_mapping = color_mapping,
   dark_color_mapping = dark_color_mapping,
   coord_cartesian_min = 0, # Custom minimum value for coord_cartesian
