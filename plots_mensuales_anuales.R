@@ -9,7 +9,7 @@ library(tidyverse)
 source("funciones.R")
 
 min_mes=as.Date("2023-01-01")
-max_mes=as.Date("2025-04-01")
+max_mes=as.Date("2025-05-01")
 
 #Load IPC from file
 ipc <- read.csv("ipc/ipc.csv")
