@@ -30,10 +30,11 @@ data2021 <- fromJSON("datos/2021.json") %>% mutate(impacto_presupuestario_fecha=
 data2022 <- fromJSON("datos/2022.json") %>% mutate(impacto_presupuestario_fecha=as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
 data2023 <- fromJSON("datos/2023.json") %>% mutate(impacto_presupuestario_fecha=as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
 data2024 <- fromJSON("datos/2024.json") 
+data2025 <- fromJSON("datos/2025.json") 
 
 
 #Join into data
-data <- as.data.frame(rbind(data2017, data2018, data2019, data2020, data2021, data2022, data2023, data2024))
+data <- as.data.frame(rbind(data2017, data2018, data2019, data2020, data2021, data2022, data2023, data2024,data2025))
 data<-data %>%  
     #If impacto_presupuestario_fecha is 2023-03-30 or 2023-03-31, then the value of impacto_presupuestario_mes should change to 4
     mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & impacto_presupuestario_fecha >= as.Date("2023-03-30") & impacto_presupuestario_fecha <=as.Date("2023-03-31"), 4, impacto_presupuestario_mes)) %>%
@@ -57,16 +58,15 @@ data<-data %>%
 colors9=c("#d4d400","#d4d400","#d4d400", "#31ffff", "#31ffff", "#31ffff", "#31ffff", "#a8009d", "#a8009d")
 
 
-
 #Load ipc25_18 from file
 
-ipc25_18 <- read.csv("ipc/ipc_proy2025_18anual.csv")
+ipc25_18 <- read.csv("ipc/ipc_proy2025_rem.csv")
 ipc25_18$fecha <- as.Date(ipc25_18$fecha, format = "%Y-%m-%d")
 ipc25_18 <- ipc25_18 %>% mutate(ipc_indice = round(ipc_indice / normalize_value, 4)) %>% rename(cumulative = ipc_indice)
-ipc25_28 <- read.csv("ipc/ipc_proy2025_28anual.csv")
+ipc25_28 <- read.csv("ipc/ipc_proy2025_rem.csv")
 ipc25_28$fecha <- as.Date(ipc25_28$fecha, format = "%Y-%m-%d")
 ipc25_28 <- ipc25_28 %>% mutate(ipc_indice = round(ipc_indice / normalize_value, 4)) %>% rename(cumulative = ipc_indice)
-ipc25_38 <- read.csv("ipc/ipc_proy2025_38anual.csv")
+ipc25_38 <- read.csv("ipc/ipc_proy2025_rem.csv")
 ipc25_38$fecha <- as.Date(ipc25_38$fecha, format = "%Y-%m-%d")
 ipc25_38 <- ipc25_38 %>% mutate(ipc_indice = round(ipc_indice / normalize_value, 4)) %>% rename(cumulative = ipc_indice)
 
@@ -86,13 +86,13 @@ n_months <- interval(first_proj_month, last_month) %/% months(1) + 1
 resto <- data.frame(
   fecha = seq(first_proj_month, last_month, by = "months"),
   impacto_presupuestario_mes = month(seq(first_proj_month, last_month, by = "months")),
-  impacto_presupuestario_anio = 2024,
+  impacto_presupuestario_anio = year(seq(first_proj_month, last_month, by = "months")),
   credito_devengado = 0,
   credito_devengado_real = rep(last$credito_devengado_real, n_months)
 )
 # If fecha is 2024-12-01 or 2024-06-01 and credito_devengado is 0, then modify the value of credito_devengado_real to be 1.6 times the previous value
 resto <- resto %>% 
-  mutate(credito_devengado_real = ifelse(fecha %in% as.Date(c("2024-12-01", "2024-06-01")) & credito_devengado == 0, credito_devengado_real * 1.5, credito_devengado_real))
+  mutate(credito_devengado_real = ifelse(month(fecha) %in% c(12, 6) & credito_devengado == 0, credito_devengado_real * 1.45, credito_devengado_real))
 
 resto2 <- merge(resto, ipc25_18, by.x = "fecha", by.y = "fecha") %>% 
           select(-ipc) %>%
@@ -141,8 +141,8 @@ data_anual_2025_100 <- data_mensual_3 %>%
 
 
 
-#Paso a pesos de 2025-06-01
-max_mes25 <- as.Date("2025-06-01")
+#Paso a pesos de max mes
+max_mes25 <- as.Date(max_mes)
 normalize_value25 <- ipc25_18 %>% filter(as.Date(fecha) == max_mes25) %>% pull(cumulative)
 #Recalculate credito_devengado_real for data_mensual_3
 data_mensual_3_25 <- data_mensual_3 %>% 
