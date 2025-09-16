@@ -6,6 +6,7 @@ library(zoo)
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
 
+#DESACTUALIZADO, NO USAR
 
 
 #Load IPC from file
