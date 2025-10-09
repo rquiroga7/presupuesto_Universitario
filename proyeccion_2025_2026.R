@@ -131,7 +131,7 @@ proj_2026_ley <- data.frame(
 )
 
 # Scenario 2: 20% inflation with 0.99 real budget multiplier
-proj_2026_25 <- data.frame(
+proj_2026_20 <- data.frame(
   fecha = seq(as.Date("2026-01-01"), as.Date("2026-12-01"), by = "months"),
   impacto_presupuestario_mes = month(seq(as.Date("2026-01-01"), as.Date("2026-12-01"), by = "months")),
   impacto_presupuestario_anio = 2026,
@@ -145,8 +145,8 @@ proj_2026_25 <- data.frame(
 # Combine all data for analysis
 data_mensual_complete <- bind_rows(
   data_mensual_with_2025 %>% mutate(scenario = "Histórico"),
-  proj_2026_ley,
-  proj_2026_25
+  proj_2026_20,
+  proj_2026_ley
 )
 
 # Create annual summaries - focusing on real budget sums
@@ -196,12 +196,12 @@ plot_data_combined <- bind_rows(
     mutate(scenario_display = "Histórico", 
            # Convert historical real values to June 2026 pesos by multiplying by June 2026 IPC
            credito_june_2026_pesos = credito_devengado_real_anual * june_2026_ipc),
-  data_anual_scenarios %>% filter(scenario == "Ley financiamiento") %>%
-    mutate(scenario_display = "2026 - Ley financiamiento",
-           # 2026 real values already in real terms, convert to June 2026 pesos
-           credito_june_2026_pesos = credito_devengado_real_anual * june_2026_ipc),
   data_anual_scenarios %>% filter(scenario == "Escenario 20%") %>%
     mutate(scenario_display = "2026 - Escenario 20%",
+           # 2026 real values already in real terms, convert to June 2026 pesos
+           credito_june_2026_pesos = credito_devengado_real_anual * june_2026_ipc),
+  data_anual_scenarios %>% filter(scenario == "Ley financiamiento") %>%
+    mutate(scenario_display = "2026 - Ley financiamiento",
            # 2026 real values already in real terms, convert to June 2026 pesos
            credito_june_2026_pesos = credito_devengado_real_anual * june_2026_ipc)
 )
@@ -211,7 +211,7 @@ plot_data_combined <- plot_data_combined %>%
   mutate(
     year_scenario = case_when(
       scenario == "Histórico" ~ as.character(impacto_presupuestario_anio),
-      scenario %in% c("Escenario 10%", "Escenario 20%") ~ "2026",
+      scenario %in% c("Ley financiamiento", "Escenario 20%") ~ "2026",
       TRUE ~ as.character(impacto_presupuestario_anio)
     ),
     scenario_type = case_when(
@@ -227,7 +227,9 @@ plot_data_combined <- plot_data_combined %>%
       scenario == "Ley financiamiento" ~ "green",
       scenario == "Escenario 20%" ~ "purple_2",
       TRUE ~ "other"
-    )
+    ),
+    # Add explicit factor ordering for scenario to control dodge order
+    scenario_factor = factor(scenario, levels = c("Histórico", "Escenario 20%", "Ley financiamiento"))
   ) %>%
   arrange(impacto_presupuestario_anio, scenario)
 
@@ -244,9 +246,10 @@ color_mapping <- c(
 max_mes_display <- as.Date(max_mes)
 
 # Single plot: Historical timeline with 2026 scenarios
-ggplot(plot_data_combined, aes(x=factor(year_scenario, levels=unique(year_scenario)), 
+plot2026<-ggplot(plot_data_combined, aes(x=factor(year_scenario, levels=unique(year_scenario)), 
                                y=credito_june_2026_pesos/1000000, 
-                               fill=color_group)) +
+                               fill=color_group,
+                               group=scenario_factor)) +
   geom_bar(stat="identity", position = position_dodge(width = 0.8), width = ifelse(plot_data_combined$year_scenario == "2026", 0.8, 0.8)) +
   labs(title = "Universidades Nacionales: Presupuesto anual real devengado",
        subtitle = "Histórico (2017-2025) y proyecciones 2026 - Valores en pesos de junio 2026",
@@ -264,11 +267,11 @@ ggplot(plot_data_combined, aes(x=factor(year_scenario, levels=unique(year_scenar
   geom_text(data = plot_data_combined %>% filter(scenario == "Ley financiamiento"),
             aes(x = factor(year_scenario, levels=unique(plot_data_combined$year_scenario)), 
                 y = credito_june_2026_pesos/2000000, label = "Ley de financiamiento universitario"),
-            position = position_nudge(x = -0.2), color = "white", angle = 90, size = 4, fontface = "bold") +
+            position = position_nudge(x = 0.2), color = "white", angle = 90, size = 4, fontface = "bold") +
   geom_text(data = plot_data_combined %>% filter(scenario == "Escenario 20%"),
             aes(x = factor(year_scenario, levels=unique(plot_data_combined$year_scenario)), 
                 y = credito_june_2026_pesos/2000000, label = "Presupuesto Milei 2026 (20% inflación anual)"),
-            position = position_nudge(x = 0.2), color = "white", angle = 90, size = 4, fontface = "bold") +
+            position = position_nudge(x = -0.2), color = "white", angle = 90, size = 4, fontface = "bold") +
   scale_y_continuous(labels = function(x) format(x, decimal.mark=",", nsmall=1), 
                      limits = c(NA, max(plot_data_combined$credito_june_2026_pesos/1000000) * 1.1)) +
   theme(legend.position = "none", 
@@ -280,7 +283,7 @@ ggplot(plot_data_combined, aes(x=factor(year_scenario, levels=unique(year_scenar
         plot.margin = margin(t = 5, r = 5, b = 5, l = 5)) +
   labs(caption = str_wrap("Se ajustó el crédito devengado en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor) y se anualizan los montos. Para proyectar 2025 se considera un ajuste mensual del presupuesto igual al IPC. Para 2026 se proyecta una ejecución mensual actualizada por IPC del mes de noviembre de 2025 con un aumento anual del 18,8%. Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario", width = 120))
 
-ggsave("plots/proyeccion_historica_2017_2025.png", width = 9, height = 9, units = "in", dpi = 300)
+ggsave("plots/proyeccion_historica_2017_2025.png", plot = plot2026, width = 9, height = 9, units = "in", dpi = 300)
 
 # Summary table
 print("Resumen de proyecciones (en billones de pesos de junio 2026):")
