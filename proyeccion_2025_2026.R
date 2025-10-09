@@ -107,7 +107,33 @@ data_mensual_with_2025 <- bind_rows(
 # For 2026 projections, we work directly with real budget amounts
 # No need for IPC projections since we're plotting real values
 
-# Project 2026 scenarios
+# Scenario 2: 20% inflation with 0.99 real budget multiplier
+proj_2026_20 <- data.frame(
+  fecha = seq(as.Date("2026-01-01"), as.Date("2026-12-01"), by = "months"),
+  impacto_presupuestario_mes = month(seq(as.Date("2026-01-01"), as.Date("2026-12-01"), by = "months")),
+  impacto_presupuestario_anio = 2026,
+  credito_devengado = 0,
+  credito_devengado_real = ifelse(month(seq(as.Date("2026-01-01"), as.Date("2026-12-01"), by = "months")) %in% c(6, 12), 
+                                 base_credito_real * 0.99 * 1.45, 
+                                 base_credito_real * 0.99),
+  scenario = "Escenario 20%"
+)
+
+# Combine all data for analysis
+data_mensual_complete <- bind_rows(
+  data_mensual_with_2025 %>% mutate(scenario = "Histórico"),
+  proj_2026_20
+)
+
+# Create annual summaries - focusing on real budget sums
+data_anual_scenarios <- data_mensual_complete %>%
+  group_by(impacto_presupuestario_anio, scenario) %>%
+  summarise(
+    credito_devengado_real_anual = round(sum(credito_devengado_real), 0),
+    .groups = "drop"
+  )
+
+# Now create the "Ley financiamiento" scenario after data_anual_scenarios exists
 # Get 2023 annual budget to match for "Ley de financiamiento universitario" scenario
 budget_2023 <- data_anual_scenarios %>% 
   filter(scenario == "Histórico" & impacto_presupuestario_anio == 2023) %>% 
@@ -130,26 +156,13 @@ proj_2026_ley <- data.frame(
   scenario = "Ley financiamiento"
 )
 
-# Scenario 2: 20% inflation with 0.99 real budget multiplier
-proj_2026_20 <- data.frame(
-  fecha = seq(as.Date("2026-01-01"), as.Date("2026-12-01"), by = "months"),
-  impacto_presupuestario_mes = month(seq(as.Date("2026-01-01"), as.Date("2026-12-01"), by = "months")),
-  impacto_presupuestario_anio = 2026,
-  credito_devengado = 0,
-  credito_devengado_real = ifelse(month(seq(as.Date("2026-01-01"), as.Date("2026-12-01"), by = "months")) %in% c(6, 12), 
-                                 base_credito_real * 0.99 * 1.45, 
-                                 base_credito_real * 0.99),
-  scenario = "Escenario 20%"
-)
-
-# Combine all data for analysis
+# Add the "Ley financiamiento" scenario to the complete data
 data_mensual_complete <- bind_rows(
-  data_mensual_with_2025 %>% mutate(scenario = "Histórico"),
-  proj_2026_20,
+  data_mensual_complete,
   proj_2026_ley
 )
 
-# Create annual summaries - focusing on real budget sums
+# Recreate annual summaries with the new scenario included
 data_anual_scenarios <- data_mensual_complete %>%
   group_by(impacto_presupuestario_anio, scenario) %>%
   summarise(
@@ -295,3 +308,4 @@ print(plot_data_combined %>%
 print(paste0("Presupuesto base (agosto 2025): ", format(round(base_credito_real/1000000, 1), decimal.mark=",", nsmall=1), " billones"))
 print(paste0("IPC junio 2026 (referencia): ", round(june_2026_ipc, 4)))
 print(paste0("Valor referencia junio 2026: ", format(round(base_credito_real * june_2026_ipc/1000000, 1), decimal.mark=",", nsmall=1), " billones"))
+
