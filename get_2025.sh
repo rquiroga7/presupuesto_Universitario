@@ -76,4 +76,4 @@ curl -X POST \
             "value": "Desarrollo de la Educacion Superior",
             "operator": "equal"}   
     ]
-}' > 2025.json
+}' > datos/2025.json

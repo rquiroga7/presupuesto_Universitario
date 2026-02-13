@@ -229,6 +229,23 @@ generate_projection <- function(data, ipc25_18, actividad_ids = NULL, adjust_spe
     data <- data %>% filter(subparcial_desc %notin% noinc)
   }
 
+  # Add gobierno column if it doesn't exist
+  if (!"gobierno" %in% colnames(data)) {
+    data <- generate_government_column(data)
+  }
+
+  # Add cumulative column if it doesn't exist (join with IPC data)
+  if (!"cumulative" %in% colnames(data)) {
+    data <- data %>%
+      left_join(ipc25_18 %>% select(fecha, cumulative), by = "fecha")
+  }
+
+  # Add credito_devengado_real column if it doesn't exist
+  if (!"credito_devengado_real" %in% colnames(data)) {
+    data <- data %>%
+      mutate(credito_devengado_real = credito_devengado / cumulative)
+  }
+
   data_mensual <- data %>% 
     ungroup() %>%
     mutate(fecha = as.Date(paste(impacto_presupuestario_anio, impacto_presupuestario_mes, "01", sep = "-"), format = "%Y-%m-%d")) %>% 
@@ -249,8 +266,22 @@ generate_projection <- function(data, ipc25_18, actividad_ids = NULL, adjust_spe
   last_year_data <- data_mensual %>% filter(impacto_presupuestario_anio == last_year)
 
   # Determine the value to use for projections
-  if (use_average && nrow(last_year_data) > 0) {
-    projection_value <- mean(last_year_data$credito_devengado_real, na.rm = TRUE)
+  # When use_average = TRUE, use the last COMPLETE year (12 months) for averaging
+  # This handles cases where we're in a new year with only partial data
+  if (use_average) {
+    # Check if last_year has full 12 months of data
+    if (nrow(last_year_data) < 12) {
+      # Use the previous year's data for averaging (the last complete year)
+      prev_year_data <- data_mensual %>% filter(impacto_presupuestario_anio == last_year - 1)
+      if (nrow(prev_year_data) == 12) {
+        projection_value <- mean(prev_year_data$credito_devengado_real, na.rm = TRUE)
+      } else {
+        # Fall back to last_year data if prev year also incomplete
+        projection_value <- mean(last_year_data$credito_devengado_real, na.rm = TRUE)
+      }
+    } else {
+      projection_value <- mean(last_year_data$credito_devengado_real, na.rm = TRUE)
+    }
   } else if (!use_average && nrow(last_year_data) > 0) {
     projection_value <- tail(last_year_data$credito_devengado_real, 1)
   } else {

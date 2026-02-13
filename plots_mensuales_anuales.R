@@ -9,7 +9,7 @@ library(tidyverse)
 source("funciones.R")
 
 min_mes=as.Date("2023-01-01")
-max_mes=as.Date("2025-05-01")
+max_mes=as.Date("2026-01-01")
 
 #Load IPC from file
 ipc <- read.csv("ipc/ipc.csv")
@@ -22,10 +22,10 @@ ipc <- ipc %>% mutate(cumulative = round(cumulative / normalize_value, 4))
 ipc$fecha <- as.Date(ipc$fecha, format = "%Y-%m-%d")
 proy_anio <- year(max_mes)
 
-#Load ipc25_18 from file
-ipc25_18 <- read.csv("ipc/ipc_proy2025_rem.csv")
-ipc25_18$fecha <- as.Date(ipc25_18$fecha, format = "%Y-%m-%d")
-ipc25_18 <- ipc25_18 %>% mutate(ipc_indice = round(ipc_indice / normalize_value, 4)) %>% rename(cumulative = ipc_indice)
+#Load ipc_proj from file
+ipc_proj <- read.csv("ipc/ipc_proy_rem.csv")
+ipc_proj$fecha <- as.Date(ipc_proj$fecha, format = "%Y-%m-%d")
+ipc_proj <- ipc_proj %>% mutate(ipc_indice = round(ipc_indice / normalize_value, 4)) %>% rename(cumulative = ipc_indice)
 
 
 #Read json files into table (2017-2024)
@@ -38,11 +38,12 @@ data2022 <- fromJSON("datos/2022.json") %>% mutate(impacto_presupuestario_fecha=
 data2023 <- fromJSON("datos/2023.json") %>% mutate(impacto_presupuestario_fecha=as.Date(paste0(impacto_presupuestario_anio,"-",impacto_presupuestario_mes,"-01")))
 data2024 <- fromJSON("datos/2024.json") 
 data2025 <- fromJSON("datos/2025.json") 
+data2026 <- fromJSON("datos/2026.json") 
 
 
 
 #Join into data
-data <- as.data.frame(rbind(data2017, data2018, data2019, data2020, data2021, data2022, data2023, data2024, data2025))
+data <- as.data.frame(rbind(data2017, data2018, data2019, data2020, data2021, data2022, data2023, data2024, data2025,data2026))
 data<-data %>%  
     #If impacto_presupuestario_fecha is 2023-03-30 or 2023-03-31, then the value of impacto_presupuestario_mes should change to 4
     mutate(impacto_presupuestario_mes = ifelse(actividad_id %in% c(14,15,16) & impacto_presupuestario_fecha >= as.Date("2023-03-30") & impacto_presupuestario_fecha <=as.Date("2023-03-31"), 4, impacto_presupuestario_mes)) %>%
@@ -289,7 +290,7 @@ plot_budget_data(
 ##############
 #DATA ANUAL
 #############
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE)
+data_mensual_2 <- generate_projection(data, ipc_proj, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE)
 data_anual <- annualize(data_mensual_2)
 
 #ANUAL TOTAL
@@ -303,7 +304,7 @@ plot_annual_budget( data = data_anual,
 
 #View(data %>% filter(fecha == "2024-12-01" & actividad_id == 12 & subparcial_desc == "Universidad de Buenos Aires") )
 
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1,use_average = TRUE,inc=c("Universidad de Buenos Aires"),actividad_ids = c(15))
+data_mensual_2 <- generate_projection(data, ipc_proj, adjust_specific_months = TRUE, adjustment_factor = 1,use_average = TRUE,inc=c("Universidad de Buenos Aires"),actividad_ids = c(15))
 data_anual <- annualize(data_mensual_2)
 #Salud UBA
 plot_annual_budget( data = data_anual, 
@@ -314,7 +315,7 @@ plot_annual_budget( data = data_anual,
   color_mapping = color_mapping
 )
 
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1,use_average = TRUE,noinc=c("Universidad de Buenos Aires"),actividad_ids = c(15))
+data_mensual_2 <- generate_projection(data, ipc_proj, adjust_specific_months = TRUE, adjustment_factor = 1,use_average = TRUE,noinc=c("Universidad de Buenos Aires"),actividad_ids = c(15))
 data_anual <- annualize(data_mensual_2)
 #Salud no-UBA
 plot_annual_budget( data = data_anual, 
@@ -326,7 +327,7 @@ plot_annual_budget( data = data_anual,
 )
 
 #ANUAL SALARIAL
-data_mensual_2 <- generate_projection(data, ipc25_18,actividad_ids = c(12,13) ,adjust_specific_months = TRUE, adjustment_factor = 1.5,use_average = TRUE)
+data_mensual_2 <- generate_projection(data, ipc_proj,actividad_ids = c(12,13) ,adjust_specific_months = TRUE, adjustment_factor = 1.5,use_average = TRUE)
 data_anual_salarial <- annualize(data_mensual_2)
 plot_annual_budget( data = data_anual_salarial, 
   title = "Universidades Nacionales: Presupuesto anual salarial devengado",
@@ -337,7 +338,7 @@ plot_annual_budget( data = data_anual_salarial,
 )
 
 #ANUAL FUNCIONAMIENTO
-data_mensual_2 <- generate_projection(data, ipc25_18,actividad_ids = c(14) ,adjust_specific_months = FALSE, use_average = TRUE)
+data_mensual_2 <- generate_projection(data, ipc_proj,actividad_ids = c(14) ,adjust_specific_months = FALSE, use_average = TRUE)
 data_anual_func <- annualize(data_mensual_2)
 plot_annual_budget( data = data_anual_func, 
   title = "Universidades Nacionales: Presupuesto anual devengado (funcionamiento)",
@@ -348,7 +349,7 @@ plot_annual_budget( data = data_anual_func,
 )
 
 #ANUAL CIENCIA
-data_mensual_2 <- generate_projection(data, ipc25_18,actividad_ids = c(16) ,adjust_specific_months = FALSE, use_average = TRUE)
+data_mensual_2 <- generate_projection(data, ipc_proj,actividad_ids = c(16) ,adjust_specific_months = FALSE, use_average = TRUE)
 data_anual_cyt <- annualize(data_mensual_2)
 plot_annual_budget( data = data_anual_cyt, 
   title = "Universidades Nacionales: Presupuesto anual devengado (Ciencia)",
@@ -360,7 +361,7 @@ plot_annual_budget( data = data_anual_cyt,
 )
 
 #ANUAL EXTENSIÓN
-data_mensual_2 <- generate_projection(data, ipc25_18,actividad_ids = c(25) ,adjust_specific_months = FALSE, use_average = TRUE)
+data_mensual_2 <- generate_projection(data, ipc_proj,actividad_ids = c(25) ,adjust_specific_months = FALSE, use_average = TRUE)
 data_anual_ext <- annualize(data_mensual_2)
 plot_annual_budget( data = data_anual_ext, 
   title = "Universidades Nacionales: Presupuesto anual devengado (Extensión)",
@@ -374,7 +375,7 @@ plot_annual_budget( data = data_anual_ext,
 
 
 #ANUAL SALUD
-data_mensual_2 <- generate_projection(data, ipc25_18,actividad_ids = c(15) ,adjust_specific_months = FALSE, use_average = TRUE)
+data_mensual_2 <- generate_projection(data, ipc_proj,actividad_ids = c(15) ,adjust_specific_months = FALSE, use_average = TRUE)
 data_anual_cyt <- annualize(data_mensual_2)
 plot_annual_budget( data = data_anual_cyt, 
   title = "Universidades Nacionales: Presupuesto anual devengado (Salud)",
@@ -434,7 +435,7 @@ ggplot(df_estudiantes, aes(x=as.factor(anio), y=estudiantes, fill=gobierno)) +
 ggsave("plots/estudiantes_2017-2025.png",width = 10, height = 10, units = "in",dpi=300)
 
 
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE)
+data_mensual_2 <- generate_projection(data, ipc_proj, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE)
 data_anual <- annualize(data_mensual_2)
 
 data_anual_estudiantes<-merge(data_anual,df_estudiantes,by = c("fecha","gobierno"))
@@ -466,7 +467,7 @@ ggsave("plots/presupuesto_anual_porest_base100__2017-2025.png",width = 10, heigh
 #UNC
 ###############
 
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE,inc=c("Universidad Nacional de Córdoba"))
+data_mensual_2 <- generate_projection(data, ipc_proj, adjust_specific_months = TRUE, adjustment_factor = 1.4,use_average = TRUE,inc=c("Universidad Nacional de Córdoba"))
 data_anual <- annualize(data_mensual_2)
 #Total UNC
 plot_annual_budget( data = data_anual, 
@@ -477,7 +478,7 @@ plot_annual_budget( data = data_anual,
   color_mapping = color_mapping
 )
 
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = TRUE, adjustment_factor = 1.5,use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(12,13))
+data_mensual_2 <- generate_projection(data, ipc_proj, adjust_specific_months = TRUE, adjustment_factor = 1.5,use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(12,13))
 data_anual <- annualize(data_mensual_2)
 #Salarios UNC
 plot_annual_budget( data = data_anual, 
@@ -488,7 +489,7 @@ plot_annual_budget( data = data_anual,
   color_mapping = color_mapping
 )
 
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = FALSE, use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(16))
+data_mensual_2 <- generate_projection(data, ipc_proj, adjust_specific_months = FALSE, use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(16))
 data_anual <- annualize(data_mensual_2)
 #Ciencia UNC
 plot_annual_budget( data = data_anual, 
@@ -499,7 +500,7 @@ plot_annual_budget( data = data_anual,
   color_mapping = color_mapping
 )
 
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = FALSE, use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(15))
+data_mensual_2 <- generate_projection(data, ipc_proj, adjust_specific_months = FALSE, use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(15))
 data_anual <- annualize(data_mensual_2)
 #Salud UNC
 plot_annual_budget( data = data_anual, 
@@ -510,7 +511,7 @@ plot_annual_budget( data = data_anual,
   color_mapping = color_mapping
 )
 
-data_mensual_2 <- generate_projection(data, ipc25_18, adjust_specific_months = FALSE, use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(25), last_year = 2025)
+data_mensual_2 <- generate_projection(data, ipc_proj, adjust_specific_months = FALSE, use_average = TRUE,inc=c("Universidad Nacional de Córdoba"),actividad_ids = c(25), last_year = 2025)
 data_anual <- annualize(data_mensual_2)
 #Extensión UNC
 plot_annual_budget( data = data_anual, 
