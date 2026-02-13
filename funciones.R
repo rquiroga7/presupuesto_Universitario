@@ -130,7 +130,8 @@ generate_government_column <- function(df) {
       fecha >= as.Date("2019-12-01") & fecha <= as.Date("2023-11-30") ~ "Fernández",
       fecha >= as.Date("2023-12-01") & fecha <= as.Date("2027-11-30") ~ "Milei",
       TRUE ~ "other" # Optional: Handle dates outside these ranges
-    ))
+    )) %>%
+    mutate(gobierno = factor(gobierno, levels = c("Macri", "Fernández", "Milei", "other")))
   
   # Return the modified dataframe
   return(df)

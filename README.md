@@ -61,13 +61,13 @@ A continuación analizaremos la evolución mensual del presupuesto universitario
 
 #### 1a. Presupuesto mensual - Funcionamiento
 
-<p align="center"><img src="plots/presupuesto_mensual_funcionamiento_2023-2025.png"  height="600" width="600" ></p>
+<p align="center"><img src="plots/presupuesto_mensual_funcionamiento_2023-2026.png"  height="600" width="600" ></p>
 
 El gráfico muestra la evolución mensual del presupuesto de funcionamiento en términos reales (ajustado a pesos de marzo de 2025). Los aumentos logrados tras las marchas universitarias (abril y octubre 2024) resultaron insuficientes ante la inflación y el aumento de costos operativos. Adicionalmente, la entrada en vigencia del presupuesto 2025 (en realidad de la re-re-conducción del presupuesto 2022) significó un retroceso importante en las partidas para funcionamiento, casi a los niveles previos a la primera marcha universitaria de 2024.
 
  #### 1b. Presupuesto mensual - Salarios
 
-<p align="center"><img src="plots/presupuesto_mensual_salarial_2023-2025.png"  height="600" width="600" ></p>
+<p align="center"><img src="plots/presupuesto_mensual_salarial_2023-2026.png"  height="600" width="600" ></p>
 
 
 El presupuesto salarial es diferente. La primera marcha no tuvo como respuesta del gobierno una mejora salarial, lo que sí ocurrió con la segunda marcha. Sin embargo esta mejora fue muy menor, y básicamente consistió en la actualización de la garantía salarial para los docentes de menor antiguedad y dedicación. A partir de las paritarias de 0%-1% de fines de 2024 y 2025, los salarios se volvieron a deteriorar, al punto de ser similares a los niveles previos a la primera marcha universitaria de 2024.
@@ -81,18 +81,18 @@ Para poner en contexto los presupuestos universitarios de 2024 y 2025, es import
 
 #### 2a. Presupuesto Total Anual
 
-<p align="center"><img src="plots/presupuesto_anual_2017-2025.png"  height="600" width="600" ></p>
+<p align="center"><img src="plots/presupuesto_anual_2017-2026.png"  height="600" width="600" ></p>
 
 
 El presupuesto total anual muestra una caída muy significativa para el año 2018, una relativa estabilidad presupuestaria hasta 2022, un pequeño aumento en 2023, y una nueva caída dramática para 2024 y 2025.
 
-<p align="center"><img src="plots/presupuesto_anual_porest_base100__2017-2025.png"  height="600" width="600" ></p>
+<p align="center"><img src="plots/presupuesto_anual_porest_base100__2017-2026.png"  height="600" width="600" ></p>
 
 
 Si tomamos los datos del número de estudiantes universitarios de los anuarios estadísticos de la SPU, y normalizamos el presupuesto por la cantidad de estudiantes, tomando 2017 como la base 100, vemos que por cada 100 pesos por estudiante que se recibían en 2017, en 2025 las universidades recibirán 33 pesos. De esta manera, es imposible sostener la calidad académica de nuestras universidades públicas. 
 
 #### 2b. Presupuesto de funcionamiento
-<p align="center"><img src="plots/presupuesto_anual_funcionamiento_2017-2025.png"  height="600" width="600" ></p>
+<p align="center"><img src="plots/presupuesto_anual_funcionamiento_2017-2026.png"  height="600" width="600" ></p>
 
 
 El presupuesto de funcionamiento muestra una caída histórica:
@@ -101,7 +101,7 @@ El presupuesto de funcionamiento muestra una caída histórica:
 
 
 #### 2c. Presupuesto de Ciencia y Tecnología
-<p align="center"><img src="plots/presupuesto_anual_ciencia_2017-2025.png"  height="600" width="600" ></p>
+<p align="center"><img src="plots/presupuesto_anual_ciencia_2017-2026.png"  height="600" width="600" ></p>
 
 
 La investigación universitaria enfrenta su peor crisis histórica:
@@ -109,14 +109,14 @@ La investigación universitaria enfrenta su peor crisis histórica:
 
 
 #### 2d. Presupuesto de extensión
-<p align="center"><img src="plots/presupuesto_anual_extension_2017-2025.png"  height="600" width="600" ></p>
+<p align="center"><img src="plots/presupuesto_anual_extension_2017-2026.png"  height="600" width="600" ></p>
 
 
 El presupuesto que proviene del gobierno nacional para hacer extensión universitaria (una de las tres funciones sustantivas de las universidades públicas junto a la docencia y la investigación) se redujo a cero durante 2024 y lo mismo sucedió en los primeros tres meses de 2025. Una aberración.
 
 #### 2e. Presupuesto para Salud Universitaria
-<p align="center"><img src="plots/UBA_presupuesto_salud_2017-2025.png"  height="600" width="600" ></p>
-<p align="center"><img src="plots/noUBA_presupuesto_salud_2017-2025.png"  height="600" width="600" ></p>
+<p align="center"><img src="plots/UBA_presupuesto_salud_2017-2026.png"  height="600" width="600" ></p>
+<p align="center"><img src="plots/noUBA_presupuesto_salud_2017-2026.png"  height="600" width="600" ></p>
 
 
 El sistema hospitalario universitario también está en crisis:

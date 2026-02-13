@@ -87,20 +87,17 @@ data<-data %>%
   mutate(credito_devengado_real = credito_devengado/cumulative) 
 
 data<-generate_government_column(data)
-data<-data %>%
-  mutate(gobierno=as.factor(gobierno))
-#Reorder levels of gobierno to 
 
-color_mapping <- c(
-  "Macri" = "#d4d400", # Yellow
-  "Fernández" = "#31ffff", # Cyan
-  "Milei" = "#a8009d" # Violet
+# Use factor levels from data to ensure encoding matches
+gob_levels <- levels(data$gobierno)
+color_mapping <- setNames(
+  c("#d4d400", "#31ffff", "#a8009d", "#808080"),  # Yellow, Cyan, Violet, Gray
+  gob_levels
 )
 
-dark_color_mapping <- c(
-  "Macri" = "#9c9c00", # Yellow
-  "Fernández" = "#0078af", # Cyan
-  "Milei" = "#700069" # Violet
+dark_color_mapping <- setNames(
+  c("#9c9c00", "#0078af", "#700069", "#404040"),  # Dark Yellow, Dark Cyan, Dark Violet, Dark Gray
+  gob_levels
 )
 
 #Chequear que todo esté bien
@@ -242,8 +239,6 @@ plot_budget_data(
       )
 )
 
-
-
 #funcionamiento
 ns_data_mensual_noagui <- s_data_mensual %>% 
                           filter(salarial=="funcionamiento" & fecha<=max_mes & fecha>=min_mes)
@@ -259,7 +254,7 @@ plot_budget_data(
   dark_color_mapping = dark_color_mapping,
   coord_cartesian_min = 0, # Custom minimum value for coord_cartesian
   breaks_y = 10000, # Custom breaks for y-axis
-  marcha_y= 42000,
+  marcha_y= 60000,
   caption = paste0(
         "Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\n",
         "Se incluye la actividad 14 (funcionamiento). Esto incluye funcionamiento, ciencia, salud, becas, extensión, etc.\nEn millones de pesos de ", max_mes, ", promedios trimestrales mostrados como una línea.\n",
