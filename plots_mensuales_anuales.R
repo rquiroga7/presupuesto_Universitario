@@ -8,9 +8,6 @@ library(tidyverse)
 `%notin%` <- Negate(`%in%`)
 source("funciones.R")
 
-min_mes=as.Date("2023-01-01")
-max_mes=as.Date("2026-01-01")
-
 #Load IPC from file
 ipc <- read.csv("ipc/ipc.csv")
 #ipc$cumulative <- cumprod(1+ipc$ipc/100)/(1+ipc$ipc[1]/100)
@@ -22,10 +19,24 @@ ipc <- ipc %>% mutate(cumulative = round(cumulative / normalize_value, 4))
 ipc$fecha <- as.Date(ipc$fecha, format = "%Y-%m-%d")
 proy_anio <- year(max_mes)
 
+
+min_mes=as.Date("2023-01-01")
+#max_mes=as.Date("2026-01-01")
 #Load ipc_proj from file
 ipc_proj <- read.csv("ipc/ipc_proy_rem.csv")
 ipc_proj$fecha <- as.Date(ipc_proj$fecha, format = "%Y-%m-%d")
 ipc_proj <- ipc_proj %>% mutate(ipc_indice = round(ipc_indice / normalize_value, 4)) %>% rename(cumulative = ipc_indice)
+
+# Determine last fully completed month (previous month relative to today)
+last_complete_month <- floor_date(Sys.Date(), "month") - months(1)
+# Choose the latest projection month that is <= last_complete_month
+valid_proj_dates <- ipc_proj$fecha[ipc_proj$fecha <= last_complete_month]
+if (length(valid_proj_dates) == 0) {
+  # fallback to latest real ipc month
+  max_mes <- max(ipc$fecha)
+} else {
+  max_mes <- max(valid_proj_dates)
+}
 
 
 #Read json files into table (2017-2024)
@@ -79,12 +90,37 @@ salario_BSAS <- data %>% filter(
   impacto_presupuestario_anio == 2023 &
   impacto_presupuestario_mes %in% c(3, 4, 5, 6)
 ) 
+ 
 
-data<-data %>% 
-    ungroup() %>%
-    group_by(fecha) %>%
-  left_join(ipc, by = "fecha") %>%
-  mutate(credito_devengado_real = credito_devengado/cumulative) 
+#Chequear que todo esté bien (print sample summary instead of View)
+try({
+  tmp_summary <- data %>% 
+    filter(programa_id==26 & actividad_id == 14 & impacto_presupuestario_anio==2026) %>%
+    group_by(fecha) %>% 
+    summarise(
+      credito_vigente = sum(credito_vigente, na.rm = TRUE),
+      credito_devengado = sum(credito_devengado, na.rm = TRUE),
+      credito_devengado_real = if("credito_devengado_real" %in% colnames(.)) sum(credito_devengado_real, na.rm = TRUE) else NA_real_,
+      cumulative = if("cumulative" %in% colnames(.)) mean(cumulative, na.rm = TRUE) else NA_real_,
+      .groups = "drop"
+    )
+  print(head(tmp_summary, 20))
+}, silent = TRUE)
+
+## Merge IPC real + REM projection so future months have `cumulative`
+ipc_all <- full_join(
+  ipc %>% select(fecha, cumulative),
+  ipc_proj %>% select(fecha, cumulative) %>% rename(cumulative_proj = cumulative),
+  by = "fecha"
+) %>%
+  mutate(cumulative = ifelse(is.na(cumulative), cumulative_proj, cumulative)) %>%
+  select(fecha, cumulative)
+
+data <- data %>%
+  ungroup() %>%
+  group_by(fecha) %>%
+  left_join(ipc_all, by = "fecha") %>%
+  mutate(credito_devengado_real = credito_devengado / cumulative)
 
 data<-generate_government_column(data)
 
@@ -98,18 +134,6 @@ color_mapping <- setNames(
 dark_color_mapping <- setNames(
   c("#9c9c00", "#0078af", "#700069", "#404040"),  # Dark Yellow, Dark Cyan, Dark Violet, Dark Gray
   gob_levels
-)
-
-#Chequear que todo esté bien
-View(data %>% 
-filter(programa_id==26 & actividad_id == 14 & impacto_presupuestario_anio==2023) %>%
-  group_by(fecha) %>% 
-  summarise(
-    credito_vigente = sum(credito_vigente),
-    credito_devengado = sum(credito_devengado),
-    credito_devengado_real = sum(credito_devengado_real),
-    cumulative = mean(cumulative)
-  )
 )
 
 #Calcular data mensual
@@ -321,6 +345,55 @@ plot_annual_budget( data = data_anual,
   color_mapping = color_mapping
 )
 
+# --- Monthly Salud plots (UBA and no-UBA) using plot_budget_data ---
+# UBA monthly
+data_salud_uba_monthly <- data %>%
+  filter(actividad_id == 15 & subparcial_desc == "Universidad de Buenos Aires" & fecha <= max_mes & fecha >= min_mes) %>%
+  group_by(fecha, impacto_presupuestario_anio, gobierno) %>%
+  summarise(
+    credito_devengado = sum(credito_devengado, na.rm = TRUE),
+    credito_devengado_real = sum(credito_devengado_real, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+data_salud_uba_plot <- calculate_three_month_averages(data_salud_uba_monthly)
+
+plot_budget_data(
+  data = data_salud_uba_plot,
+  include_three_month_avg = TRUE,
+  title = "UBA: Presupuesto mensual (Salud)",
+  output_file = paste0("plots/UBA_presupuesto_salud_mensual_2017-", proy_anio, ".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping,
+  dark_color_mapping = dark_color_mapping,
+  coord_cartesian_min = 0,
+  breaks_y = 10000
+)
+
+# no-UBA monthly (all other subparcials)
+data_salud_noUBA_monthly <- data %>%
+  filter(actividad_id == 15 & subparcial_desc != "Universidad de Buenos Aires" & fecha <= max_mes & fecha >= min_mes) %>%
+  group_by(fecha, impacto_presupuestario_anio, gobierno) %>%
+  summarise(
+    credito_devengado = sum(credito_devengado, na.rm = TRUE),
+    credito_devengado_real = sum(credito_devengado_real, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+data_salud_noUBA_plot <- calculate_three_month_averages(data_salud_noUBA_monthly)
+
+plot_budget_data(
+  data = data_salud_noUBA_plot,
+  include_three_month_avg = TRUE,
+  title = "No-UBA: Presupuesto mensual (Salud)",
+  output_file = paste0("plots/noUBA_presupuesto_salud_mensual_2017-", proy_anio, ".png"),
+  max_mes = max_mes,
+  color_mapping = color_mapping,
+  dark_color_mapping = dark_color_mapping,
+  coord_cartesian_min = 0,
+  breaks_y = 10000
+)
+
 #ANUAL SALARIAL
 data_mensual_2 <- generate_projection(data, ipc_proj,actividad_ids = c(12,13) ,adjust_specific_months = TRUE, adjustment_factor = 1.5,use_average = TRUE)
 data_anual_salarial <- annualize(data_mensual_2)
@@ -366,6 +439,8 @@ plot_annual_budget( data = data_anual_ext,
   max_mes = max_mes,
   color_mapping = color_mapping
 )
+
+ 
 
 
 

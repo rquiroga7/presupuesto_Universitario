@@ -6,6 +6,10 @@ library(zoo)
 library(scales)
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
+# ggrepel used for non-overlapping labels (optional)
+if (!requireNamespace("ggrepel", quietly = TRUE)) {
+  message("Package 'ggrepel' not available — labels will use fallback placement.")
+}
 
 plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Presupuesto mensual devengado", 
                              x_axis_title = "Año-Mes", y_axis_title = "Crédito mensual devengado (millones de $)", 
@@ -18,17 +22,19 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
       )
                              ) {
   
-  # Base plot
-  p <- ggplot(data, aes(x = as.factor(fecha), y = credito_devengado_real, fill = gobierno, color = gobierno)) +
-    geom_bar(stat = "identity", alpha = 0.5) +
-    geom_vline(
-      xintercept = as.factor("2024-04-01"), # Convert the date to match the x-axis factor
-      color = "red", linetype = "dashed", size = 0.8
-    ) +
-    geom_vline(
-      xintercept = as.factor("2024-10-01"), # Convert the date to match the x-axis factor
-      color = "red", linetype = "dashed", size = 0.8
-    ) +
+  # Base plot (use Date x-axis so vlines/annotations align)
+  # compute x-axis breaks at Jan/Apr/Jul/Oct for each year
+  min_date <- min(data$fecha, na.rm = TRUE)
+  first_jan <- as.Date(paste0(year(min_date), "-01-01"))
+  if (first_jan > min_date) first_jan <- first_jan - years(1)
+  breaks <- seq(first_jan, max(data$fecha, na.rm = TRUE), by = "3 months")
+
+  p <- ggplot(data, aes(x = fecha, y = credito_devengado_real, fill = gobierno, color = gobierno)) +
+    # Draw march vertical lines first so they appear behind the bars
+    geom_vline(xintercept = as.Date("2024-04-01"), color = "red", linetype = "dashed", size = 0.8) +
+    geom_vline(xintercept = as.Date("2024-10-01"), color = "red", linetype = "dashed", size = 0.8) +
+    geom_vline(xintercept = as.Date("2025-09-01"), color = "red", linetype = "dashed", size = 0.8) +
+    geom_col(alpha = 0.8, width = 25) +
     labs(
       title = title,
       subtitle = paste0("Ajustado por inflación (IPC). En pesos de ", max_mes),
@@ -39,11 +45,15 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
     scale_fill_manual(values = color_mapping) + # Use the same color mapping for bars
     scale_color_manual(values = dark_color_mapping) +
     theme_light(base_size = base_size) +
-    geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), 
-              vjust = 0.5, size = 3, hjust = 1.5, angle = 90, color = "black") +
-    scale_x_discrete(
-      labels = function(x) format(as.Date(x), "%Y-%m") # Format factor levels as YYYY-MM
-    ) +
+    # per-bar labels removed to avoid overlap; 3-month-average labels added below when requested
+    # geom_text(
+    #   aes(label = ifelse(is.na(credito_devengado_real) | credito_devengado_real <= 0, "", scales::comma(round(credito_devengado_real, 0)))),
+    #   position = position_stack(vjust = 0.5),
+    #   size = 2.5,
+    #   color = "white",
+    #   check_overlap = TRUE
+    # ) +
+    scale_x_date(breaks = breaks, date_labels = "%Y-%m") +
     scale_y_continuous(
       breaks = seq(0, max(data$credito_devengado_real) * 1.1, breaks_y),
       labels = scales::comma,
@@ -60,18 +70,9 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
     labs(
       caption = caption
     ) +
-    annotate(
-      "text",
-      x = as.factor("2024-04-01"), y = marcha_y, # Adjust `y` value as needed
-      label = "1ra marcha\nuniversitaria",
-      color = "red", size = marcha_size, hjust = 0, angle = 90
-    ) +
-    annotate(
-      "text",
-      x = as.factor("2024-10-01"), y = marcha_y, # Adjust `y` value as needed
-      label = "2da marcha\nuniversitaria",
-      color = "red", size = marcha_size, hjust = 0, angle = 90
-    )
+    annotate("text", x = as.Date("2024-04-01"), y = marcha_y, label = "1ra marcha\nuniversitaria", color = "red", size = marcha_size, hjust = 0, angle = 90) +
+    annotate("text", x = as.Date("2024-10-01"), y = marcha_y, label = "2da marcha\nuniversitaria", color = "red", size = marcha_size, hjust = 0, angle = 90) +
+    annotate("text", x = as.Date("2025-09-01"), y = marcha_y, label = "3ra marcha\nuniversitaria", color = "red", size = marcha_size, hjust = 0, angle = 90)
   
   # Add 3-month average line if requested
   if (include_three_month_avg) {
@@ -79,6 +80,30 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
       aes(y = average_credito_devengado_real, group = 1),
       size = 1
     )
+    # Add non-overlapping labels for the 3-month average values
+    label_data <- data %>% filter(!is.na(average_credito_devengado_real))
+    if (nrow(label_data) > 0) {
+      y_nudge <- max(data$credito_devengado_real, na.rm = TRUE) * 0.02
+      if (requireNamespace("ggrepel", quietly = TRUE)) {
+        p <- p + ggrepel::geom_text_repel(
+          data = label_data,
+          aes(x = fecha, y = average_credito_devengado_real, label = scales::comma(round(average_credito_devengado_real, 0))),
+          size = 3,
+          color = "black",
+          nudge_y = y_nudge,
+          min.segment.length = 0
+        )
+      } else {
+        p <- p + geom_text(
+          data = label_data,
+          aes(x = fecha, y = average_credito_devengado_real, label = scales::comma(round(average_credito_devengado_real, 0))),
+          size = 2.8,
+          vjust = -0.4,
+          color = "black",
+          check_overlap = TRUE
+        )
+      }
+    }
   }
   
   # Save the plot

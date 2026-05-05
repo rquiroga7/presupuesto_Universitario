@@ -59,7 +59,9 @@ df <- suppressWarnings(suppressMessages(read_excel(latest_file,
 # Extract dates from row 6 (Excel serial dates)
 dates_row <- suppressWarnings(as.numeric(df[6, ]))
 dates_row <- dates_row[!is.na(dates_row)]
+# Convert Excel serials to R dates and normalize to first day of month
 dates <- as.Date(dates_row, origin = "1899-12-30")
+dates <- as.Date(format(dates, "%Y-%m-01"))
 
 # Extract IPC values from row 10 (Nivel general)
 ipc_row <- suppressWarnings(as.numeric(df[10, ]))
@@ -75,6 +77,8 @@ new_data <- data.frame(
 ipc_csv_path <- "ipc/ipc.csv"
 existing_data <- read.csv(ipc_csv_path, stringsAsFactors = FALSE)
 existing_data$fecha <- as.Date(existing_data$fecha)
+# Normalize existing csv dates to first-of-month to match Excel normalization
+existing_data$fecha <- as.Date(format(existing_data$fecha, "%Y-%m-01"))
 
 # Find dates that are in new_data but not in existing_data
 new_dates <- new_data$fecha[!new_data$fecha %in% existing_data$fecha]
@@ -122,6 +126,8 @@ cat("\n--- Updating ipc_proy_rem.csv ---\n")
 # Re-read ipc.csv (in case it was just updated)
 ipc_data <- read.csv(ipc_csv_path, stringsAsFactors = FALSE)
 ipc_data$fecha <- as.Date(ipc_data$fecha)
+# Normalize to first-of-month so REM comparison uses month-level matching
+ipc_data$fecha <- as.Date(format(ipc_data$fecha, "%Y-%m-01"))
 
 # Copy ipc.csv to ipc_proy_rem.csv as the base
 ipc_proy_rem_path <- "ipc/ipc_proy_rem.csv"
