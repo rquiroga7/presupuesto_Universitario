@@ -142,7 +142,7 @@ data_mensual <- data %>%
   filter(fecha<=max_mes) %>%
   summarise(credito_devengado = round(sum(credito_devengado),0), credito_devengado_real = round(sum(credito_devengado_real),0))
 
-View(data_mensual)
+#View(data_mensual)
 
 #check plot
 ggplot(data_mensual, aes(x=fecha)) +
@@ -461,7 +461,7 @@ plot_annual_budget( data = data_anual_cyt,
 data_anual_100 <- data_anual %>% 
   mutate(credito_devengado_real_base100 = credito_devengado_real/credito_devengado_real[1]*100)
 
-View(data_anual_100)
+#View(data_anual_100)
 
 #Plot annual data show every year in x axis. Fill columns 2017-2019 in yellow, 2020-2023 in cyan and 2024-2025 in purple
 ggplot(data_anual_100, aes(x=as.factor(impacto_presupuestario_anio), y=credito_devengado_real_base100, fill=gobierno)) +

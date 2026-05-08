@@ -6,13 +6,9 @@ library(zoo)
 library(scales)
 library(tidyverse)
 `%notin%` <- Negate(`%in%`)
-# ggrepel used for non-overlapping labels (optional)
-if (!requireNamespace("ggrepel", quietly = TRUE)) {
-  message("Package 'ggrepel' not available — labels will use fallback placement.")
-}
 
 plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Presupuesto mensual devengado", 
-                             x_axis_title = "Año-Mes", y_axis_title = "Crédito mensual devengado (millones de $)", 
+                             x_axis_title = "Año-Mes", y_axis_title = "Crédito mensual devengado (miles de millones de $)", 
                              output_file = "plot.png", max_mes, color_mapping= color_mapping, dark_color_mapping = dark_color_mapping, 
                              coord_cartesian_min = 200000, breaks_y=10000, marcha_y= 400000, ancho = 10, alto = 10, base_size = 13, marcha_size =4,
                              caption = paste0(
@@ -29,7 +25,22 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
   if (first_jan > min_date) first_jan <- first_jan - years(1)
   breaks <- seq(first_jan, max(data$fecha, na.rm = TRUE), by = "3 months")
 
-  p <- ggplot(data, aes(x = fecha, y = credito_devengado_real, fill = gobierno, color = gobierno)) +
+  # compute totals per fecha (scaled to thousands) to place a single label above each stacked bar
+  totals <- data %>% group_by(fecha) %>% summarise(total = sum(credito_devengado_real, na.rm = TRUE) / 1000) %>% ungroup()
+
+  # compute max for axis scaling and choose label formatter: if max < 10 show one decimal with comma
+  max_y <- max(data$credito_devengado_real, na.rm = TRUE) / 1000
+  if (is.finite(max_y) && max_y < 10) {
+    label_fun <- function(x) formatC(x, format = "f", digits = 1, decimal.mark = ",", big.mark = "")
+    message(sprintf("[plot_budget_data] title='%s' max_y=%.3f -> using 1 decimal (comma)", title, max_y))
+  } else {
+    label_fun <- function(x) formatC(x, format = "f", digits = 0, big.mark = ".", decimal.mark = ",")
+    message(sprintf("[plot_budget_data] title='%s' max_y=%.3f -> using integer thousands (no decimals)", title, max_y))
+  }
+  totals$label <- label_fun(totals$total)
+
+  # plot values are divided by 1000 for axis in 'miles de millones'
+  p <- ggplot(data, aes(x = fecha, y = credito_devengado_real/1000, fill = gobierno, color = gobierno)) +
     # Draw march vertical lines first so they appear behind the bars
     geom_vline(xintercept = as.Date("2024-04-01"), color = "red", linetype = "dashed", size = 0.8) +
     geom_vline(xintercept = as.Date("2024-10-01"), color = "red", linetype = "dashed", size = 0.8) +
@@ -45,22 +56,18 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
     scale_fill_manual(values = color_mapping) + # Use the same color mapping for bars
     scale_color_manual(values = dark_color_mapping) +
     theme_light(base_size = base_size) +
-    # per-bar labels removed to avoid overlap; 3-month-average labels added below when requested
-    # geom_text(
-    #   aes(label = ifelse(is.na(credito_devengado_real) | credito_devengado_real <= 0, "", scales::comma(round(credito_devengado_real, 0)))),
-    #   position = position_stack(vjust = 0.5),
-    #   size = 2.5,
-    #   color = "white",
-    #   check_overlap = TRUE
-    # ) +
+    geom_text(data = totals, aes(x = fecha, y = total + max(totals$total, na.rm = TRUE) * 0.01, label = label), size = 3, color = "black", inherit.aes = FALSE) +
     scale_x_date(breaks = breaks, date_labels = "%Y-%m") +
-    scale_y_continuous(
-      breaks = seq(0, max(data$credito_devengado_real) * 1.1, breaks_y),
-      labels = scales::comma,
-      limits = c(0, max(data$credito_devengado_real) * 1.1),
-      expand = c(0, 0)
-    ) +
-    coord_cartesian(ylim = c(coord_cartesian_min, max(data$credito_devengado_real) * 1.1)) +
+    {
+      breaks_plot <- seq(0, max_y * 1.15, breaks_y / 1000)
+      scale_y_continuous(
+        breaks = breaks_plot,
+        labels = label_fun,
+        limits = c(0, max_y * 1.15),
+        expand = c(0, 0)
+      )
+    } +
+    coord_cartesian(ylim = c(coord_cartesian_min / 1000, max(data$credito_devengado_real, na.rm = TRUE) * 1.15 / 1000)) +
     theme(
       axis.text.x = element_text(angle = 90, vjust = 0.5),
       legend.position = "top",
@@ -70,41 +77,21 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
     labs(
       caption = caption
     ) +
-    annotate("text", x = as.Date("2024-04-01"), y = marcha_y, label = "1ra marcha\nuniversitaria", color = "red", size = marcha_size, hjust = 0, angle = 90) +
-    annotate("text", x = as.Date("2024-10-01"), y = marcha_y, label = "2da marcha\nuniversitaria", color = "red", size = marcha_size, hjust = 0, angle = 90) +
-    annotate("text", x = as.Date("2025-09-01"), y = marcha_y, label = "3ra marcha\nuniversitaria", color = "red", size = marcha_size, hjust = 0, angle = 90)
+    annotate("text", x = as.Date("2024-04-01"), y = marcha_y/1000, label = "1ra marcha\nuniversitaria", color = "red", size = marcha_size, hjust = 0, angle = 90) +
+    annotate("text", x = as.Date("2024-10-01"), y = marcha_y/1000, label = "2da marcha\nuniversitaria", color = "red", size = marcha_size, hjust = 0, angle = 90) +
+    annotate("text", x = as.Date("2025-09-01"), y = marcha_y/1000, label = "3ra marcha\nuniversitaria", color = "red", size = marcha_size, hjust = 0, angle = 90)
   
   # Add 3-month average line if requested
   if (include_three_month_avg) {
     p <- p + geom_line(
-      aes(y = average_credito_devengado_real, group = 1),
+      aes(y = average_credito_devengado_real/1000, group = 1),
       size = 1
     )
-    # Add non-overlapping labels for the 3-month average values
-    label_data <- data %>% filter(!is.na(average_credito_devengado_real))
-    if (nrow(label_data) > 0) {
-      y_nudge <- max(data$credito_devengado_real, na.rm = TRUE) * 0.02
-      if (requireNamespace("ggrepel", quietly = TRUE)) {
-        p <- p + ggrepel::geom_text_repel(
-          data = label_data,
-          aes(x = fecha, y = average_credito_devengado_real, label = scales::comma(round(average_credito_devengado_real, 0))),
-          size = 3,
-          color = "black",
-          nudge_y = y_nudge,
-          min.segment.length = 0
-        )
-      } else {
-        p <- p + geom_text(
-          data = label_data,
-          aes(x = fecha, y = average_credito_devengado_real, label = scales::comma(round(average_credito_devengado_real, 0))),
-          size = 2.8,
-          vjust = -0.4,
-          color = "black",
-          check_overlap = TRUE
-        )
-      }
-    }
+    # (no additional labels)
   }
+  
+  # debug: print max total used for labels
+  message(sprintf("[plot_budget_data] totals max=%.3f", max(totals$total, na.rm = TRUE)))
   
   # Save the plot
   ggsave(output_file, plot = p, width = ancho, height = alto, units = "in", dpi = 300)
@@ -216,19 +203,30 @@ plot_annual_budget <- function(data, title = "Universidades Nacionales: Presupue
   library(ggplot2)
   library(scales)
   
-  ggplot(data, aes(x = as.factor(impacto_presupuestario_anio), y = credito_devengado_real, fill = gobierno)) +
+  # prepare annual label formatter based on max value
+  max_y_ann <- max(data$credito_devengado_real, na.rm = TRUE) / 1000
+  if (is.finite(max_y_ann) && max_y_ann < 10) {
+    label_fun_ann <- function(x) formatC(x, format = "f", digits = 1, decimal.mark = ",", big.mark = "")
+    message(sprintf("[plot_annual_budget] title='%s' max_y_ann=%.3f -> using 1 decimal (comma)", title, max_y_ann))
+  } else {
+    label_fun_ann <- function(x) formatC(x, format = "f", digits = 0, big.mark = ".", decimal.mark = ",")
+    message(sprintf("[plot_annual_budget] title='%s' max_y_ann=%.3f -> using integer thousands (no decimals)", title, max_y_ann))
+  }
+  data$label <- label_fun_ann(data$credito_devengado_real/1000)
+
+  ggplot(data, aes(x = as.factor(impacto_presupuestario_anio), y = credito_devengado_real/1000, fill = gobierno)) +
     geom_bar(stat = "identity") +
     labs(
       title = title,
       subtitle = paste0("Ajustado por inflación (IPC). En pesos de ", max_mes),
       x = "Año",
-      y = paste0("Crédito anual devengado\n(millones de $ de ", max_mes, ")"),
+      y = paste0("Crédito anual devengado\n(miles de millones de $ de ", max_mes, ")"),
       fill = "Gobierno"
     ) +
     scale_fill_manual(values = color_mapping) +
     theme_light(base_size = 14) +
-    geom_text(aes(y = credito_devengado_real, label = round(credito_devengado_real, 0)), vjust = -0.5, size = 5) +
-    scale_y_continuous(labels = scales::comma, limits = c(NA, max(data$credito_devengado_real) * 1.1)) +
+    geom_text(aes(y = credito_devengado_real/1000, label = label), vjust = -0.5, size = 5) +
+    scale_y_continuous(labels = label_fun_ann, limits = c(NA, max(data$credito_devengado_real, na.rm = TRUE) * 1.1 / 1000)) +
     theme(
       legend.position = "top",
       plot.title = element_text(hjust = 0.5),
