@@ -591,3 +591,154 @@ plot_annual_budget( data = data_anual,
   max_mes = max_mes,
   color_mapping = color_mapping
 )
+
+prepare_university_monthly_data <- function(filtered_data, adjust_aguinaldo = FALSE, aguinaldo_factor = 1.5) {
+  monthly_data <- filtered_data %>%
+    group_by(fecha, impacto_presupuestario_anio, gobierno) %>%
+    summarise(
+      credito_devengado = sum(credito_devengado, na.rm = TRUE),
+      credito_devengado_real = sum(credito_devengado_real, na.rm = TRUE),
+      .groups = "drop"
+    )
+
+  if (adjust_aguinaldo) {
+    monthly_data <- remove_aguinaldo_effect(monthly_data, max_mes, min_mes, aguinaldo_factor)
+  }
+
+  calculate_three_month_averages(monthly_data)
+}
+
+generate_university_plots <- function(university_name, output_prefix) {
+  university_min_mes <- as.Date("2017-01-01")
+  university_monthly_min_mes <- as.Date("2023-01-01")
+  university_data <- data %>%
+    filter(subparcial_desc == university_name, fecha <= max_mes, fecha >= university_min_mes)
+
+  data_salud_annual <- annualize(
+    generate_projection(
+      university_data,
+      ipc_proj,
+      adjust_specific_months = FALSE,
+      use_average = TRUE,
+      actividad_ids = c(15)
+    )
+  )
+  plot_annual_budget(
+    data = data_salud_annual,
+    title = paste0(output_prefix, ": Presupuesto anual (Salud)"),
+    caption = paste0(
+      "Se ajustó el crédito devengado para salud (act 15) en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\n",
+      "Se toma el promedio para ", proy_anio, " y se asume ajuste por IPC para los meses faltantes.\n",
+      "En millones de pesos de ", max_mes, ", montos anualizados.\n",
+      "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "
+    ),
+    output_file = paste0("plots/", output_prefix, "_presupuesto_salud_2017-", proy_anio, ".png"),
+    max_mes = max_mes,
+    color_mapping = color_mapping
+  )
+
+  data_salud_monthly <- prepare_university_monthly_data(
+    university_data %>% filter(actividad_id == 15, fecha >= university_monthly_min_mes)
+  )
+  plot_budget_data(
+    data = data_salud_monthly,
+    include_three_month_avg = TRUE,
+    title = paste0(output_prefix, ": Presupuesto mensual (Salud)"),
+    output_file = paste0("plots/", output_prefix, "_presupuesto_salud_mensual_2017-", proy_anio, ".png"),
+    max_mes = max_mes,
+    color_mapping = color_mapping,
+    dark_color_mapping = dark_color_mapping,
+    coord_cartesian_min = 0,
+    breaks_y = 10000,
+    marcha_y = max(data_salud_monthly$credito_devengado_real, na.rm = TRUE) * 0.85
+  )
+
+  data_salarial_annual <- annualize(
+    generate_projection(
+      university_data,
+      ipc_proj,
+      actividad_ids = c(12, 13),
+      adjust_specific_months = TRUE,
+      adjustment_factor = 1.5,
+      use_average = TRUE
+    )
+  )
+  plot_annual_budget(
+    data = data_salarial_annual,
+    title = paste0(output_prefix, ": Presupuesto anual (Salarial)"),
+    caption = paste0(
+      "Se ajustó el crédito salarial devengado (act 12 y 13) en cada mes por inflación, utilizando el IPC-INDEC.\n",
+      "Se toma el promedio para ", proy_anio, " y se asume ajuste por IPC para los meses faltantes (se toma en cuenta aguinaldos).\n",
+      "En millones de pesos de ", max_mes, ", montos anualizados.\n",
+      "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "
+    ),
+    output_file = paste0("plots/", output_prefix, "_presupuesto_salarial_2017-", proy_anio, ".png"),
+    max_mes = max_mes,
+    color_mapping = color_mapping
+  )
+
+  data_salarial_monthly <- prepare_university_monthly_data(
+    university_data %>% filter(actividad_id %in% c(12, 13), fecha >= university_monthly_min_mes),
+    adjust_aguinaldo = TRUE,
+    aguinaldo_factor = 1.5
+  )
+  plot_budget_data(
+    data = data_salarial_monthly,
+    include_three_month_avg = TRUE,
+    title = paste0(output_prefix, ": Presupuesto mensual (Salarial)"),
+    output_file = paste0("plots/", output_prefix, "_presupuesto_salarial_mensual_2017-", proy_anio, ".png"),
+    max_mes = max_mes,
+    color_mapping = color_mapping,
+    dark_color_mapping = dark_color_mapping,
+    coord_cartesian_min = 0,
+    breaks_y = 10000,
+    marcha_y = max(data_salarial_monthly$credito_devengado_real, na.rm = TRUE) * 0.85
+  )
+
+  university_no_salary <- university_data %>% filter(actividad_id %notin% c(12, 13))
+  data_no_salarial_annual <- annualize(
+    generate_projection(
+      university_no_salary,
+      ipc_proj,
+      adjust_specific_months = FALSE,
+      use_average = TRUE
+    )
+  )
+  plot_annual_budget(
+    data = data_no_salarial_annual,
+    title = paste0(output_prefix, ": Presupuesto anual (No salarial)"),
+    caption = paste0(
+      "Se ajustó el crédito devengado para no salarial en cada mes por inflación, utilizando el IPC-INDEC (índice de precios al consumidor).\n",
+      "Se toma el promedio para ", proy_anio, " y se asume ajuste por IPC para los meses faltantes.\n",
+      "En millones de pesos de ", max_mes, ", montos anualizados.\n",
+      "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario "
+    ),
+    output_file = paste0("plots/", output_prefix, "_presupuesto_nosalarial_2017-", proy_anio, ".png"),
+    max_mes = max_mes,
+    color_mapping = color_mapping
+  )
+
+  data_no_salarial_monthly <- prepare_university_monthly_data(
+    university_no_salary %>% filter(fecha >= university_monthly_min_mes)
+  )
+  plot_budget_data(
+    data = data_no_salarial_monthly,
+    include_three_month_avg = TRUE,
+    title = paste0(output_prefix, ": Presupuesto mensual (No salarial)"),
+    output_file = paste0("plots/", output_prefix, "_presupuesto_nosalarial_mensual_2017-", proy_anio, ".png"),
+    max_mes = max_mes,
+    color_mapping = color_mapping,
+    dark_color_mapping = dark_color_mapping,
+    coord_cartesian_min = 0,
+    breaks_y = 10000,
+    marcha_y = max(data_no_salarial_monthly$credito_devengado_real, na.rm = TRUE) * 0.85
+  )
+}
+
+for (university_config in list(
+  list(name = "Universidad de Buenos Aires", prefix = "UBA"),
+  list(name = "Universidad Nacional de Córdoba", prefix = "UNC"),
+  list(name = "Universidad Nacional de Rosario", prefix = "UNR")
+)) {
+  generate_university_plots(university_config$name, university_config$prefix)
+}
