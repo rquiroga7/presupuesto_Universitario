@@ -9,11 +9,11 @@ library(tidyverse)
 
 plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Presupuesto mensual devengado", 
                              x_axis_title = "Año-Mes", y_axis_title = "Crédito mensual devengado (miles de millones de $)", 
-                             output_file = "plot.png", max_mes, color_mapping= color_mapping, dark_color_mapping = dark_color_mapping, 
+                             output_file = "plot.png", base_mes, color_mapping= color_mapping, dark_color_mapping = dark_color_mapping, 
                              coord_cartesian_min = 200000, breaks_y=10000, marcha_y= 400000, ancho = 10, alto = 10, base_size = 13, marcha_size =4,
                              caption = paste0(
         "Se ajustó el crédito devengado (prog 26) en cada mes por inflación mensual, utilizando el IPC (índice de precios al consumidor).\n",
-        "En millones de pesos de ", max_mes, ", promedios trimestrales mostrados como una línea. Meses con aguinaldo fueron normalizados.\n",
+        "En millones de pesos de ", base_mes, ", promedios trimestrales mostrados como una línea. Meses con aguinaldo fueron normalizados.\n",
         "Por Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario"
       )
                              ) {
@@ -48,7 +48,7 @@ plot_budget_data <- function(data, include_three_month_avg = TRUE, title = "Pres
     geom_col(alpha = 0.8, width = 25) +
     labs(
       title = title,
-      subtitle = paste0("Ajustado por inflación (IPC). En pesos de ", max_mes),
+      subtitle = paste0("Ajustado por inflación (IPC). En pesos de ", base_mes),
       x = x_axis_title,
       y = y_axis_title,
       fill = "Gobierno", color = "Gobierno"
@@ -197,9 +197,9 @@ remove_aguinaldo_effect <- function(data, max_mes, min_mes, value=1.4) {
 }
 
 plot_annual_budget <- function(data, title = "Universidades Nacionales: Presupuesto anual devengado", 
-                               caption = "Se ajustó el crédito devengado para ciencia (act 16) en cada mes por inflación, utilizando el IPC-INDEC.\nSe toma el promedio para el año proyectado y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de la fecha máxima, montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario",
+                               caption = "Se ajustó el crédito devengado para ciencia (act 16) en cada mes por inflación, utilizando el IPC-INDEC.\nSe toma el último mes con datos reales y se asume ajuste por IPC para los meses faltantes.\nEn millones de pesos de la fecha máxima, montos anualizados.\nPor Rodrigo Quiroga. Ver https://github.com/rquiroga7/presupuesto_Universitario",
                                output_file = "plots/presupuesto_anual.png", 
-                               max_mes = max_mes, proy_anio = 2025, color_mapping = color_mapping) {
+                               base_mes = base_mes, proy_anio = 2025, color_mapping = color_mapping) {
   library(ggplot2)
   library(scales)
   
@@ -218,9 +218,9 @@ plot_annual_budget <- function(data, title = "Universidades Nacionales: Presupue
     geom_bar(stat = "identity") +
     labs(
       title = title,
-      subtitle = paste0("Ajustado por inflación (IPC). En pesos de ", max_mes),
+      subtitle = paste0("Ajustado por inflación (IPC). En pesos de ", base_mes),
       x = "Año",
-      y = paste0("Crédito anual devengado\n(miles de millones de $ de ", max_mes, ")"),
+      y = paste0("Crédito anual devengado\n(miles de millones de $ de ", base_mes, ")"),
       fill = "Gobierno"
     ) +
     scale_fill_manual(values = color_mapping) +

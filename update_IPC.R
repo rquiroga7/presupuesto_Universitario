@@ -24,6 +24,135 @@ if (is.null(script_dir) || script_dir == "" || script_dir == ".") {
 }
 setwd(script_dir)
 
+# ============================================================================
+# PART 0: Download the latest source files from INDEC and the BCRA if available
+# ============================================================================
+# INDEC publishes monthly IPC files as sh_ipc_MM_YY.xls (MM = publication
+# month, YY = year). The file published in month M contains the official IPC
+# through month M-1. The BCRA publishes the REM tables as
+# relevamiento-expectativas-mercado-tablas-YYYY-MM.xlsx (data month YYYY-MM).
+# Both servers return an HTML page (not a 404) for files that do not exist yet,
+# so we validate the file signature before keeping a download.
+
+add_months <- function(date, n) {
+  y <- as.integer(format(date, "%Y"))
+  m <- as.integer(format(date, "%m")) + n
+  while (m <= 0) { m <- m + 12; y <- y - 1 }
+  while (m > 12) { m <- m - 12; y <- y + 1 }
+  as.Date(sprintf("%04d-%02d-01", y, m))
+}
+
+download_latest_ipc <- function(ipc_dir = "ipc", months_back = 12) {
+  base_url <- "https://www.indec.gob.ar/ftp/cuadros/economia/"
+  xls_magic <- as.raw(c(0xD0, 0xCF, 0x11, 0xE0, 0xA1, 0xB1, 0x1A, 0xE1))
+
+  parse_pub_date <- function(filename) {
+    m <- regmatches(basename(filename),
+                    regexec("sh_ipc_(\\d{2})_(\\d{2})\\.xls", basename(filename)))[[1]]
+    if (length(m) == 3) {
+      return(as.Date(sprintf("%04d-%02d-01", as.integer(m[3]) + 2000, as.integer(m[2]))))
+    }
+    as.Date(NA)
+  }
+
+  local_files <- list.files(ipc_dir, pattern = "^sh_ipc_\\d{2}_\\d{2}\\.xls$", full.names = TRUE)
+  local_dates <- as.Date(sapply(local_files, parse_pub_date), origin = "1970-01-01")
+  latest_local <- suppressWarnings(max(local_dates, na.rm = TRUE))
+  if (!is.finite(latest_local)) latest_local <- as.Date("1900-01-01")
+
+  this_month <- as.Date(format(Sys.Date(), "%Y-%m-01"))
+  for (i in 0:months_back) {
+    pub_date <- add_months(this_month, -i)
+    if (pub_date <= latest_local) break
+
+    fname <- sprintf("sh_ipc_%02d_%02d.xls",
+                     as.integer(format(pub_date, "%m")),
+                     as.integer(format(pub_date, "%y")))
+    url <- paste0(base_url, fname)
+    dest <- file.path(ipc_dir, fname)
+    tmp <- tempfile(fileext = ".xls")
+
+    valid <- tryCatch({
+      suppressWarnings(download.file(url, tmp, mode = "wb", quiet = TRUE))
+      file.exists(tmp) && file.size(tmp) > 100000 &&
+        identical(readBin(tmp, what = "raw", n = 8), xls_magic)
+    }, error = function(e) FALSE)
+
+    if (valid) {
+      file.copy(tmp, dest, overwrite = TRUE)
+      unlink(tmp)
+      cat("Downloaded latest IPC file from INDEC:", fname, "\n")
+      return(dest)
+    }
+    unlink(tmp)
+  }
+
+  cat("No newer IPC file available from INDEC (latest local file:",
+      format(latest_local, "%Y-%m"), ").\n")
+  NULL
+}
+
+download_latest_rem <- function(ipc_dir = "ipc", months_back = 12) {
+  base_url <- "https://www.bcra.gob.ar/archivos/Pdfs/PublicacionesEstadisticas/informes/relevamiento-expectativas-mercado-tablas-"
+  xlsx_magic <- as.raw(c(0x50, 0x4B, 0x03, 0x04))
+  spanish_months <- c(ene = 1, feb = 2, mar = 3, abr = 4, may = 5, jun = 6,
+                      jul = 7, ago = 8, sep = 9, oct = 10, nov = 11, dic = 12)
+
+  parse_rem_date <- function(filename) {
+    b <- basename(filename)
+    # New BCRA naming: relevamiento-expectativas-mercado-tablas-YYYY-MM.xlsx
+    m_new <- regmatches(b, regexec("relevamiento-expectativas-mercado-tablas-(\\d{4})-(\\d{2})\\.xlsx", b))[[1]]
+    if (length(m_new) == 3) {
+      return(as.Date(sprintf("%04d-%02d-01", as.integer(m_new[2]), as.integer(m_new[3]))))
+    }
+    # Legacy naming: tablas-relevamiento-expectativas-mercado-MMM-YYYY.xlsx
+    m_old <- regmatches(b, regexec("tablas-relevamiento-expectativas-mercado-([a-z]{3})-(\\d{4})\\.xlsx", b))[[1]]
+    if (length(m_old) == 3) {
+      return(as.Date(sprintf("%04d-%02d-01", as.integer(m_old[3]), spanish_months[m_old[2]])))
+    }
+    as.Date(NA)
+  }
+
+  local_files <- list.files(ipc_dir, pattern = "relevamiento-expectativas-mercado.*\\.xlsx$", full.names = TRUE)
+  local_dates <- as.Date(sapply(local_files, parse_rem_date), origin = "1970-01-01")
+  latest_local <- suppressWarnings(max(local_dates, na.rm = TRUE))
+  if (!is.finite(latest_local)) latest_local <- as.Date("1900-01-01")
+
+  this_month <- as.Date(format(Sys.Date(), "%Y-%m-01"))
+  for (i in 0:months_back) {
+    d <- add_months(this_month, -i)
+    if (d <= latest_local) break
+
+    fname <- sprintf("relevamiento-expectativas-mercado-tablas-%04d-%02d.xlsx",
+                     as.integer(format(d, "%Y")), as.integer(format(d, "%m")))
+    url <- paste0(base_url, sprintf("%04d-%02d.xlsx",
+                                    as.integer(format(d, "%Y")), as.integer(format(d, "%m"))))
+    dest <- file.path(ipc_dir, fname)
+    tmp <- tempfile(fileext = ".xlsx")
+
+    valid <- tryCatch({
+      suppressWarnings(download.file(url, tmp, mode = "wb", quiet = TRUE))
+      file.exists(tmp) && file.size(tmp) > 10000 &&
+        identical(readBin(tmp, what = "raw", n = 4), xlsx_magic)
+    }, error = function(e) FALSE)
+
+    if (valid) {
+      file.copy(tmp, dest, overwrite = TRUE)
+      unlink(tmp)
+      cat("Downloaded latest REM tables from BCRA:", fname, "\n")
+      return(dest)
+    }
+    unlink(tmp)
+  }
+
+  cat("No newer REM tables available from BCRA (latest local file:",
+      format(latest_local, "%Y-%m"), ").\n")
+  NULL
+}
+
+download_latest_ipc("ipc")
+download_latest_rem("ipc")
+
 # Find the latest sh_ipc_*.xls file in the ipc folder
 ipc_files <- list.files("ipc", pattern = "^sh_ipc_\\d{2}_\\d{2}\\.xls$", full.names = TRUE)
 
@@ -132,9 +261,11 @@ ipc_data$fecha <- as.Date(format(ipc_data$fecha, "%Y-%m-01"))
 # Copy ipc.csv to ipc_proy_rem.csv as the base
 ipc_proy_rem_path <- "ipc/ipc_proy_rem.csv"
 
-# Find the latest REM file (tablas-relevamiento-expectativas-mercado-MMM-YYYY.xlsx)
+# Find the latest REM file. Two naming conventions are supported:
+#  - New (BCRA):  relevamiento-expectativas-mercado-tablas-YYYY-MM.xlsx
+#  - Legacy:      tablas-relevamiento-expectativas-mercado-MMM-YYYY.xlsx
 # Month names in Spanish: ene, feb, mar, abr, may, jun, jul, ago, sep, oct, nov, dic
-rem_files <- list.files("ipc", pattern = "^tablas-relevamiento-expectativas-mercado-.*\\.xlsx$", full.names = TRUE)
+rem_files <- list.files("ipc", pattern = "relevamiento-expectativas-mercado.*\\.xlsx$", full.names = TRUE)
 
 if (length(rem_files) == 0) {
   cat("No REM Excel files found in ipc/ folder. Skipping REM update.\n")
@@ -142,23 +273,26 @@ if (length(rem_files) == 0) {
   # Parse dates from REM filenames (Spanish month names)
   spanish_months <- c("ene" = 1, "feb" = 2, "mar" = 3, "abr" = 4, "may" = 5, "jun" = 6,
                       "jul" = 7, "ago" = 8, "sep" = 9, "oct" = 10, "nov" = 11, "dic" = 12)
-  
+
   parse_rem_date <- function(filename) {
-    # Extract month and year from filename (tablas-relevamiento-expectativas-mercado-MMM-YYYY.xlsx)
-    matches <- regmatches(basename(filename), 
-                          regexec("tablas-relevamiento-expectativas-mercado-([a-z]{3})-(\\d{4})\\.xlsx", 
-                                  basename(filename)))[[1]]
-    if (length(matches) == 3) {
-      month <- spanish_months[matches[2]]
-      year <- as.integer(matches[3])
+    b <- basename(filename)
+    # New BCRA naming: relevamiento-expectativas-mercado-tablas-YYYY-MM.xlsx
+    m_new <- regmatches(b, regexec("relevamiento-expectativas-mercado-tablas-(\\d{4})-(\\d{2})\\.xlsx", b))[[1]]
+    if (length(m_new) == 3) {
+      return(as.Date(sprintf("%04d-%02d-01", as.integer(m_new[2]), as.integer(m_new[3]))))
+    }
+    # Legacy naming: tablas-relevamiento-expectativas-mercado-MMM-YYYY.xlsx
+    m_old <- regmatches(b, regexec("tablas-relevamiento-expectativas-mercado-([a-z]{3})-(\\d{4})\\.xlsx", b))[[1]]
+    if (length(m_old) == 3) {
+      month <- spanish_months[m_old[2]]
       if (!is.na(month)) {
-        return(as.Date(sprintf("%04d-%02d-01", year, month)))
+        return(as.Date(sprintf("%04d-%02d-01", as.integer(m_old[3]), month)))
       }
     }
     return(NA)
   }
-  
-  rem_dates <- sapply(rem_files, parse_rem_date)
+
+  rem_dates <- as.Date(sapply(rem_files, parse_rem_date), origin = "1970-01-01")
   latest_rem_file <- rem_files[which.max(rem_dates)]
   
   cat("Reading latest REM file:", latest_rem_file, "\n")
